@@ -1,0 +1,10 @@
+{
+  "name": "phuotngay-backend",
+  "version": "0.0.1",
+  "description": "Phuot ngay - backend",
+  "main": "app.js",
+  "dependencies": {
+    "express": "~3.4.0",
+    "redis": "^2.6.2"
+  }
+}
