@@ -5,7 +5,8 @@ var express = require('express');
 var redis = require('redis')
     
 var app = express();
-client = redis.createClient();
+client = redis.createClient(6379, "10.100.2.117");
+client.auth("ODIqre95943", function (err) { if (err) throw err; });
 
 var PORT = 8080;
 
