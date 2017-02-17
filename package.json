@@ -1,10 +1,15 @@
 {
   "name": "phuotngay-backend",
   "version": "0.0.1",
-  "description": "Phuot ngay - backend",
+  "description": "Phuot Ngay - backend",
   "main": "app.js",
   "dependencies": {
     "express": "~3.4.0",
-    "redis": "^2.6.2"
+    "firebase": "^3.6.9",
+    "jsonwebtoken": "^7.1.9",
+    "password-hash": "^1.2.2"
+  },
+  "scripts": {
+    "start": "node app.js"
   }
 }
