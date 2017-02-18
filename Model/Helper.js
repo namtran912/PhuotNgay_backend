@@ -1,5 +1,7 @@
-module.exports = function() { 
+var jwt = require('jsonwebtoken');
 
+module.exports = function() { 
+    var SecrectToken = 'phuotngay';
     this.Helper = function() {
     }
 
@@ -37,4 +39,21 @@ module.exports = function() {
         
         return false;
 	}
+
+    Helper.prototype.genToken = function(firebaseUid) {
+		var secrectToken = new Buffer(SecrectToken, 'base64').toString('ascii');
+		var token = jwt.sign(firebaseUid, secrectToken/*, {
+			expiresIn: 86400
+		}*/);
+		return token;
+	}
+
+    Helper.prototype.verifyToken = function(token, callback) {
+		jwt.verify(token, secrectToken, function(err, decoded) {
+            if (err)
+                return callback(null);
+
+            callback(decoded.firebaseUid);
+        });
+    }
 }

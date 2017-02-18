@@ -20,5 +20,6 @@ firebase.initializeApp(config);
 
 require('./Controller/TripController.js')(app, firebase);
 require('./Controller/LocationController.js')(app, firebase);
+require('./Controller/UserController.js')(app, firebase);
 
 app.listen(PORT);  
