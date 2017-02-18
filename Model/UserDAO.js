@@ -12,7 +12,7 @@ module.exports = function() {
 		firebase.database().ref(this.ref + firebaseUid).once('value').then(function(snapshot) {
 			if (snapshot.val() != null)
 				return callback({
-							responeCode : -1,
+							responseCode : -1,
 							description : "",
 							data : ""
 						});
@@ -28,7 +28,7 @@ module.exports = function() {
 			});
 
 			callback({
-				responeCode : 1,
+				responseCode : 1,
 				description : "",
 				data : {
 					authen : helper.genToken(firebaseUid)

@@ -11,7 +11,13 @@ module.exports = function() {
 	TripDAO.prototype.readTripsData = function(firebase, callback) {
 		firebase.database().ref(this.ref).once('value').then(function(snapshot) {
 			var trips = snapshot.val();
-			callback(trips);
+			callback({
+				responseCode : 1,
+				description : "",
+				data : {
+					trips : trips
+				}
+			});
 		});
 	}
 
@@ -42,7 +48,13 @@ module.exports = function() {
                 	result.push(childData);
 
 			});
-			callback(result);
+			callback({
+				responseCode : 1,
+				description : "",
+				data : {
+					trips : result
+				}
+			});
 		});
 	}
 }

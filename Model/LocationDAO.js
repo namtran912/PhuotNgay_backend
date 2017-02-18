@@ -6,14 +6,26 @@ module.exports = function() {
 	LocationDAO.prototype.readLocationData = function(firebase, id, callback) {
 		firebase.database().ref(this.ref + '/' + id).once('value').then(function(snapshot) {
 			var location = snapshot.val();
-			callback(location);
+			callback({
+				responseCode : 1,
+				description : "",
+				data : {
+					location : location
+				}
+			});
 		});
 	}
 
 	LocationDAO.prototype.readLocationData = function(firebase, callback) {
 		firebase.database().ref(this.ref).once('value').then(function(snapshot) {
-			var location = snapshot.val();
-			callback(location);
+			var locations = snapshot.val();
+			callback({
+				responseCode : 1,	
+				description : "",
+				data : {
+					locations : locations
+				}
+			});
 		});
 	}
 }
