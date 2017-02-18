@@ -1,4 +1,6 @@
 var express = require('express');
+var firebase = require('firebase');
+var config = require('./config');
 
 var app = express();
 var PORT = 8080;
@@ -14,7 +16,9 @@ var allowCrossDomain = function(req, res, next) {
 app.use(express.bodyParser());
 app.use(allowCrossDomain);
 
-//require('./Controller/TripController.js')(app);
-require('./Controller/LocationController.js')(app);
+firebase.initializeApp(config);
+
+require('./Controller/TripController.js')(app, firebase);
+require('./Controller/LocationController.js')(app, firebase);
 
 app.listen(PORT);  

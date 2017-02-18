@@ -1,26 +1,21 @@
 require('./Helper')();
-var config = require('../config');
-var firebase = require('firebase');
 
 module.exports = function() { 
 	var helper = new Helper();
 
 	this.TripDAO = function() {
-		firebase.initializeApp(config);
-		this.database = firebase.database();
-
 		this.ref = 'TRIP/';
 		
 	} 
 
-	TripDAO.prototype.readTripsData = function(callback) {
+	TripDAO.prototype.readTripsData = function(firebase, callback) {
 		firebase.database().ref(this.ref).once('value').then(function(snapshot) {
 			var trips = snapshot.val();
 			callback(trips);
 		});
 	}
 
-	TripDAO.prototype.searchTripsData = function(arrive, depart, duration, transfer, callback) {
+	TripDAO.prototype.searchTripsData = function(firebase, arrive, depart, duration, transfer, callback) {
 		firebase.database().ref(this.ref).once('value').then(function(snapshot) {
 			arrive = helper.U2A(arrive.toLowerCase());
 			depart = helper.U2A(depart.toLowerCase());
