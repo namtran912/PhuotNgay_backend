@@ -9,4 +9,11 @@ module.exports = function() {
 			callback(location);
 		});
 	}
+
+	LocationDAO.prototype.readLocationData = function(firebase, callback) {
+		firebase.database().ref(this.ref).once('value').then(function(snapshot) {
+			var location = snapshot.val();
+			callback(location);
+		});
+	}
 }
