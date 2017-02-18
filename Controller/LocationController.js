@@ -11,7 +11,7 @@ module.exports = function(app, firebase) {
     });
 
     app.get(url + '/:id', function(req, res) {  
-        locationDAO.readLocationData(firebase, req.params.id, function(result) {
+        locationDAO.searchLocationData(firebase, req.params.id, function(result) {
             res.json(result); 
         });
     });
