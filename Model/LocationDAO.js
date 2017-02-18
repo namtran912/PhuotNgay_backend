@@ -10,7 +10,7 @@ module.exports = function() {
 				responseCode : 1,
 				description : "",
 				data : {
-					location : location
+					locations : location
 				}
 			});
 		});
