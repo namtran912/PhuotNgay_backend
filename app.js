@@ -14,6 +14,7 @@ var allowCrossDomain = function(req, res, next) {
 app.use(express.bodyParser());
 app.use(allowCrossDomain);
 
-require('./Controller/SearchController.js')(app);
+//require('./Controller/TripController.js')(app);
+require('./Controller/LocationController.js')(app);
 
 app.listen(PORT);  

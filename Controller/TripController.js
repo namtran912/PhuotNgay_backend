@@ -9,4 +9,11 @@ module.exports = function(app) {
             res.json(result); 
         });
     });
+
+    app.get(url + '/search', function(req, res) {  
+        tripDAO.searchTripsData(req.query.arrive, req.query.depart, 
+        req.query.duration, req.query.transfer, function(result) {
+            res.json(result); 
+        });
+    });
 }
