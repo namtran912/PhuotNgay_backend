@@ -5,13 +5,27 @@ module.exports = function(app, firebase) {
     var url = '/api/location';   
 
     app.get(url, function(req, res) {  
-        locationDAO.readLocationData(firebase, function(result) {
+        if (req.headers['authen'] == null) 
+            return res.json({
+							responseCode : -1,
+							description : "",
+							data : ""
+						});
+
+        locationDAO.readLocationData(firebase, req.headers['authen'], function(result) {
             res.json(result); 
         });
     });
 
     app.get(url + '/:id', function(req, res) {  
-        locationDAO.searchLocationData(firebase, req.params.id, function(result) {
+        if (req.headers['authen'] == null) 
+            return res.json({
+							responseCode : -1,
+							description : "",
+							data : ""
+						});
+
+        locationDAO.searchLocationData(firebase, req.headers['authen'], req.params.id, function(result) {
             res.json(result); 
         });
     });

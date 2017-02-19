@@ -31,7 +31,9 @@ module.exports = function() {
 				responseCode : 1,
 				description : "",
 				data : {
-					authen : helper.genToken(firebaseUid)
+					authen : helper.genToken({
+						firebaseUid : firebaseUid
+					})
 				}
 			});
 		});

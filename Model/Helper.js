@@ -49,6 +49,7 @@ module.exports = function() {
 	}
 
     Helper.prototype.verifyToken = function(token, callback) {
+        var secrectToken = new Buffer(SecrectToken, 'base64').toString('ascii');
 		jwt.verify(token, secrectToken, function(err, decoded) {
             if (err)
                 return callback(null);

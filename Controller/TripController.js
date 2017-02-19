@@ -5,13 +5,25 @@ module.exports = function(app, firebase) {
     var url = '/api/trips';   
 
     app.get(url, function(req, res) {  
-        tripDAO.readTripsData(firebase, function(result) {
+        if (req.headers['authen'] == null) 
+            return res.json({
+							responseCode : -1,
+							description : "",
+							data : ""
+						});
+        tripDAO.readTripsData(firebase, req.headers['authen'], function(result) {
             res.json(result); 
         });
     });
 
     app.get(url + '/search', function(req, res) {  
-        tripDAO.searchTripsData(firebase, req.query.arrive, req.query.depart, 
+        if (req.headers['authen'] == null) 
+            return res.json({
+							responseCode : -1,
+							description : "",
+							data : ""
+						});
+        tripDAO.searchTripsData(firebase, req.headers['authen'], req.query.arrive, req.query.depart, 
         req.query.duration, req.query.transfer, function(result) {
             res.json(result); 
         });
