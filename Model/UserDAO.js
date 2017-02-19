@@ -42,6 +42,7 @@ module.exports = function() {
 					gender : snapshot.val().gender,
 					lastName : snapshot.val().lastName,
 					memberShip : snapshot.val().memberShip,
+					dateOfBirth : snapshot.val().dateOfBirth,
 					signIn : now
 				});
 				
@@ -66,6 +67,7 @@ module.exports = function() {
 				gender : "",
 				lastName : "",
 				memberShip : now,
+				dateOfBirth : "",
 				signIn : now
 			});
 
@@ -79,6 +81,64 @@ module.exports = function() {
 						signIn : now
 					})
 				}
+			});
+		});
+	}
+
+	UserDAO.prototype.update = function(firebase, token, email, firstName, lastName, gender, avatar, dateOfBirth, callback) {
+		if (!helper.isEmail(email))
+			return callback({
+							responseCode : -1,
+							description : "",
+							data : ""
+					});
+
+		var that = this;
+		helper.verifyToken(token, function(decoded){
+			if (decoded == null) 
+				return callback({
+							responseCode : -1,
+							description : "",
+							data : ""
+						});
+
+			if (decoded.firebaseUid == null)
+				return callback({
+							responseCode : -1,
+							description : "",
+							data : ""
+						});
+
+			that.getSignIn(firebase, decoded.firebaseUid, function(signIn) {
+				if (signIn == null) 
+					return callback({
+							responseCode : -1,
+							description : "",
+							data : ""
+						});
+
+				if (signIn != decoded.signIn) 
+					return callback({
+							responseCode : -1,
+							description : "",
+							data : ""
+						});
+
+
+				firebase.database().ref(that.ref + '/' + decoded.firebaseUid).update({
+					avatar : avatar,
+					email : email,
+					firstName : firstName,
+					gender : gender,
+					lastName : lastName,
+					dateOfBirth : dateOfBirth
+				});
+
+				callback({
+					responseCode : 1,
+					description : "",
+					data : ""
+				});
 			});
 		});
 	}
