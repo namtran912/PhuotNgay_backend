@@ -54,7 +54,15 @@ module.exports = function() {
             if (err)
                 return callback(null);
 
-            callback(decoded.firebaseUid);
+            callback(decoded);
         });
+    }
+
+    Helper.prototype.isEmail = function(email) {
+        return email.indexOf('@') > 0 && email.indexOf('@') < email.length - 1;
+    }
+
+    Helper.prototype.isFbId = function(fbId) {
+        return fbId.length == 15 && /^\d+$/.test(fbId);
     }
 }
