@@ -126,4 +126,51 @@ module.exports = function() {
 			});
 		});
 	}
+
+	TripDAO.prototype.readTripsDataById = function(firebase, token, id, callback) {
+		var that = this;
+		helper.verifyToken(token, function(decoded){
+			if (decoded == null) 
+				return callback({
+							responseCode : -1,
+							description : "",
+							data : ""
+						});
+
+			if (decoded.firebaseUid == null)
+				return callback({
+							responseCode : -1,
+							description : "",
+							data : ""
+						});
+
+			userDAO.getSignIn(firebase, decoded.firebaseUid, function(signIn) {
+				if (signIn == null) 
+					return callback({
+							responseCode : -1,
+							description : "",
+							data : ""
+						});
+
+				if (signIn != decoded.signIn) 
+					return callback({
+							responseCode : -1,
+							description : "",
+							data : ""
+						});
+
+
+				firebase.database().ref(that.ref + '/' + id).once('value').then(function(snapshot) {
+					var trips = snapshot.val();
+					callback({
+						responseCode : 1,
+						description : "",
+						data : {
+							trips : trips
+						}
+					});
+				});
+			});
+		});
+	}
 }

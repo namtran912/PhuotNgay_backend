@@ -16,6 +16,18 @@ module.exports = function(app, firebase) {
         });
     });
 
+    app.get(url + '/:id', function(req, res) {  
+        if (req.headers['authen'] == null) 
+            return res.json({
+							responseCode : -1,
+							description : "",
+							data : ""
+						});
+        tripDAO.readTripsDataById(firebase, req.headers['authen'], req.params.id, function(result) {
+            res.json(result); 
+        });
+    });
+
     app.get(url + '/search', function(req, res) {  
         if (req.headers['authen'] == null) 
             return res.json({
