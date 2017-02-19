@@ -10,7 +10,7 @@ module.exports = function(app, firebase) {
         });
     });
 
-    app.put(url, function(req, res) {  
+    app.post(url, function(req, res) {  
         if (req.headers['authen'] == null) 
             return res.json({
 							responseCode : -1,
