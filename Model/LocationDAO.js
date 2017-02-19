@@ -12,6 +12,13 @@ module.exports = function() {
 	LocationDAO.prototype.searchLocationData = function(firebase, token, id, callback) {
 		var that = this;
 		helper.verifyToken(token, function(decoded){
+			if (decoded == null) 
+				return callback({
+							responseCode : -1,
+							description : "",
+							data : ""
+						});
+
 			if (decoded.firebaseUid == null)
 				return callback({
 							responseCode : -1,
@@ -50,6 +57,13 @@ module.exports = function() {
 	LocationDAO.prototype.readLocationData = function(firebase, token, callback) {
 		var that = this;
 		helper.verifyToken(token, function(decoded){
+			if (decoded == null) 
+				return callback({
+							responseCode : -1,
+							description : "",
+							data : ""
+						});
+
 			if (decoded.firebaseUid == null)
 				return callback({
 							responseCode : -1,
