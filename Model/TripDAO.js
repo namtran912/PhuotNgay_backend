@@ -27,7 +27,7 @@ module.exports = function() {
 							data : ""
 						});
 
-			userDAO.getSignIn(decoded.firebaseUid, function(signIn) {
+			userDAO.getSignIn(firebase, decoded.firebaseUid, function(signIn) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
@@ -73,7 +73,7 @@ module.exports = function() {
 							description : "",
 							data : ""
 						});
-			userDAO.getSignIn(decoded.firebaseUid, function(signIn) {
+			userDAO.getSignIn(firebase, decoded.firebaseUid, function(signIn) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
