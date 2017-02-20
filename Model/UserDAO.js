@@ -52,9 +52,7 @@ module.exports = function() {
 					callback({
 						responseCode : 1,
 						description : "",
-						data : {
-							user : snapshot.val()
-						}
+						data : snapshot.val()
 					});
 				});
 			});
@@ -95,13 +93,11 @@ module.exports = function() {
 				return callback({
 					responseCode : 1,
 					description : "",
-					data : {
-						authen : helper.genToken({
+					data : helper.genToken({
 							firebaseUid : firebaseUid,
 							fbId : fbId,
 							signIn : now
 						})
-					}
 				});
 			}
 			
@@ -120,13 +116,11 @@ module.exports = function() {
 			callback({
 				responseCode : 1,
 				description : "",
-				data : {
-					authen : helper.genToken({
+				data : helper.genToken({
 						firebaseUid : firebaseUid,
 						fbId : fbId,
 						signIn : now
 					})
-				}
 			});
 		});
 	}

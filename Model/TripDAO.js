@@ -48,9 +48,7 @@ module.exports = function() {
 					callback({
 						responseCode : 1,
 						description : "",
-						data : {
-							trips : trips
-						}
+						data : trips
 					});
 				});
 			});
@@ -118,9 +116,7 @@ module.exports = function() {
 					callback({
 						responseCode : 1,
 						description : "",
-						data : {
-							trips : result
-						}
+						data : result
 					});
 				});
 			});
@@ -165,9 +161,7 @@ module.exports = function() {
 					callback({
 						responseCode : 1,
 						description : "",
-						data : {
-							trips : trips
-						}
+						data : trips
 					});
 				});
 			});

@@ -45,9 +45,7 @@ module.exports = function() {
 					callback({
 						responseCode : 1,
 						description : "",
-						data : {
-							locations : location
-						}
+						data :  location
 					});
 				});
 			});
@@ -91,9 +89,7 @@ module.exports = function() {
 					callback({
 						responseCode : 1,	
 						description : "",
-						data : {
-							locations : locations
-						}
+						data : locations
 					});
 				});
 			});
