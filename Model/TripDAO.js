@@ -44,18 +44,35 @@ module.exports = function() {
 
 
 				firebase.database().ref(that.ref).once('value').then(function(snapshot) {
-					var trips = snapshot.val();
-					callback({
-						responseCode : 1,
-						description : "",
-						data : trips
+					var result = [];
+
+					snapshot.forEach(function(childSnapshot) {
+						var childKey = childSnapshot.key;
+						var childData = childSnapshot.val();
+
+						
+						result.push({
+								id : childKey,
+								arrive : childData.arrive,
+								depart : childData.depart,
+								name : childData.name,
+								cover : childData.cover,
+								ranking : childData.ranking,
+								createdtime : childData.createdtime
+							});
 					});
+
+					callback({
+							responseCode : 1,
+							description : "",
+							data : result
+						});
 				});
 			});
 		});
 	}
 
-	TripDAO.prototype.searchTripsData = function(firebase, arrive, depart, duration, transfer, callback) {
+	TripDAO.prototype.searchTripsData = function(firebase, token, arrive, depart, duration, transfer, callback) {
 		var that = this;
 		helper.verifyToken(token, function(decoded){
 			if (decoded == null) 
@@ -110,7 +127,15 @@ module.exports = function() {
 						if (helper.compare(arrive, _arrive) && helper.compare(depart, _depart) && 
 							(transfer == "" || transfer == _transfer) &&
 							(duration == "" || parseInt(duration) == _duration)) 
-							result.push(childData);
+							result.push({
+								id : childKey,
+								arrive : childData.arrive,
+								depart : childData.depart,
+								name : childData.name,
+								cover : childData.cover,
+								ranking : childData.ranking,
+								createdtime : childData.createdtime
+							});
 
 					});
 					callback({
@@ -157,11 +182,24 @@ module.exports = function() {
 
 
 				firebase.database().ref(that.ref + '/' + id).once('value').then(function(snapshot) {
-					var trips = snapshot.val();
+					var trip = snapshot.val();
+					if (trip == null)
+						return callback({
+							responseCode : 1,
+							description : "",
+							data : null
+						});
 					callback({
 						responseCode : 1,
 						description : "",
-						data : trips
+						data : {
+							arrive : trip.arrive,
+							depart : trip.depart,
+							name : trip.name,
+							cover : trip.cover,
+							ranking : trip.ranking,
+							createdtime : trip.createdtime
+						}
 					});
 				});
 			});
