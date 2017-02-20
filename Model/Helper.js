@@ -1,4 +1,6 @@
 var jwt = require('jsonwebtoken');
+var nodemailer = require("nodemailer");
+var smtpTransport = require('nodemailer-smtp-transport');
 
 module.exports = function() { 
     var SecrectToken = 'phuotngay';
@@ -64,5 +66,30 @@ module.exports = function() {
 
     Helper.prototype.isFbId = function(fbId) {
         return fbId.length == 15 && /^\d+$/.test(fbId);
+    }
+
+    Helper.prototype.sendEmail = function(receiver) {
+        var transport = nodemailer.createTransport(smtpTransport({
+            service: "gmail", 
+            auth: {
+                user: "yostajsc@gmail.com",
+                pass: "nphau@1995"
+            }
+        }));
+
+        transport.sendMail({  
+                from : "Phượt ngay <yostajsc@gmail.com>",
+                to: "NAM" + '<' + receiver + '>',
+                subject: "Emailing with nodemailer", 
+                text: "Email Example with nodemailer" 
+            }, function(error, response){ 
+            if(error){
+                console.log(error);
+            }else{
+                console.log("Message sent: " + response.message);
+            }
+        
+            transport.close(); 
+        });
     }
 }
