@@ -22,4 +22,16 @@ module.exports = function(app, firebase) {
             res.json(result); 
         });
     });
+
+     app.get(url, function(req, res) {  
+        if (req.headers['authen'] == null) 
+            return res.json({
+							responseCode : -1,
+							description : "",
+							data : ""
+						});
+        userDAO.readUserById(firebase, req.headers['authen'], function(result) {
+            res.json(result); 
+        });
+    });
 }

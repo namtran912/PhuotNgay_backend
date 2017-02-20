@@ -15,6 +15,52 @@ module.exports = function() {
 		});
 	}
 
+	UserDAO.prototype.readUserById = function(firebase, token, callback) {
+		var that = this;
+		helper.verifyToken(token, function(decoded){
+			if (decoded == null) 
+				return callback({
+							responseCode : -1,
+							description : "",
+							data : ""
+						});
+
+			if (decoded.firebaseUid == null)
+				return callback({
+							responseCode : -1,
+							description : "",
+							data : ""
+						});
+
+			that.getSignIn(firebase, decoded.firebaseUid, function(signIn) {
+				if (signIn == null) 
+					return callback({
+							responseCode : -1,
+							description : "",
+							data : ""
+						});
+
+				if (signIn != decoded.signIn) 
+					return callback({
+							responseCode : -1,
+							description : "",
+							data : ""
+						});
+
+
+				firebase.database().ref(that.ref + '/' + decoded.firebaseUid).once('value').then(function(snapshot) {
+					callback({
+						responseCode : 1,
+						description : "",
+						data : {
+							user : snapshot.val()
+						}
+					});
+				});
+			});
+		});
+	}
+
 	UserDAO.prototype.login = function(firebase, firebaseUid, fbId, email, callback) {
 		if (!helper.isEmail(email) || !helper.isFbId(fbId))
 			return callback({
