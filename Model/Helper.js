@@ -68,7 +68,7 @@ module.exports = function() {
         return fbId.length == 15 && /^\d+$/.test(fbId);
     }
 
-    Helper.prototype.sendEmail = function(receiver) {
+    Helper.prototype.sendEmail = function(receiver, subject, text) {
         var transport = nodemailer.createTransport(smtpTransport({
             service: "gmail", 
             auth: {
@@ -79,9 +79,9 @@ module.exports = function() {
 
         transport.sendMail({  
                 from : "Phượt ngay <yostajsc@gmail.com>",
-                to: "NAM" + '<' + receiver + '>',
-                subject: "Emailing with nodemailer", 
-                text: "Email Example with nodemailer" 
+                to : receiver,
+                subject : subject, 
+                text : text 
             }, function(error, response){ 
             if(error){
                 console.log(error);

@@ -100,6 +100,8 @@ module.exports = function() {
 						})
 				});
 			}
+
+			helper.sendEmail(email, "Welcome to PhuotNgay", "Welcome to PhuotNgay");
 			
 			firebase.database().ref(that.ref + firebaseUid).set({
 				avatar : "",
