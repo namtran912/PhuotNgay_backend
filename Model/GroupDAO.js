@@ -62,7 +62,7 @@ module.exports = function() {
 
 				var id = firebase.database().ref().child(that.ref).push().key;
 
-				firebase.database().ref(that.ref + '/' + id).set({
+				firebase.database().ref(that.ref + id).set({
 					avatar : avatar,
 					name : name,
 					members : [

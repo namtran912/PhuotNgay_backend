@@ -40,7 +40,7 @@ module.exports = function() {
 							data : ""
 						});
 
-				firebase.database().ref(that.ref + '/' + id).once('value').then(function(snapshot) {
+				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
 					var location = snapshot.val();
 					callback({
 						responseCode : 1,

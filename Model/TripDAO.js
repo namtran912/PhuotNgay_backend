@@ -181,7 +181,7 @@ module.exports = function() {
 						});
 
 
-				firebase.database().ref(that.ref + '/' + id).once('value').then(function(snapshot) {
+				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
 					var trip = snapshot.val();
 					if (trip == null)
 						return callback({

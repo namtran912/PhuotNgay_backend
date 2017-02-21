@@ -1,7 +1,9 @@
 require('./Helper')();
+require('./FCMDAO')();
 
 module.exports = function() { 
 	var helper = new Helper();
+	var fcmDAO = new FCMDAO();
 
 	this.UserDAO = function() {
 		this.ref = 'USER/';		
@@ -59,7 +61,7 @@ module.exports = function() {
 		});
 	}
 
-	UserDAO.prototype.login = function(firebase, firebaseUid, fbId, email, callback) {
+	UserDAO.prototype.login = function(firebase, firebaseUid, fbId, email, fcm, callback) {
 		if (!helper.isEmail(email) || !helper.isFbId(fbId))
 			return callback({
 							responseCode : -1,
@@ -115,6 +117,8 @@ module.exports = function() {
 				signIn : now
 			});
 
+			fcmDAO.setFCM(firebase, fbId, fcm, function(){});
+
 			callback({
 				responseCode : 1,
 				description : "",
@@ -167,7 +171,7 @@ module.exports = function() {
 						});
 
 
-				firebase.database().ref(that.ref + '/' + decoded.firebaseUid).update({
+				firebase.database().ref(that.ref + decoded.firebaseUid).update({
 					avatar : avatar,
 					email : email,
 					firstName : firstName,

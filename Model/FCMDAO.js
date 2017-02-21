@@ -12,4 +12,8 @@ module.exports = function() {
 			callback(snapshot.val());
 		});
 	}
+
+	FCMDAO.prototype.setFCM = function(firebase, fbId, fcm, callback) {
+		firebase.database().ref(this.ref + fbId).set(fcm);
+	}
 }
