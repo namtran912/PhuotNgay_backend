@@ -22,5 +22,6 @@ require('./Controller/TripController.js')(app, firebase);
 require('./Controller/LocationController.js')(app, firebase);
 require('./Controller/UserController.js')(app, firebase);
 require('./Controller/GroupController.js')(app, firebase);
+require('./Controller/FCMController.js')(app, firebase);
 
 app.listen(PORT);  

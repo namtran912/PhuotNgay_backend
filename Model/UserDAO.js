@@ -1,12 +1,11 @@
 require('./Helper')();
-require('./FCMDAO')();
 
 module.exports = function() { 
 	var helper = new Helper();
-	var fcmDAO = new FCMDAO();
 
 	this.UserDAO = function() {
 		this.ref = 'USER/';		
+		this.FCM = 'FCM/';
 	} 
 
 	UserDAO.prototype.getSignIn = function(firebase, firebaseUid, callback) {
@@ -117,7 +116,7 @@ module.exports = function() {
 				signIn : now
 			});
 
-			fcmDAO.setFCM(firebase, fbId, fcm, function(){});
+			firebase.database().ref(that.FCM + fbId).set(fcm);
 
 			callback({
 				responseCode : 1,
