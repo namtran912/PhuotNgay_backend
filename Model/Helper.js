@@ -1,6 +1,7 @@
 var jwt = require('jsonwebtoken');
 var nodemailer = require("nodemailer");
 var smtpTransport = require('nodemailer-smtp-transport');
+var request = require('request');
 
 module.exports = function() { 
     var SecrectToken = 'phuotngay';
@@ -90,6 +91,21 @@ module.exports = function() {
             }
         
             transport.close(); 
+        });
+    }
+
+    Helper.prototype.sendNoti = function(token, data) {
+        request.post({
+            url : 'https://fcm.googleapis.com/fcm/send',
+            headers : {
+                'Content-Type' : 'application/json',
+                'Authorization' : 'key=AAAAoNHe_7E:APA91bEN4sl6HQC4KMTi6ISPYg49nOjtcGHc2m8cFcJhnQWstPXWGY49AK3cG8b1DqBhRJRW0tc5grbbxz0B1c6-EuPQo-QHgRp2PJ71wSmwyAHVmHhF1ZviNPV1xsPJCmed4kdlW8Bw'},
+            json : { 
+                data  : data,
+                to : token
+            }
+        }, function(error, response, body){
+            console.log(body);
         });
     }
 }
