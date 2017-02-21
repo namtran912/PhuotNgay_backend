@@ -51,6 +51,10 @@ module.exports = function() {
 						else
 							helper.sendNoti(fcm, {
 								message : "Invite"
+							}, {
+								body : "Invite",
+								title : "Invite",
+								icon : "Invite"
 							});
 					})
 				})

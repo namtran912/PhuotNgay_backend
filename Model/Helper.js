@@ -94,7 +94,7 @@ module.exports = function() {
         });
     }
 
-    Helper.prototype.sendNoti = function(token, data) {
+    Helper.prototype.sendNoti = function(token, data, notification) {
         request.post({
             url : 'https://fcm.googleapis.com/fcm/send',
             headers : {
@@ -102,7 +102,8 @@ module.exports = function() {
                 'Authorization' : 'key=AAAAoNHe_7E:APA91bEN4sl6HQC4KMTi6ISPYg49nOjtcGHc2m8cFcJhnQWstPXWGY49AK3cG8b1DqBhRJRW0tc5grbbxz0B1c6-EuPQo-QHgRp2PJ71wSmwyAHVmHhF1ZviNPV1xsPJCmed4kdlW8Bw'},
             json : { 
                 data  : data,
-                to : token
+                notification : notification,
+                to : token,
             }
         }, function(error, response, body){
             console.log(body);
