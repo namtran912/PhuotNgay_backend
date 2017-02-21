@@ -11,7 +11,7 @@ module.exports = function() {
 		this.ref = 'GROUP/';		
 	} 
 
-	GroupDAO.prototype.createGroup = function(firebase, token, avatar, name, members, callback) {
+	GroupDAO.prototype.create = function(firebase, token, avatar, name, members, callback) {
 		var that = this;
 		helper.verifyToken(token, function(decoded){
 			if (decoded == null) 
@@ -74,6 +74,111 @@ module.exports = function() {
 					responseCode : 1,	
 					description : "",
 					data : id
+				});
+			});
+		});
+	}
+
+	GroupDAO.prototype.update = function(firebase, token, id, avatar, name, callback) {
+		var that = this;
+		helper.verifyToken(token, function(decoded){
+			if (decoded == null) 
+				return callback({
+							responseCode : -1,
+							description : "",
+							data : ""
+						});
+
+			if (decoded.firebaseUid == null)
+				return callback({
+							responseCode : -1,
+							description : "",
+							data : ""
+						});
+			userDAO.getSignIn(firebase, decoded.firebaseUid, function(signIn) {
+				if (signIn == null) 
+					return callback({
+							responseCode : -1,
+							description : "",
+							data : ""
+						});
+
+				if (signIn != decoded.signIn) 
+					return callback({
+							responseCode : -1,
+							description : "",
+							data : ""
+						});
+
+				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
+					if (snapshot.val().members[0] != decoded.fbId)
+						return callback({
+							responseCode : -1,
+							description : "",
+							data : ""
+						});
+
+					firebase.database().ref(that.ref + id).update({
+						avatar : avatar,
+						name : name,
+					});
+				
+					callback({
+						responseCode : 1,	
+						description : "",
+						data : ""
+					});
+				});
+			});
+		});
+	}
+
+	GroupDAO.prototype.readDataGroup = function(firebase, token, id, callback) {
+		var that = this;
+		helper.verifyToken(token, function(decoded){
+			if (decoded == null) 
+				return callback({
+							responseCode : -1,
+							description : "",
+							data : ""
+						});
+
+			if (decoded.firebaseUid == null)
+				return callback({
+							responseCode : -1,
+							description : "",
+							data : ""
+						});
+			userDAO.getSignIn(firebase, decoded.firebaseUid, function(signIn) {
+				if (signIn == null) 
+					return callback({
+							responseCode : -1,
+							description : "",
+							data : ""
+						});
+
+				if (signIn != decoded.signIn) 
+					return callback({
+							responseCode : -1,
+							description : "",
+							data : ""
+						});
+
+				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
+					var group = snapshot.val();
+					
+					if (group.members[0] != decoded.fbId)
+						return callback({
+							responseCode : -1,
+							description : "",
+							data : ""
+						});
+				
+					callback({
+						responseCode : 1,	
+						description : "",
+						data : group
+					});
 				});
 			});
 		});
