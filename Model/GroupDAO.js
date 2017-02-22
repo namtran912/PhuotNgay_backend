@@ -1,11 +1,9 @@
 require('./Helper')();
 require('./UserDAO')();
-require('./FCMDAO')();
 
 module.exports = function() { 
 	var helper = new Helper();
 	var userDAO = new UserDAO();
-	var fcmDAO = new FCMDAO();
 	
 	this.GroupDAO = function() {
 		this.ref = 'GROUP/';		
