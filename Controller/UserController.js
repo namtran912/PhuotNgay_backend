@@ -5,7 +5,7 @@ module.exports = function(app, firebase) {
     var url = '/api/user';   
 
     app.post(url + '/login', function(req, res) {  
-        if (!req.body.hasOwnProperty('firebaseUi') || !req.body.hasOwnProperty('fbId') || 
+        if (!req.body.hasOwnProperty('firebaseUid') || !req.body.hasOwnProperty('fbId') || 
             !req.body.hasOwnProperty('email') || !req.body.hasOwnProperty('fcm')) 
             return res.json({
 							responseCode : -1,
@@ -13,7 +13,7 @@ module.exports = function(app, firebase) {
 							data : ""
 						});
 
-        if (req.body.firebaseUi == "" || req.body.fbId == "" || req.body.email == "" || req.body.fcm == "") 
+        if (req.body.firebaseUid == "" || req.body.fbId == "" || req.body.email == "" || req.body.fcm == "") 
             return res.json({
 							responseCode : -1,
 							description : "Request body is incorrect!",
