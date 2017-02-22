@@ -62,11 +62,17 @@ module.exports = function() {
     }
 
     Helper.prototype.isEmail = function(email) {
-        return email.indexOf('@') > 0 && email.indexOf('@') < email.length - 1;
+        var pattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return pattern.test(email);
     }
 
     Helper.prototype.isFbId = function(fbId) {
         return fbId.length == 15 && /^\d+$/.test(fbId);
+    }
+
+     Helper.prototype.isDayOfBirth = function(dayOfBirth) {
+        var pattern = /^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/;
+        return pattern.test(dayOfBirth);
     }
 
     Helper.prototype.sendEmail = function(receiver, subject, text) {

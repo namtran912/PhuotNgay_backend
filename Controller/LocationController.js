@@ -8,7 +8,7 @@ module.exports = function(app, firebase) {
         if (req.headers['authen'] == null) 
             return res.json({
 							responseCode : -1,
-							description : "",
+							description : "Missing authen!",
 							data : ""
 						});
 
@@ -22,7 +22,7 @@ module.exports = function(app, firebase) {
             return res.json({
 							responseCode : -1,
 							description : "",
-							data : ""
+							data : "Missing authen!"
 						});
 
         locationDAO.searchLocationData(firebase, req.headers['authen'], req.params.id, function(result) {

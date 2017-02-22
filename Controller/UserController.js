@@ -5,6 +5,20 @@ module.exports = function(app, firebase) {
     var url = '/api/user';   
 
     app.post(url + '/login', function(req, res) {  
+        if (!req.body.hasOwnProperty('firebaseUi') || !req.body.hasOwnProperty('fbId') || 
+            !req.body.hasOwnProperty('email') || !req.body.hasOwnProperty('fcm')) 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!",
+							data : ""
+						});
+
+        if (req.body.firebaseUi == "" || req.body.fbId == "" || req.body.email == "" || req.body.fcm == "") 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!",
+							data : ""
+						});
         userDAO.login(firebase, req.body.firebaseUid, req.body.fbId, req.body.email, req.body.fcm, function(result) {
             res.json(result); 
         });
@@ -14,11 +28,10 @@ module.exports = function(app, firebase) {
         if (req.headers['authen'] == null) 
             return res.json({
 							responseCode : -1,
-							description : "",
+							description : "Missing authen!",
 							data : ""
 						});
-        userDAO.update(firebase, req.headers['authen'], req.body.email, req.body.firstName, req.body.lastName, 
-            req.body.gender, req.body.avatar, req.body.dateOfBirth, function(result) {
+        userDAO.update(firebase, req.headers['authen'], req.body, function(result) {
             res.json(result); 
         });
     });
@@ -27,7 +40,7 @@ module.exports = function(app, firebase) {
         if (req.headers['authen'] == null) 
             return res.json({
 							responseCode : -1,
-							description : "",
+							description : "Missing authen!",
 							data : ""
 						});
         userDAO.readUserById(firebase, req.headers['authen'], function(result) {

@@ -8,7 +8,7 @@ module.exports = function(app, firebase) {
         if (req.headers['authen'] == null) 
             return res.json({
 							responseCode : -1,
-							description : "",
+							description : "Missing authen!",
 							data : ""
 						});
         tripDAO.readTripsData(firebase, req.headers['authen'], function(result) {
@@ -17,10 +17,18 @@ module.exports = function(app, firebase) {
     });
     
     app.get(url + '/search', function(req, res) {  
+        if (!req.query.hasOwnProperty('arrive') || !req.query.hasOwnProperty('depart') || 
+            !req.query.hasOwnProperty('duration') || !req.query.hasOwnProperty('transfer')) 
+            return res.json({
+							responseCode : -1,
+							description : "Request query is incorrect!",
+							data : ""
+						});
+
         if (req.headers['authen'] == null) 
             return res.json({
 							responseCode : -1,
-							description : "",
+							description : "Missing authen!",
 							data : ""
 						});
         tripDAO.searchTripsData(firebase, req.headers['authen'], req.query.arrive, req.query.depart, 
@@ -33,7 +41,7 @@ module.exports = function(app, firebase) {
         if (req.headers['authen'] == null) 
             return res.json({
 							responseCode : -1,
-							description : "",
+							description : "Missing authen!",
 							data : ""
 						});
         tripDAO.readTripsDataById(firebase, req.headers['authen'], req.params.id, function(result) {

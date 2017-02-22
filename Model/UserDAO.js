@@ -5,11 +5,12 @@ module.exports = function() {
 
 	this.UserDAO = function() {
 		this.ref = 'USER/';		
-		this.FCM = 'FCM/';
+		this.property = ['avatar', 'dateOfBirth', 'email', 'fcm', 'firebaseUid', 'firstName', 
+						'gender', 'lastName', 'memberShip', 'signIn'];
 	} 
 
-	UserDAO.prototype.getSignIn = function(firebase, firebaseUid, callback) {
-		firebase.database().ref(this.ref + firebaseUid).once('value').then(function(snapshot) {
+	UserDAO.prototype.getSignIn = function(firebase, fbId, callback) {
+		firebase.database().ref(this.ref + fbId).once('value').then(function(snapshot) {
 			if (snapshot.val() == null) 
 				return callback(null);
 			callback(snapshot.val().signIn);
@@ -22,34 +23,33 @@ module.exports = function() {
 			if (decoded == null) 
 				return callback({
 							responseCode : -1,
-							description : "",
+							description : "Authen is incorrect!",
 							data : ""
 						});
 
-			if (decoded.firebaseUid == null)
+			if (decoded.fbId == null)
 				return callback({
 							responseCode : -1,
-							description : "",
+							description : "Authen is incorrect!",
 							data : ""
 						});
 
-			that.getSignIn(firebase, decoded.firebaseUid, function(signIn) {
+			that.getSignIn(firebase, decoded.fbId, function(signIn) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
-							description : "",
+							description : "Authen is incorrect!",
 							data : ""
 						});
 
 				if (signIn != decoded.signIn) 
 					return callback({
 							responseCode : -1,
-							description : "",
+							description : "Authen is expired",
 							data : ""
 						});
 
-
-				firebase.database().ref(that.ref + '/' + decoded.firebaseUid).once('value').then(function(snapshot) {
+				firebase.database().ref(that.ref + decoded.fbId).once('value').then(function(snapshot) {
 					callback({
 						responseCode : 1,
 						description : "",
@@ -64,31 +64,32 @@ module.exports = function() {
 		if (!helper.isEmail(email) || !helper.isFbId(fbId))
 			return callback({
 							responseCode : -1,
-							description : "",
+							description : "Email or fbId is incorrect",
 							data : ""
 					});
 
 		var that = this;
 		var now = new Date().getTime();
-		firebase.database().ref(this.ref + firebaseUid).once('value').then(function(snapshot) {
+		firebase.database().ref(this.ref + fbId).once('value').then(function(snapshot) {
 			if (snapshot.val() != null) {
-				if (snapshot.val().fbId != fbId)
+				if (snapshot.val().firebaseUid != firebaseUid)
 					return callback({
 							responseCode : -1,
-							description : "",
+							description : "firebaseUid and fbId are incorrect",
 							data : ""
 						});
 
-				firebase.database().ref(that.ref + firebaseUid).set({
+				firebase.database().ref(that.ref + fbId).set({
 					avatar : snapshot.val().avatar,
 					email : email,
-					fbId : fbId,
+					firebaseUid : firebaseUid,
 					firstName : snapshot.val().firstName,
 					gender : snapshot.val().gender,
 					lastName : snapshot.val().lastName,
 					memberShip : snapshot.val().memberShip,
 					dateOfBirth : snapshot.val().dateOfBirth,
-					signIn : now
+					signIn : now,
+					fcm : fcm
 				});
 				
 				return callback({
@@ -104,19 +105,18 @@ module.exports = function() {
 
 			helper.sendEmail(email, "Welcome to PhuotNgay", "Welcome to PhuotNgay");
 			
-			firebase.database().ref(that.ref + firebaseUid).set({
+			firebase.database().ref(that.ref + fbId).set({
 				avatar : "",
 				email : email,
-				fbId : fbId,
+				firebaseUid : firebaseUid,
 				firstName : "",
 				gender : "",
 				lastName : "",
 				memberShip : now,
 				dateOfBirth : "",
-				signIn : now
+				signIn : now,
+				fcm : fcm
 			});
-
-			firebase.database().ref(that.FCM + fbId).set(fcm);
 
 			callback({
 				responseCode : 1,
@@ -130,11 +130,25 @@ module.exports = function() {
 		});
 	}
 
-	UserDAO.prototype.update = function(firebase, token, email, firstName, lastName, gender, avatar, dateOfBirth, callback) {
-		if (!helper.isEmail(email))
+	UserDAO.prototype.update = function(firebase, token, data, callback) {
+		if (data.hasOwnProperty('email') && !helper.isEmail(data.email))
 			return callback({
 							responseCode : -1,
-							description : "",
+							description : "Email is incorrect!",
+							data : ""
+					});
+
+		if (data.hasOwnProperty('dateOfBirth') && !helper.isDayOfBirth(data.dateOfBirth))
+			return callback({
+							responseCode : -1,
+							description : "DateOfBirth is incorrect!",
+							data : ""
+					});
+		for (key in data) 
+			if (this.property.indexOf(key) == -1)
+				return callback({
+							responseCode : -1,
+							description : "Request body is incorrect!",
 							data : ""
 					});
 
@@ -143,41 +157,33 @@ module.exports = function() {
 			if (decoded == null) 
 				return callback({
 							responseCode : -1,
-							description : "",
+							description : "Authen is incorrect!",
 							data : ""
 						});
 
-			if (decoded.firebaseUid == null)
+			if (decoded.fbId == null)
 				return callback({
 							responseCode : -1,
-							description : "",
+							description : "Authen is incorrect!",
 							data : ""
 						});
 
-			that.getSignIn(firebase, decoded.firebaseUid, function(signIn) {
+			that.getSignIn(firebase, decoded.fbId, function(signIn) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
-							description : "",
+							description : "Authen is incorrect!",
 							data : ""
 						});
 
 				if (signIn != decoded.signIn) 
 					return callback({
 							responseCode : -1,
-							description : "",
+							description : "Authen is expired",
 							data : ""
 						});
 
-
-				firebase.database().ref(that.ref + decoded.firebaseUid).update({
-					avatar : avatar,
-					email : email,
-					firstName : firstName,
-					gender : gender,
-					lastName : lastName,
-					dateOfBirth : dateOfBirth
-				});
+				firebase.database().ref(that.ref + decoded.fbId).update(data);
 
 				callback({
 					responseCode : 1,
