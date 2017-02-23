@@ -58,4 +58,17 @@ module.exports = function(app, firebase) {
             res.json(result); 
         });
     });
+
+    app.get(url + '/accept/:id', function(req, res) {  
+        if (req.headers['authen'] == null) 
+            return res.json({
+							responseCode : -1,
+							description : "Missing authen!",
+							data : ""
+						});
+
+        groupDAO.acceptToJoin(firebase, req.headers['authen'], req.params.id, function(result) {
+            res.json(result); 
+        });
+    });
 }
