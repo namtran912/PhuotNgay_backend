@@ -6,46 +6,48 @@ module.exports = function() {
 	var userDAO = new UserDAO();
 	
 	this.GroupDAO = function() {
-		this.ref = 'GROUP/';		
+		this.ref = 'GROUP/';
+		this.property = ['id', 'avatar', 'name', 'info', 'now', 'updateTime'];
 	} 
 
-	GroupDAO.prototype.create = function(firebase, token, avatar, name, members, callback) {
+	GroupDAO.prototype.create = function(firebase, token, avatar, name, info, members, callback) {
 		var that = this;
 		helper.verifyToken(token, function(decoded){
 			if (decoded == null) 
 				return callback({
 							responseCode : -1,
-							description : "",
+							description : "Authen is incorrect!",
 							data : ""
 						});
 
-			if (decoded.firebaseUid == null)
+			if (decoded.fbId == null)
 				return callback({
 							responseCode : -1,
-							description : "",
+							description : "Authen is incorrect!",
 							data : ""
 						});
-			userDAO.getSignIn(firebase, decoded.firebaseUid, function(signIn) {
+
+			userDAO.getSignInAndInfo(firebase, decoded.fbId, function(signIn, firstName, lastName, fbAvatar) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
-							description : "",
+							description : "Authen is incorrect!",
 							data : ""
 						});
 
 				if (signIn != decoded.signIn) 
 					return callback({
 							responseCode : -1,
-							description : "",
+							description : "Authen is expired",
 							data : ""
 						});
 
 				var mems = members.split(",");
 
 				mems.forEach(function(fbId) {
-					fcmDAO.getFCM(firebase, fbId, function(fcm) {
+					userDAO.getFCM(firebase, fbId, function(fcm) {
 						if (fcm == null)
-							helper.sendEmail(email, "Welcome to PhuotNgay", "Install PhuotNgay to join group.");
+							;//helper.sendEmail(email, "Welcome to PhuotNgay", "Install PhuotNgay to join group.");
 						else
 							helper.sendNoti(fcm, {
 								message : "Invite"
@@ -57,15 +59,21 @@ module.exports = function() {
 					})
 				})
 
-
 				var id = firebase.database().ref().child(that.ref).push().key;
+				var now = new Date().getTime();
 
 				firebase.database().ref(that.ref + id).set({
 					avatar : avatar,
 					name : name,
-					members : [
-						decoded.fbId
-					]
+					info : info,
+					createdTime : now,
+					updateTime : now,
+					members : [{
+						fbId : decoded.fbId,
+						firstName : firstName,
+						lastName : lastName,
+						avatar : fbAvatar
+					}]
 				});
 
 				callback({
@@ -77,49 +85,63 @@ module.exports = function() {
 		});
 	}
 
-	GroupDAO.prototype.update = function(firebase, token, id, avatar, name, callback) {
+	GroupDAO.prototype.update = function(firebase, token, id, data, callback) {
+		for (key in data) 
+			if (this.property.indexOf(key) == -1 ||  data[key] == "")
+				return callback({
+							responseCode : -1,
+							description : "Request body is incorrect!",
+							data : ""
+					});
+
 		var that = this;
 		helper.verifyToken(token, function(decoded){
 			if (decoded == null) 
 				return callback({
 							responseCode : -1,
-							description : "",
+							description : "Authen is incorrect!",
 							data : ""
 						});
 
-			if (decoded.firebaseUid == null)
+			if (decoded.fbId == null)
 				return callback({
 							responseCode : -1,
-							description : "",
+							description : "Authen is incorrect!",
 							data : ""
 						});
-			userDAO.getSignIn(firebase, decoded.firebaseUid, function(signIn) {
+
+			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
-							description : "",
+							description : "Authen is incorrect!",
 							data : ""
 						});
 
 				if (signIn != decoded.signIn) 
 					return callback({
 							responseCode : -1,
-							description : "",
+							description : "Authen is expired",
 							data : ""
 						});
 
 				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
-					if (snapshot.val().members[0] != decoded.fbId)
+					if (snapshot.val() == null) 
 						return callback({
 							responseCode : -1,
-							description : "",
+							description : "Group is not exist!",
 							data : ""
 						});
 
-					firebase.database().ref(that.ref + id).update({
-						avatar : avatar,
-						name : name,
-					});
+					if (snapshot.val().members[0].fbId != decoded.fbId)
+						return callback({
+							responseCode : -1,
+							description : "User is not group's admin!",
+							data : ""
+						});
+
+					data.updateTime = new Date().getTime();
+					firebase.database().ref(that.ref + id).update(data);
 				
 					callback({
 						responseCode : 1,	
@@ -137,38 +159,39 @@ module.exports = function() {
 			if (decoded == null) 
 				return callback({
 							responseCode : -1,
-							description : "",
+							description : "Authen is incorrect!",
 							data : ""
 						});
 
-			if (decoded.firebaseUid == null)
+			if (decoded.fbId == null)
 				return callback({
 							responseCode : -1,
-							description : "",
+							description : "Authen is incorrect!",
 							data : ""
 						});
-			userDAO.getSignIn(firebase, decoded.firebaseUid, function(signIn) {
+
+			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
-							description : "",
+							description : "Authen is incorrect!",
 							data : ""
 						});
 
 				if (signIn != decoded.signIn) 
 					return callback({
 							responseCode : -1,
-							description : "",
+							description : "Authen is expired",
 							data : ""
 						});
 
 				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
 					var group = snapshot.val();
 					
-					if (group.members[0] != decoded.fbId)
+					if (group.members[0].fbId != decoded.fbId)
 						return callback({
 							responseCode : -1,
-							description : "",
+							description : "User is not group's admin!",
 							data : ""
 						});
 				

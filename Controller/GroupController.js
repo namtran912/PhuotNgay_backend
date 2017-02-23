@@ -8,7 +8,7 @@ module.exports = function(app, firebase) {
         if (req.headers['authen'] == null) 
             return res.json({
 							responseCode : -1,
-							description : "",
+							description : "Missing authen!",
 							data : ""
 						});
 
@@ -18,29 +18,43 @@ module.exports = function(app, firebase) {
     }); 
 
     app.post(url, function(req, res) {  
-        if (req.headers['authen'] == null) 
+        if (!req.body.hasOwnProperty('avatar') || !req.body.hasOwnProperty('name') || 
+            !req.body.hasOwnProperty('info') || !req.body.hasOwnProperty('members')) 
             return res.json({
 							responseCode : -1,
-							description : "",
+							description : "Request body is incorrect!",
 							data : ""
 						});
 
-        groupDAO.create(firebase, req.headers['authen'], req.body.avatar,  req.body.name,  req.body.members, 
-            function(result) {
+        if (req.body.avatar == "" || req.body.name == "") 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!",
+							data : ""
+						});
+
+        if (req.headers['authen'] == null) 
+            return res.json({
+							responseCode : -1,
+							description : "Missing authen!",
+							data : ""
+						});
+
+        groupDAO.create(firebase, req.headers['authen'], req.body.avatar, req.body.name, req.body.info,  
+            req.body.members, function(result) {
             res.json(result); 
         });
     });
 
-    app.put(url, function(req, res) {  
+    app.put(url + '/:id', function(req, res) {  
         if (req.headers['authen'] == null) 
             return res.json({
 							responseCode : -1,
-							description : "",
+							description : "Missing authen!",
 							data : ""
 						});
 
-        groupDAO.update(firebase, req.headers['authen'], req.body.id, req.body.avatar, req.body.name, 
-            function(result) {
+        groupDAO.update(firebase, req.headers['authen'], req.params.id, req.body, function(result) {
             res.json(result); 
         });
     });

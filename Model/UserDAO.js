@@ -9,11 +9,27 @@ module.exports = function() {
 						'gender', 'lastName', 'memberShip', 'signIn'];
 	} 
 
+	UserDAO.prototype.getFCM = function(firebase, fbId, callback) {
+		firebase.database().ref(this.ref + fbId).once('value').then(function(snapshot) {
+			if (snapshot.val() == null) 
+				return callback(null);
+			callback(snapshot.val().fcm);
+		});
+	}
+
 	UserDAO.prototype.getSignIn = function(firebase, fbId, callback) {
 		firebase.database().ref(this.ref + fbId).once('value').then(function(snapshot) {
 			if (snapshot.val() == null) 
 				return callback(null);
 			callback(snapshot.val().signIn);
+		});
+	}
+
+	UserDAO.prototype.getSignInAndInfo = function(firebase, fbId, callback) {
+		firebase.database().ref(this.ref + fbId).once('value').then(function(snapshot) {
+			if (snapshot.val() == null) 
+				return callback(null);
+			callback(snapshot.val().signIn, snapshot.val().firstName, snapshot.val().lastName, snapshot.val().avatar);
 		});
 	}
 
@@ -145,7 +161,7 @@ module.exports = function() {
 							data : ""
 					});
 		for (key in data) 
-			if (this.property.indexOf(key) == -1)
+			if (this.property.indexOf(key) == -1 ||  data[key] == "")
 				return callback({
 							responseCode : -1,
 							description : "Request body is incorrect!",
