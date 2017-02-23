@@ -246,6 +246,15 @@ module.exports = function() {
 						});
 					
 					var group = snapshot.val();
+					
+					for (i in group.members)
+						if (group.members[i].fbId == decoded.fbId)
+							return callback({
+								responseCode : 1,	
+								description : "",
+								data : ""
+							});
+
 					group.members.push({
 						fbId : decoded.fbId,
 						firstName : firstName,
@@ -253,7 +262,7 @@ module.exports = function() {
 						avatar : fbAvatar
 					})
 						
-					firebase.database().ref(that.ref + id).update(group.members);
+					firebase.database().ref(that.ref + id + '/members').update(group.members);
 				
 					callback({
 						responseCode : 1,	
