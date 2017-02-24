@@ -187,13 +187,6 @@ module.exports = function() {
 
 				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
 					var group = snapshot.val();
-					
-					if (group.members[0].fbId != decoded.fbId)
-						return callback({
-							responseCode : -1,
-							description : "User is not group's admin!",
-							data : ""
-						});
 				
 					callback({
 						responseCode : 1,	
@@ -255,15 +248,79 @@ module.exports = function() {
 								data : ""
 							});
 
-					group.members.push({
+					var member = {
 						fbId : decoded.fbId,
 						firstName : firstName,
 						lastName : lastName,
 						avatar : fbAvatar
-					})
+					};
 						
-					firebase.database().ref(that.ref + id + '/members').update(group.members);
+					firebase.database().ref(that.ref + id + '/members' + '/' + group.members.length).set(member);
 				
+					callback({
+						responseCode : 1,	
+						description : "",
+						data : ""
+					});
+				});
+			});
+		});
+	}
+
+	GroupDAO.prototype.kickMember = function(firebase, token, id, fbId, callback) {
+		var that = this;
+		helper.verifyToken(token, function(decoded){
+			if (decoded == null) 
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+			if (decoded.fbId == null)
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
+				if (signIn == null) 
+					return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+				if (signIn != decoded.signIn) 
+					return callback({
+							responseCode : -1,
+							description : "Authen is expired",
+							data : ""
+						});
+
+				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
+					if (snapshot.val() == null) 
+						return callback({
+							responseCode : -1,
+							description : "Group is not exist!",
+							data : ""
+						});
+
+					if (snapshot.val().members[0].fbId != decoded.fbId)
+						return callback({
+							responseCode : -1,
+							description : "User is not group's admin!",
+							data : ""
+						});
+					
+					var group = snapshot.val();
+					for (i in group.members)
+						if (group.members[i].fbId == fbId) {
+							firebase.database().ref(that.ref + id + '/members' + '/' + i).set({});
+							break;
+						}
+									
 					callback({
 						responseCode : 1,	
 						description : "",

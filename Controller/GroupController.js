@@ -73,6 +73,19 @@ module.exports = function(app, firebase) {
         });
     });
 
+    app.put(url + '/kick', function(req, res) {  
+        if (req.headers['authen'] == null) 
+            return res.json({
+							responseCode : -1,
+							description : "Missing authen!",
+							data : ""
+						});
+
+        groupDAO.kickMember(firebase, req.headers['authen'], req.body.id, req.body.fbId, function(result) {
+            res.json(result); 
+        });
+    });
+
     app.put(url + '/:id', function(req, res) {  
         if (req.headers['authen'] == null) 
             return res.json({
