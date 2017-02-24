@@ -74,6 +74,20 @@ module.exports = function(app, firebase) {
     });
 
     app.put(url + '/kick', function(req, res) {  
+        if (!req.body.hasOwnProperty('id') || !req.body.hasOwnProperty('fbId')) 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!",
+							data : ""
+						});
+
+        if (req.body.id == "" || req.body.fbId == "") 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!",
+							data : ""
+						});
+
         if (req.headers['authen'] == null) 
             return res.json({
 							responseCode : -1,
@@ -82,6 +96,33 @@ module.exports = function(app, firebase) {
 						});
 
         groupDAO.kickMember(firebase, req.headers['authen'], req.body.id, req.body.fbId, function(result) {
+            res.json(result); 
+        });
+    });
+
+    app.put(url + '/join', function(req, res) {  
+        if (!req.body.hasOwnProperty('id')) 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!",
+							data : ""
+						});
+
+        if (req.body.id == "") 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!",
+							data : ""
+						});
+
+        if (req.headers['authen'] == null) 
+            return res.json({
+							responseCode : -1,
+							description : "Missing authen!",
+							data : ""
+						});
+
+        groupDAO.joinGroup(firebase, req.headers['authen'], req.body.id, function(result) {
             res.json(result); 
         });
     });
