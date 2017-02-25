@@ -474,4 +474,90 @@ module.exports = function() {
 			});
 		});
 	}
+
+	GroupDAO.prototype.addMember = function(firebase, token, id, fbId, callback) {
+		if (!helper.isFbId(fbId))
+			return callback({
+							responseCode : -1,
+							description : "FbId is incorrect",
+							data : ""
+					});
+
+		var that = this;
+		helper.verifyToken(token, function(decoded){
+			if (decoded == null) 
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+			if (decoded.fbId == null)
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
+				if (signIn == null) 
+					return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+				if (signIn != decoded.signIn) 
+					return callback({
+							responseCode : -1,
+							description : "Authen is expired",
+							data : ""
+						});
+
+				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
+					if (snapshot.val() == null) 
+						return callback({
+							responseCode : -1,
+							description : "Group is not exist!",
+							data : ""
+						});
+
+					userDAO.getSignInAndInfo(firebase, fbId, function(signIn, firstName, lastName, avatar) {
+						if (signIn == null) 
+							return callback({
+									responseCode : -1,
+									description : "User is not exist!",
+									data : ""
+								});	
+
+						var member = {
+							fbId : fbId, 
+							firstName : firstName, 
+							lastName : lastName, 
+							avatar : avatar
+						}
+
+						var group =snapshot.val();
+
+						if (group.members[0].fbId == decoded.fbId)
+							firebase.database().ref(that.ref + id + '/members' + '/' + group.members.length).set(member);
+						else
+							userDAO.getFCM(firebase, group.members[0].fbId, function(fcm) {
+								helper.sendNoti(fcm, member, {
+													body : "Add",
+													title : "Add",
+													icon : "Add"
+												});
+							});
+										
+						callback({
+							responseCode : 1,	
+							description : "",
+							data : ""
+						});
+					});	
+				});
+			});
+		});
+	}
 }
