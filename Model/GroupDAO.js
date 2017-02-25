@@ -268,6 +268,13 @@ module.exports = function() {
 	}
 
 	GroupDAO.prototype.kickMember = function(firebase, token, id, fbId, callback) {
+		if (!helper.isFbId(fbId))
+			return callback({
+							responseCode : -1,
+							description : "FbId is incorrect",
+							data : ""
+					});
+
 		var that = this;
 		helper.verifyToken(token, function(decoded){
 			if (decoded == null) 
@@ -348,7 +355,7 @@ module.exports = function() {
 							data : ""
 						});
 
-			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
+			userDAO.getSignInAndInfo(firebase, decoded.fbId, function(signIn, firstName, lastName, fbAvatar) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
@@ -374,7 +381,10 @@ module.exports = function() {
 					var group = snapshot.val();
 					userDAO.getFCM(firebase, group.members[0].fbId, function(fcm) {
 						helper.sendNoti(fcm, {
-											fbId : decoded.fbId
+											fbId : decoded.fbId,
+											firstName : firstName, 
+											lastName : lastName, 
+											fbAvatar : fbAvatar
 										}, {
 											body : "Join",
 											title : "Join",
@@ -382,6 +392,79 @@ module.exports = function() {
 										});
 					});
 				
+					callback({
+						responseCode : 1,	
+						description : "",
+						data : ""
+					});
+				});
+			});
+		});
+	}
+
+	GroupDAO.prototype.verifyToJoin = function(firebase, token, id, fbId, firstName, lastName, avatar, callback) {
+		if (!helper.isFbId(fbId))
+			return callback({
+							responseCode : -1,
+							description : "FbId is incorrect",
+							data : ""
+					});
+					
+		var that = this;
+		helper.verifyToken(token, function(decoded){
+			if (decoded == null) 
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+			if (decoded.fbId == null)
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
+				if (signIn == null) 
+					return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+				if (signIn != decoded.signIn) 
+					return callback({
+							responseCode : -1,
+							description : "Authen is expired",
+							data : ""
+						});
+
+				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
+					if (snapshot.val() == null) 
+						return callback({
+							responseCode : -1,
+							description : "Group is not exist!",
+							data : ""
+						});
+
+					if (snapshot.val().members[0].fbId != decoded.fbId)
+						return callback({
+							responseCode : -1,
+							description : "User is not group's admin!",
+							data : ""
+						});
+					
+					var member = {
+						fbId : fbId,
+						firstName : firstName, 
+						lastName : firstName, 
+						avatar : avatar,
+					};
+
+					firebase.database().ref(that.ref + id + '/members' + '/' + snapshot.val().members.length).set(member);
+									
 					callback({
 						responseCode : 1,	
 						description : "",

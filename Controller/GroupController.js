@@ -127,6 +127,36 @@ module.exports = function(app, firebase) {
         });
     });
 
+    app.put(url + '/verify', function(req, res) {  
+        if (!req.body.hasOwnProperty('id') || !req.body.hasOwnProperty('fbId') || !req.body.hasOwnProperty('firstName') || 
+            !req.body.hasOwnProperty('lastName') || !req.body.hasOwnProperty('avatar')) 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!",
+							data : ""
+						});
+
+        if (req.body.id == "" || req.body.fbId == "" || req.body.firstName == "" || 
+            req.body.lastName == "" || req.body.avatar == "") 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!",
+							data : ""
+						});
+
+        if (req.headers['authen'] == null) 
+            return res.json({
+							responseCode : -1,
+							description : "Missing authen!",
+							data : ""
+						});
+
+        groupDAO.verifyToJoin(firebase, req.headers['authen'], req.body.id, req.body.fbId, req.body.firstName, req.body.lastName, 
+            req.body.avatar, function(result) {
+            res.json(result); 
+        });
+    });
+
     app.put(url + '/:id', function(req, res) {  
         if (req.headers['authen'] == null) 
             return res.json({
