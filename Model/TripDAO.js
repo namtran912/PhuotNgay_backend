@@ -37,7 +37,7 @@ module.exports = function() {
 
 				if (signIn != decoded.signIn) 
 					return callback({
-							responseCode : -1,
+							responseCode : 0,
 							description : "Authen is expired",
 							data : ""
 						});
@@ -98,7 +98,7 @@ module.exports = function() {
 
 				if (signIn != decoded.signIn) 
 					return callback({
-							responseCode : -1,
+							responseCode : 0,
 							description : "Authen is expired",
 							data : ""
 						});
@@ -173,7 +173,7 @@ module.exports = function() {
 
 				if (signIn != decoded.signIn) 
 					return callback({
-							responseCode : -1,
+							responseCode : 0,
 							description : "Authen is expired",
 							data : ""
 						});
@@ -195,7 +195,8 @@ module.exports = function() {
 							name : trip.name,
 							cover : trip.cover,
 							ranking : trip.ranking,
-							createdtime : trip.createdtime
+							createdtime : trip.createdtime,
+							description : trip.description
 						}
 					});
 				});

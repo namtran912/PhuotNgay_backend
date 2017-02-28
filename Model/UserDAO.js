@@ -60,7 +60,7 @@ module.exports = function() {
 
 				if (signIn != decoded.signIn) 
 					return callback({
-							responseCode : -1,
+							responseCode : 0,
 							description : "Authen is expired",
 							data : ""
 						});
@@ -194,7 +194,7 @@ module.exports = function() {
 
 				if (signIn != decoded.signIn) 
 					return callback({
-							responseCode : -1,
+							responseCode : 0,
 							description : "Authen is expired",
 							data : ""
 						});
