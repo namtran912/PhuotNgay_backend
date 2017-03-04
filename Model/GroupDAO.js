@@ -63,9 +63,6 @@ module.exports = function() {
 
 				mems.forEach(function(fbId) {
 					userDAO.getFCM(firebase, fbId, function(fcm) {
-						if (fcm == null)
-							;//helper.sendEmail(email, "Welcome to PhuotNgay", "Install PhuotNgay to join group.");
-						else
 							helper.sendNoti(fcm, {
 								groupId : id
 							}, {

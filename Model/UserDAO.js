@@ -1,4 +1,5 @@
 require('./Helper')();
+var request = require('request');
 
 module.exports = function() { 
 	var helper = new Helper();
@@ -206,6 +207,79 @@ module.exports = function() {
 					description : "",
 					data : ""
 				});
+			});
+		});
+	}
+
+	UserDAO.prototype.getListFriends = function(firebase, token, access_token, callback) {
+		var that = this;
+		helper.verifyToken(token, function(decoded){
+			if (decoded == null) 
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+			if (decoded.fbId == null)
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+			that.getSignIn(firebase, decoded.fbId, function(signIn) {
+				if (signIn == null) 
+					return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+				if (signIn != decoded.signIn) 
+					return callback({
+							responseCode : 0,
+							description : "Authen is expired",
+							data : ""
+						});
+
+				var url = 'https://graph.facebook.com/v2.8/' + decoded.fbId + '/friends?access_token=' + access_token;
+
+				request(url, function (error, response, body) {
+					if (response.statusCode != 200)
+						return callback({
+							responseCode : -1,
+							description : "Error Graph API!",
+							data : ""
+						});
+						
+					var _body = JSON.parse(body);
+					result = [];
+					
+					for(i in _body.data) 
+						firebase.database().ref(that.ref + _body.data[i].id).once('value').then(function(snapshot) {
+							result.push({
+								fbId : snapshot.key,
+								name : snapshot.val().firstName + ' ' + snapshot.val().lastName,
+								avatar : snapshot.val().avatar
+							});
+
+							if (snapshot.key == _body.data[_body.data.length - 1].id)
+								return callback({
+									responseCode : 1,
+									description : "",
+									data : result
+								}); 
+						});
+
+					if (_body.data.length == 0)
+						 callback({
+								responseCode : 1,
+								description : "",
+								data : []
+							}); 
+					
+				});	
 			});
 		});
 	}

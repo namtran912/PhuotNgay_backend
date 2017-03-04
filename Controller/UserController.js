@@ -47,4 +47,23 @@ module.exports = function(app, firebase) {
             res.json(result); 
         });
     });
+
+    app.get(url + '/friends', function(req, res) {  
+        if (req.headers['x-access-token'] == null) 
+            return res.json({
+							responseCode : -1,
+							description : "Missing access token!",
+							data : ""
+						});
+
+        if (req.headers['authen'] == null) 
+            return res.json({
+							responseCode : -1,
+							description : "Missing authen!",
+							data : ""
+						});
+        userDAO.getListFriends(firebase, req.headers['authen'], req.headers['x-access-token'], function(result) {
+            res.json(result); 
+        });
+    });
 }
