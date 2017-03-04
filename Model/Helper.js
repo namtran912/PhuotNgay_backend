@@ -2,9 +2,10 @@ var jwt = require('jsonwebtoken');
 var nodemailer = require("nodemailer");
 var smtpTransport = require('nodemailer-smtp-transport');
 var request = require('request');
+var config = require('../config');
 
 module.exports = function() { 
-    var SecrectToken = 'phuotngay';
+
     this.Helper = function() {
     }
 
@@ -44,7 +45,7 @@ module.exports = function() {
 	}
 
     Helper.prototype.genToken = function(firebaseUid) {
-		var secrectToken = new Buffer(SecrectToken, 'base64').toString('ascii');
+		var secrectToken = new Buffer(config.SecrectToken, 'base64').toString('ascii');
 		var token = jwt.sign(firebaseUid, secrectToken/*, {
 			expiresIn: 86400
 		}*/);
@@ -52,7 +53,7 @@ module.exports = function() {
 	}
 
     Helper.prototype.verifyToken = function(token, callback) {
-        var secrectToken = new Buffer(SecrectToken, 'base64').toString('ascii');
+        var secrectToken = new Buffer(config.SecrectToken, 'base64').toString('ascii');
 		jwt.verify(token, secrectToken, function(err, decoded) {
             if (err)
                 return callback(null);
@@ -67,7 +68,7 @@ module.exports = function() {
     }
 
     Helper.prototype.isFbId = function(fbId) {
-        return fbId.length == 15 && /^\d+$/.test(fbId);
+        return /^\d+$/.test(fbId);
     }
 
      Helper.prototype.isDayOfBirth = function(dayOfBirth) {

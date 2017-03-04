@@ -16,7 +16,7 @@ var allowCrossDomain = function(req, res, next) {
 app.use(express.bodyParser());
 app.use(allowCrossDomain);
 
-firebase.initializeApp(config);
+firebase.initializeApp(config.firebase);
 
 require('./Controller/TripController.js')(app, firebase);
 require('./Controller/LocationController.js')(app, firebase);
