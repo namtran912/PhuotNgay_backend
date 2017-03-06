@@ -1,10 +1,10 @@
 var config = { };
 
 config.firebase = {
-	apiKey:         'AIzaSyCqPt9dWqfVIi6j41yEsKdBpczfdg1jojM',
-    authDomain:     'phuotngayjsc.firebaseapp.com',
-    databaseURL:    'https://phuotngayjsc.firebaseio.com',
-    storageBucket:  'phuotngayjsc.appspot.com'
+	apiKey:         'AIzaSyCyMBAmqONOM5DoQnj_mdd_q8iDLJVnDM4',
+    authDomain:     'izigovn.firebaseapp.com',
+    databaseURL:    'https://izigovn.firebaseio.com',
+    storageBucket:  'izigovn.appspot.com'
 };    
 
 config.SecrectToken = 'phuotngay';
