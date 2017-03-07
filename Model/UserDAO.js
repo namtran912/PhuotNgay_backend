@@ -67,10 +67,19 @@ module.exports = function() {
 						});
 
 				firebase.database().ref(that.ref + decoded.fbId).once('value').then(function(snapshot) {
+					var user = snapshot.val();
 					callback({
 						responseCode : 1,
 						description : "",
-						data : snapshot.val()
+						data : {
+							avatar : user.avatar,
+							dateOfBirth : user.dateOfBirth,
+							firstName : user.firstName,
+							gender : user.gender,
+							lastName : user.lastName,
+							memberShip : user.memberShip,
+							email : user.email
+						}
 					});
 				});
 			});
