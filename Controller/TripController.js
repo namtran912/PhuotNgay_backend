@@ -37,7 +37,7 @@ module.exports = function(app, firebase) {
         });
     });
 
-    app.get(url + '/activity/:id', function(req, res) {  
+    app.get(url + '/:id/activity', function(req, res) {  
         if (req.headers['authen'] == null) 
             return res.json({
 							responseCode : -1,
@@ -49,7 +49,7 @@ module.exports = function(app, firebase) {
         });
     });
 
-    app.get(url + '/album/:id', function(req, res) {  
+    app.get(url + '/:id/album', function(req, res) {  
         if (req.headers['authen'] == null) 
             return res.json({
 							responseCode : -1,
@@ -61,7 +61,7 @@ module.exports = function(app, firebase) {
         });
     });
 
-    app.get(url + '/comment/:id', function(req, res) {  
+    app.get(url + '/:id/comment', function(req, res) {  
         if (req.headers['authen'] == null) 
             return res.json({
 							responseCode : -1,
@@ -73,7 +73,7 @@ module.exports = function(app, firebase) {
         });
     });
 
-    app.get(url + '/members/:id', function(req, res) {  
+    app.get(url + '/:id/members', function(req, res) {  
         if (req.headers['authen'] == null) 
             return res.json({
 							responseCode : -1,
@@ -97,4 +97,154 @@ module.exports = function(app, firebase) {
         });
     });
 
+    app.put(url + '/accept', function(req, res) {  
+        if (!req.body.hasOwnProperty('id')) 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!",
+							data : ""
+						});
+
+        if (req.body.id == "") 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!",
+							data : ""
+						});
+
+        if (req.headers['authen'] == null) 
+            return res.json({
+							responseCode : -1,
+							description : "Missing authen!",
+							data : ""
+						});
+
+        tripDAO.acceptToJoin(firebase, req.headers['authen'], req.body.id, function(result) {
+            res.json(result); 
+        });
+    });
+
+    app.put(url + '/kick', function(req, res) {  
+        if (!req.body.hasOwnProperty('id') || !req.body.hasOwnProperty('fbId')) 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!",
+							data : ""
+						});
+
+        if (req.body.id == "" || req.body.fbId == "") 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!",
+							data : ""
+						});
+
+        if (req.headers['authen'] == null) 
+            return res.json({
+							responseCode : -1,
+							description : "Missing authen!",
+							data : ""
+						});
+
+        tripDAO.kickMember(firebase, req.headers['authen'], req.body.id, req.body.fbId, function(result) {
+            res.json(result); 
+        });
+    });
+
+    app.put(url + '/join', function(req, res) {  
+        if (!req.body.hasOwnProperty('id')) 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!",
+							data : ""
+						});
+
+        if (req.body.id == "") 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!",
+							data : ""
+						});
+
+        if (req.headers['authen'] == null) 
+            return res.json({
+							responseCode : -1,
+							description : "Missing authen!",
+							data : ""
+						});
+
+        tripDAO.joinTrip(firebase, req.headers['authen'], req.body.id, function(result) {
+            res.json(result); 
+        });
+    });
+
+    app.put(url + '/verify', function(req, res) {  
+        if (!req.body.hasOwnProperty('id') || !req.body.hasOwnProperty('fbId') || !req.body.hasOwnProperty('firstName') || 
+            !req.body.hasOwnProperty('lastName') || !req.body.hasOwnProperty('avatar')) 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!",
+							data : ""
+						});
+
+        if (req.body.id == "" || req.body.fbId == "" || req.body.firstName == "" || 
+            req.body.lastName == "" || req.body.avatar == "") 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!",
+							data : ""
+						});
+
+        if (req.headers['authen'] == null) 
+            return res.json({
+							responseCode : -1,
+							description : "Missing authen!",
+							data : ""
+						});
+
+        tripDAO.verifyToJoin(firebase, req.headers['authen'], req.body.id, req.body.fbId, req.body.firstName, req.body.lastName, 
+            req.body.avatar, function(result) {
+            res.json(result); 
+        });
+    });
+    
+    app.put(url + '/add', function(req, res) {  
+        if (!req.body.hasOwnProperty('id') || !req.body.hasOwnProperty('fbId')) 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!",
+							data : ""
+						});
+
+        if (req.body.id == "" || req.body.fbId == "") 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!",
+							data : ""
+						});
+
+        if (req.headers['authen'] == null) 
+            return res.json({
+							responseCode : -1,
+							description : "Missing authen!",
+							data : ""
+						});
+
+        tripDAO.addMember(firebase, req.headers['authen'], req.body.id, req.body.fbId, function(result) {
+            res.json(result); 
+        });
+    });
+
+    app.put(url + '/:id', function(req, res) {  
+        if (req.headers['authen'] == null) 
+            return res.json({
+							responseCode : -1,
+							description : "Missing authen!",
+							data : ""
+						});
+
+        tripDAO.update(firebase, req.headers['authen'], req.params.id, req.body, function(result) {
+            res.json(result); 
+        });
+    });
 }
