@@ -37,6 +37,54 @@ module.exports = function(app, firebase) {
         });
     });
 
+    app.get(url + '/activity/:id', function(req, res) {  
+        if (req.headers['authen'] == null) 
+            return res.json({
+							responseCode : -1,
+							description : "Missing authen!",
+							data : ""
+						});
+        tripDAO.readTripsDataById_Activity(firebase, req.headers['authen'], req.params.id, function(result) {
+            res.json(result); 
+        });
+    });
+
+    app.get(url + '/album/:id', function(req, res) {  
+        if (req.headers['authen'] == null) 
+            return res.json({
+							responseCode : -1,
+							description : "Missing authen!",
+							data : ""
+						});
+        tripDAO.readTripsDataById_Album(firebase, req.headers['authen'], req.params.id, function(result) {
+            res.json(result); 
+        });
+    });
+
+    app.get(url + '/comment/:id', function(req, res) {  
+        if (req.headers['authen'] == null) 
+            return res.json({
+							responseCode : -1,
+							description : "Missing authen!",
+							data : ""
+						});
+        tripDAO.readTripsDataById_Comment(firebase, req.headers['authen'], req.params.id, function(result) {
+            res.json(result); 
+        });
+    });
+
+    app.get(url + '/members/:id', function(req, res) {  
+        if (req.headers['authen'] == null) 
+            return res.json({
+							responseCode : -1,
+							description : "Missing authen!",
+							data : ""
+						});
+        tripDAO.readTripsDataById_Members(firebase, req.headers['authen'], req.params.id, function(result) {
+            res.json(result); 
+        });
+    });
+
     app.get(url + '/:id', function(req, res) {  
         if (req.headers['authen'] == null) 
             return res.json({

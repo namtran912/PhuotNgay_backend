@@ -11,7 +11,7 @@ var allowCrossDomain = function(req, res, next) {
 	res.header('Access-Control-Allow-Headers', 'Content-Type, x-access-token, authen');
 
 	next();
-}
+}	
 
 app.use(express.bodyParser());
 app.use(allowCrossDomain);
@@ -21,6 +21,5 @@ firebase.initializeApp(config.firebase);
 require('./Controller/TripController.js')(app, firebase);
 require('./Controller/LocationController.js')(app, firebase);
 require('./Controller/UserController.js')(app, firebase);
-require('./Controller/GroupController.js')(app, firebase);
 
 app.listen(PORT);  

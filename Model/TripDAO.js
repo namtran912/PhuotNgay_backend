@@ -49,8 +49,8 @@ module.exports = function() {
 						var childKey = childSnapshot.key;
 						var childData = childSnapshot.val();
 
-						
-						result.push({
+						if (childData.is_published == 'true')
+							result.push({
 								id : childKey,
 								arrive : childData.arrive,
 								depart : childData.depart,
@@ -109,32 +109,33 @@ module.exports = function() {
 					transfer = helper.U2A(transfer.toLowerCase());
 					var result = [];
 
-					snapshot.forEach(function(childSnapshot) {
-						var childKey = childSnapshot.key;
-						var childData = childSnapshot.val();
-						
-						var name = childData.name.split(' - ');
-						var _arrive = helper.U2A(name[0].toLowerCase());
-						var _depart = helper.U2A(name[1].toLowerCase());
-						var _transfer = childData.transfer;
+					snapshot.forEach(function(childSnapshot){ 
+						if (childSnapshot.val().is_published == 'true') {
+							var childKey = childSnapshot.key;
+							var childData = childSnapshot.val();
+							
+							var name = childData.name.split(' - ');
+							var _arrive = helper.U2A(name[0].toLowerCase());
+							var _depart = helper.U2A(name[1].toLowerCase());
+							var _transfer = childData.transfer;
 
-						var timeArrive = parseInt(childData.arrive.split('_')[1]);
-						var timeDepart = parseInt(childData.depart.split('_')[1]);
-						var _duration = Math.floor((timeDepart - timeArrive) / (24 * 60 * 60 * 1000) + 1);
-						
-						if (helper.compare(arrive, _arrive) && helper.compare(depart, _depart) && 
-							(transfer == "" || transfer == _transfer) &&
-							(duration == "" || parseInt(duration) == _duration)) 
-							result.push({
-								id : childKey,
-								arrive : childData.arrive,
-								depart : childData.depart,
-								name : childData.name,
-								cover : childData.cover,
-								ranking : childData.ranking,
-								createdtime : childData.createdtime
-							});
-
+							var timeArrive = parseInt(childData.arrive.split('_')[1]);
+							var timeDepart = parseInt(childData.depart.split('_')[1]);
+							var _duration = Math.floor((timeDepart - timeArrive) / (24 * 60 * 60 * 1000) + 1);
+							
+							if (helper.compare(arrive, _arrive) && helper.compare(depart, _depart) && 
+								(transfer == "" || transfer == _transfer) &&
+								(duration == "" || parseInt(duration) == _duration)) 
+								result.push({
+									id : childKey,
+									arrive : childData.arrive,
+									depart : childData.depart,
+									name : childData.name,
+									cover : childData.cover,
+									ranking : childData.ranking,
+									createdtime : childData.createdtime
+								});
+						}
 					});
 					callback({
 						responseCode : 1,
@@ -198,6 +199,206 @@ module.exports = function() {
 							createdtime : trip.createdtime,
 							description : trip.description
 						}
+					});
+				});
+			});
+		});
+	}
+
+	TripDAO.prototype.readTripsDataById_Activity = function(firebase, token, id, callback) {
+		var that = this;
+		helper.verifyToken(token, function(decoded){
+			if (decoded == null) 
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+			if (decoded.fbId == null)
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
+				if (signIn == null) 
+					return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+				if (signIn != decoded.signIn) 
+					return callback({
+							responseCode : 0,
+							description : "Authen is expired",
+							data : ""
+						});
+
+				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
+					var trip = snapshot.val();
+					if (trip == null)
+						return callback({
+							responseCode : 1,
+							description : "",
+							data : null
+						});
+					callback({
+						responseCode : 1,
+						description : "",
+						data : trip.activity,
+					});
+				});
+			});
+		});
+	}
+
+	TripDAO.prototype.readTripsDataById_Album = function(firebase, token, id, callback) {
+		var that = this;
+		helper.verifyToken(token, function(decoded){
+			if (decoded == null) 
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+			if (decoded.fbId == null)
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
+				if (signIn == null) 
+					return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+				if (signIn != decoded.signIn) 
+					return callback({
+							responseCode : 0,
+							description : "Authen is expired",
+							data : ""
+						});
+
+				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
+					var trip = snapshot.val();
+					if (trip == null)
+						return callback({
+							responseCode : 1,
+							description : "",
+							data : null
+						});
+					callback({
+						responseCode : 1,
+						description : "",
+						data : trip.album,
+					});
+				});
+			});
+		});
+	}
+
+	TripDAO.prototype.readTripsDataById_Comment = function(firebase, token, id, callback) {
+		var that = this;
+		helper.verifyToken(token, function(decoded){
+			if (decoded == null) 
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+			if (decoded.fbId == null)
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
+				if (signIn == null) 
+					return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+				if (signIn != decoded.signIn) 
+					return callback({
+							responseCode : 0,
+							description : "Authen is expired",
+							data : ""
+						});
+
+				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
+					var trip = snapshot.val();
+					if (trip == null)
+						return callback({
+							responseCode : 1,
+							description : "",
+							data : null
+						});
+					callback({
+						responseCode : 1,
+						description : "",
+						data : trip.comment,
+					});
+				});
+			});
+		});
+	}
+
+	TripDAO.prototype.readTripsDataById_Members = function(firebase, token, id, callback) {
+		var that = this;
+		helper.verifyToken(token, function(decoded){
+			if (decoded == null) 
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+			if (decoded.fbId == null)
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
+				if (signIn == null) 
+					return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+				if (signIn != decoded.signIn) 
+					return callback({
+							responseCode : 0,
+							description : "Authen is expired",
+							data : ""
+						});
+
+				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
+					var trip = snapshot.val();
+					if (trip == null)
+						return callback({
+							responseCode : 1,
+							description : "",
+							data : null
+						});
+					callback({
+						responseCode : 1,
+						description : "",
+						data : trip.members,
 					});
 				});
 			});
