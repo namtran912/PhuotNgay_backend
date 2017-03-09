@@ -98,7 +98,7 @@ module.exports = function(app, firebase) {
     });
 
     app.post(url, function(req, res) {  
-         if (!req.body.hasOwnProperty('arrive') || !req.body.hasOwnProperty('cover') || !req.body.hasOwnProperty('depart') || 
+         if (!req.body.hasOwnProperty('arrive') || !req.body.hasOwnProperty('depart') || 
             !req.body.hasOwnProperty('description') || !req.body.hasOwnProperty('is_published') || !req.body.hasOwnProperty('name') || 
             !req.body.hasOwnProperty('status') || !req.body.hasOwnProperty('transfer')) 
             return res.json({
@@ -107,7 +107,7 @@ module.exports = function(app, firebase) {
 							data : ""
 						});
 
-        if (req.body.arrive == "" || req.body.cover == "" || req.body.depart == "" ||  req.body.description == "" ||
+        if (req.body.arrive == "" || req.body.depart == "" ||  req.body.description == "" ||
             req.body.is_published == "" || req.body.name == "" || req.body.status == "" ||  req.body.transfer == "") 
             return res.json({
 							responseCode : -1,

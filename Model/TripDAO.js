@@ -9,7 +9,7 @@ module.exports = function() {
 		this.ref = 'TRIP/';
 		this.property = ['arrive', 'cover', 'depart', 'description', 'is_published', 'name', 
 						'numberOfView', 'status', 'transfer'];
-		
+		this.transfer = ['Đi bộ', 'Xe đạp', 'Xe máy', 'Xe du lịch', 'Tàu hỏa', 'Tàu thuyền']
 	} 
 
 	TripDAO.prototype.readTripsData = function(firebase, token, callback) {
@@ -51,7 +51,7 @@ module.exports = function() {
 						var childKey = childSnapshot.key;
 						var childData = childSnapshot.val();
 
-						if (childData.is_published == 'true')
+						if (childData.is_published == 1)
 							result.push({
 								id : childKey,
 								arrive : childData.arrive,
@@ -176,7 +176,7 @@ module.exports = function() {
 					var result = [];
 
 					snapshot.forEach(function(childSnapshot){ 
-						if (childSnapshot.val().is_published == 'true') {
+						if (childSnapshot.val().is_published == 1) {
 							var childKey = childSnapshot.key;
 							var childData = childSnapshot.val();
 							
@@ -658,7 +658,7 @@ module.exports = function() {
 							data : ""
 						});
 
-					if (snapshot.val().is_published == 'false') 
+					if (snapshot.val().is_published == 0) 
 						return callback({
 							responseCode : -1,
 							description : "Trip is not published!",
@@ -997,7 +997,7 @@ module.exports = function() {
 				callback({
 					responseCode : 1,	
 					description : "",
-					data : ""
+					data : id
 				});
 			});
 		});
