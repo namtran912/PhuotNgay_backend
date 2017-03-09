@@ -19,7 +19,6 @@ app.use(allowCrossDomain);
 firebase.initializeApp(config.firebase);
 
 require('./Controller/TripController.js')(app, firebase);
-require('./Controller/LocationController.js')(app, firebase);
 require('./Controller/UserController.js')(app, firebase);
 
 app.listen(PORT);  

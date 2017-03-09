@@ -7,7 +7,7 @@ module.exports = function() {
 
 	this.TripDAO = function() {
 		this.ref = 'TRIP/';
-		this.property = ['arrive', 'cover', 'depart', 'description', 'from', 'is_published', 'name', 'ranking', 'status', 'transfer'];
+		this.property = ['arrive', 'cover', 'depart', 'description', 'is_published', 'name', 'numberOfView', 'status', 'transfer'];
 		
 	} 
 
@@ -57,9 +57,73 @@ module.exports = function() {
 								depart : childData.depart,
 								name : childData.name,
 								cover : childData.cover,
-								ranking : childData.ranking,
-								createdTime : childData.createdTime
+								numberOfView : childData.numberOfView,
+								status : childData.status
 							});
+					});
+
+					callback({
+							responseCode : 1,
+							description : "",
+							data : result
+						});
+				});
+			});
+		});
+	}
+
+	TripDAO.prototype.readOwnTripsData = function(firebase, token, callback) {
+		var that = this;
+		helper.verifyToken(token, function(decoded){
+			if (decoded == null) 
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+			if (decoded.fbId == null)
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
+				if (signIn == null) 
+					return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+				if (signIn != decoded.signIn) 
+					return callback({
+							responseCode : 0,
+							description : "Authen is expired",
+							data : ""
+						});
+
+				firebase.database().ref(that.ref).once('value').then(function(snapshot) {
+					var result = [];
+
+					snapshot.forEach(function(childSnapshot) {
+						var childKey = childSnapshot.key;
+						var childData = childSnapshot.val();
+
+						for (i in childData.members)
+							if (childData.members[i].fbId == decoded.fbId) {
+								result.push({
+									id : childKey,
+									arrive : childData.arrive,
+									depart : childData.depart,
+									name : childData.name,
+									cover : childData.cover,
+									numberOfView : childData.numberOfView,
+									status : childData.status
+								});
+								break;
+							}
 					});
 
 					callback({
@@ -133,8 +197,8 @@ module.exports = function() {
 									depart : childData.depart,
 									name : childData.name,
 									cover : childData.cover,
-									ranking : childData.ranking,
-									createdTime : childData.createdTime
+									numberOfView : childData.numberOfView,
+									status : childData.status
 								});
 						}
 					});
@@ -188,6 +252,26 @@ module.exports = function() {
 							description : "",
 							data : null
 						});
+
+					var role = 0;
+					if (decoded.fbId == trip.from.fbId)
+						role = 2;
+					else 
+						for (i in trip.members)
+							if (trip.members[i].fbId == decoded.fbId) {
+								role = 1;
+								break;
+							}
+
+					var album = [];
+
+					for (key in trip.album) {
+						album.push({
+							id : key,
+							url : trip.album[key]
+						});
+					}
+
 					callback({
 						responseCode : 1,
 						description : "",
@@ -196,9 +280,18 @@ module.exports = function() {
 							depart : trip.depart,
 							name : trip.name,
 							cover : trip.cover,
-							ranking : trip.ranking,
+							description : trip.description,
+							from : trip.from,
+							is_published : trip.is_published,
+							status : trip.status,
+							numberOfView : trip.numberOfView,
 							createdTime : trip.createdTime,
-							description : trip.description
+							transfer : trip.transfer,
+							album : album,
+							activity : trip.activity.length,				
+							comment : trip.comment.length,
+							members : trip.members.length,
+							role : role
 						}
 					});
 				});
@@ -246,60 +339,20 @@ module.exports = function() {
 							description : "",
 							data : null
 						});
+
+					var activity = [];
+
+					for (key in trip.activity) {
+						activity.push({
+							time : key,
+							content : trip.activity[key].content
+						});
+					}
+
 					callback({
 						responseCode : 1,
 						description : "",
-						data : trip.activity,
-					});
-				});
-			});
-		});
-	}
-
-	TripDAO.prototype.readTripsDataById_Album = function(firebase, token, id, callback) {
-		var that = this;
-		helper.verifyToken(token, function(decoded){
-			if (decoded == null) 
-				return callback({
-							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
-						});
-
-			if (decoded.fbId == null)
-				return callback({
-							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
-						});
-
-			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
-				if (signIn == null) 
-					return callback({
-							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
-						});
-
-				if (signIn != decoded.signIn) 
-					return callback({
-							responseCode : 0,
-							description : "Authen is expired",
-							data : ""
-						});
-
-				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
-					var trip = snapshot.val();
-					if (trip == null)
-						return callback({
-							responseCode : 1,
-							description : "",
-							data : null
-						});
-					callback({
-						responseCode : 1,
-						description : "",
-						data : trip.album,
+						data : activity,
 					});
 				});
 			});
@@ -346,10 +399,23 @@ module.exports = function() {
 							description : "",
 							data : null
 						});
+
+					var comment = [];
+
+					for (key in trip.comment) {
+						comment.push({
+							createdTime : key,
+							avatar : trip.comment[key].avatar,
+							content : trip.comment[key].content,
+							fbId : trip.comment[key].fbId,
+							name : trip.comment[key].name
+						});
+					}
+
 					callback({
 						responseCode : 1,
 						description : "",
-						data : trip.comment,
+						data : comment,
 					});
 				});
 			});
@@ -396,10 +462,23 @@ module.exports = function() {
 							description : "",
 							data : null
 						});
+					var members = [];
+
+					if (trip.members.hasOwnProperty(decoded.fbId)) {
+						for (key in trip.members) {
+							members.push({
+								fbId : key,
+								avatar : trip.members[key].avatar,
+								name : trip.members[key].name
+							});
+						}
+						break;
+					}
+
 					callback({
 						responseCode : 1,
 						description : "",
-						data : trip.members,
+						data : members,
 					});
 				});
 			});
@@ -423,7 +502,7 @@ module.exports = function() {
 							data : ""
 						});
 
-			userDAO.getSignInAndInfo(firebase, decoded.fbId, function(signIn, firstName, lastName, fbAvatar) {
+			userDAO.getSignInAndInfo(firebase, decoded.fbId, function(signIn, firstName, lastName, avatar) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
@@ -448,22 +527,19 @@ module.exports = function() {
 					
 					var trip = snapshot.val();
 					
-					for (i in trip.members)
-						if (trip.members[i].fbId == decoded.fbId)
-							return callback({
-								responseCode : 1,	
-								description : "",
-								data : ""
-							});
+					if (trip.members.hasOwnProperty(decoded.fbId))
+						return callback({
+							responseCode : 1,	
+							description : "",
+							data : ""
+						});
 
 					var member = {
-						fbId : decoded.fbId,
-						firstName : firstName,
-						lastName : lastName,
-						avatar : fbAvatar
+						name : firstName + lastName,
+						avatar : avatar
 					};
 						
-					firebase.database().ref(that.ref + id + '/members' + '/' + trip.members.length).set(member);
+					firebase.database().ref(that.ref + id + '/members' + '/' + decoded.fbId).set(member);
 				
 					callback({
 						responseCode : 1,	
@@ -530,11 +606,10 @@ module.exports = function() {
 						});
 					
 					var tríp = snapshot.val();
-					for (i in tríp.members)
-						if (tríp.members[i].fbId == fbId) {
-							firebase.database().ref(that.ref + id + '/members' + '/' + i).set({});
-							break;
-						}
+					if (tríp.members.hasOwnProperty(fbId)) {
+						firebase.database().ref(that.ref + id + '/members' + '/' + fbId).set({});
+						break;
+					}
 									
 					callback({
 						responseCode : 1,	
@@ -563,7 +638,7 @@ module.exports = function() {
 							data : ""
 						});
 
-			userDAO.getSignInAndInfo(firebase, decoded.fbId, function(signIn, firstName, lastName, fbAvatar) {
+			userDAO.getSignInAndInfo(firebase, decoded.fbId, function(signIn, firstName, lastName, avatar) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
@@ -585,14 +660,21 @@ module.exports = function() {
 							description : "Trip is not exist!",
 							data : ""
 						});
+
+					if (snapshot.val().is_published == 'false') 
+						return callback({
+							responseCode : -1,
+							description : "Trip is not published!",
+							data : ""
+						});
 					
 					var trip = snapshot.val();
-					userDAO.getFCM(firebase, trip.from, function(fcm) {
+					userDAO.getFCM(firebase, trip.from.fbId, function(fcm) {
 						helper.sendNoti(fcm, {
 											fbId : decoded.fbId,
 											firstName : firstName, 
 											lastName : lastName, 
-											fbAvatar : fbAvatar
+											avatar : avatar
 										}, {
 											body : "Join",
 											title : "Join",
@@ -665,13 +747,11 @@ module.exports = function() {
 						});
 					
 					var member = {
-						fbId : fbId,
-						firstName : firstName, 
-						lastName : firstName, 
-						avatar : avatar,
+						name : firstName + lastName, 
+						avatar : avatar
 					};
 
-					firebase.database().ref(that.ref + id + '/members' + '/' + snapshot.val().members.length).set(member);
+					firebase.database().ref(that.ref + id + '/members' + '/' + fbId).set(member);
 									
 					callback({
 						responseCode : 1,	
@@ -739,19 +819,22 @@ module.exports = function() {
 								});	
 
 						var member = {
-							fbId : fbId, 
-							firstName : firstName, 
-							lastName : lastName, 
+							name : firstName + lastName, 
 							avatar : avatar
 						}
 
 						var trip = snapshot.val();
 
-						if (trip.from == decoded.fbId)
-							firebase.database().ref(that.ref + id + '/members' + '/' + trip.members.length).set(member);
+						if (trip.from.fbId == decoded.fbId)
+							firebase.database().ref(that.ref + id + '/members' + '/' + fbId).set(member);
 						else
-							userDAO.getFCM(firebase, trip.from, function(fcm) {
-								helper.sendNoti(fcm, member, {
+							userDAO.getFCM(firebase, trip.from.fbId, function(fcm) {
+								helper.sendNoti(fcm,  {
+													fbId : fbId,
+													firstName : firstName, 
+													lastName : lastName, 
+													avatar : avatar
+												}, {
 													body : "Add",
 													title : "Add",
 													icon : "Add"
@@ -824,8 +907,275 @@ module.exports = function() {
 							data : ""
 						});
 
-					//data.updateTime = new Date().getTime();
+					if (data.hasOwnProperty('arrive')) {
+						var info = data.arrive.split(';');
+						data.arrive = {
+							lat : info[0],
+							lng : info[1],
+							name : info[2],
+							time : info[3]
+						}
+					}
+
+					if (data.hasOwnProperty('depart')) {
+						var info = data.depart.split(';');
+						data.depart = {
+							lat : info[0],
+							lng : info[1],
+							name : info[2],
+							time : info[3]
+						}
+					}
+					
 					firebase.database().ref(that.ref + id).update(data);
+				
+					callback({
+						responseCode : 1,	
+						description : "",
+						data : ""
+					});
+				});
+			});
+		});
+	}
+
+	TripDAO.prototype.create = function(firebase, token, data, callback) {
+		var that = this;
+		helper.verifyToken(token, function(decoded){
+			if (decoded == null) 
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+			if (decoded.fbId == null)
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+			userDAO.getSignInAndInfo(firebase, decoded.fbId, function(signIn, firstName, lastName, avatar) {
+				if (signIn == null) 
+					return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+				if (signIn != decoded.signIn) 
+					return callback({
+							responseCode : 0,
+							description : "Authen is expired",
+							data : ""
+						});
+
+				var info = data.arrive.split(';');
+				data.arrive = {
+					lat : info[0],
+					lng : info[1],
+					name : info[2],
+					time : info[3]
+				}
+
+				info = data.depart.split(';');
+				data.depart = {
+					lat : info[0],
+					lng : info[1],
+					name : info[2],
+					time : info[3]
+				}
+				
+				data.createdTime = new Date().getTime();
+				data.from = {
+					avatar : avatar,
+					fbId : decoded.fbId,
+					name : firstName + lastName
+				}
+
+				var id = firebase.database().ref().child(that.ref).push().key;
+				firebase.database().ref(that.ref + id).set(data);
+			
+				callback({
+					responseCode : 1,	
+					description : "",
+					data : ""
+				});
+			});
+		});
+	}
+
+	TripDAO.prototype.add_Activity = function(firebase, token, id, time, content, callback) {
+		var that = this;
+		helper.verifyToken(token, function(decoded){
+			if (decoded == null) 
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+			if (decoded.fbId == null)
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
+				if (signIn == null) 
+					return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+				if (signIn != decoded.signIn) 
+					return callback({
+							responseCode : 0,
+							description : "Authen is expired",
+							data : ""
+						});
+				
+				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
+					if (snapshot.val() == null) 
+						return callback({
+							responseCode : -1,
+							description : "Trip is not exist!",
+							data : ""
+						});
+
+					if (snapshot.val().from != decoded.fbId)
+						return callback({
+							responseCode : -1,
+							description : "User is not Trip's admin!",
+							data : ""
+						});
+
+					firebase.database().ref(that.ref + id + '/activity' + '/' + time).set({
+						content : content
+					});
+				
+					callback({
+						responseCode : 1,	
+						description : "",
+						data : ""
+					});
+				});
+			});
+		});
+	}
+
+	TripDAO.prototype.update_Activity = function(firebase, token, id, time, content, callback) {
+		var that = this;
+		helper.verifyToken(token, function(decoded){
+			if (decoded == null) 
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+			if (decoded.fbId == null)
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
+				if (signIn == null) 
+					return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+				if (signIn != decoded.signIn) 
+					return callback({
+							responseCode : 0,
+							description : "Authen is expired",
+							data : ""
+						});
+				
+				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
+					if (snapshot.val() == null) 
+						return callback({
+							responseCode : -1,
+							description : "Trip is not exist!",
+							data : ""
+						});
+
+					if (snapshot.val().from != decoded.fbId)
+						return callback({
+							responseCode : -1,
+							description : "User is not Trip's admin!",
+							data : ""
+						});
+
+					firebase.database().ref(that.ref + id + '/activity' + '/' + time).update({
+						content : content
+					});
+				
+					callback({
+						responseCode : 1,	
+						description : "",
+						data : ""
+					});
+				});
+			});
+		});
+	}
+
+	TripDAO.prototype.delete_Activity = function(firebase, token, id, time, callback) {
+		var that = this;
+		helper.verifyToken(token, function(decoded){
+			if (decoded == null) 
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+			if (decoded.fbId == null)
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
+				if (signIn == null) 
+					return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+				if (signIn != decoded.signIn) 
+					return callback({
+							responseCode : 0,
+							description : "Authen is expired",
+							data : ""
+						});
+				
+				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
+					if (snapshot.val() == null) 
+						return callback({
+							responseCode : -1,
+							description : "Trip is not exist!",
+							data : ""
+						});
+
+					if (snapshot.val().from != decoded.fbId)
+						return callback({
+							responseCode : -1,
+							description : "User is not Trip's admin!",
+							data : ""
+						});
+
+					firebase.database().ref(that.ref + id + '/activity' + '/' + time).set({);
 				
 					callback({
 						responseCode : 1,	

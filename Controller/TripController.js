@@ -15,6 +15,18 @@ module.exports = function(app, firebase) {
             res.json(result); 
         });
     });
+
+    app.get(url + '/own', function(req, res) {  
+        if (req.headers['authen'] == null) 
+            return res.json({
+							responseCode : -1,
+							description : "Missing authen!",
+							data : ""
+						});
+        tripDAO.readOwnTripsData(firebase, req.headers['authen'], function(result) {
+            res.json(result); 
+        });
+    });
     
     app.get(url + '/search', function(req, res) {  
         if (!req.query.hasOwnProperty('arrive') || !req.query.hasOwnProperty('depart') || 
@@ -45,18 +57,6 @@ module.exports = function(app, firebase) {
 							data : ""
 						});
         tripDAO.readTripsDataById_Activity(firebase, req.headers['authen'], req.params.id, function(result) {
-            res.json(result); 
-        });
-    });
-
-    app.get(url + '/:id/album', function(req, res) {  
-        if (req.headers['authen'] == null) 
-            return res.json({
-							responseCode : -1,
-							description : "Missing authen!",
-							data : ""
-						});
-        tripDAO.readTripsDataById_Album(firebase, req.headers['authen'], req.params.id, function(result) {
             res.json(result); 
         });
     });
@@ -93,6 +93,63 @@ module.exports = function(app, firebase) {
 							data : ""
 						});
         tripDAO.readTripsDataById(firebase, req.headers['authen'], req.params.id, function(result) {
+            res.json(result); 
+        });
+    });
+
+    app.post(url, function(req, res) {  
+         if (!req.body.hasOwnProperty('arrive') || !req.body.hasOwnProperty('cover') || !req.body.hasOwnProperty('depart') || 
+            !req.body.hasOwnProperty('description') || !req.body.hasOwnProperty('is_published') || !req.body.hasOwnProperty('name') || 
+            !req.body.hasOwnProperty('status') || !req.body.hasOwnProperty('transfer')) 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!",
+							data : ""
+						});
+
+        if (req.body.arrive == "" || req.body.cover == "" || req.body.depart == "" ||  req.body.description == "" ||
+            req.body.is_published == "" || req.body.name == "" || req.body.status == "" ||  req.body.transfer == "") 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!",
+							data : ""
+						});
+
+        if (req.headers['authen'] == null) 
+            return res.json({
+							responseCode : -1,
+							description : "Missing authen!",
+							data : ""
+						});
+
+        tripDAO.create(firebase, req.headers['authen'], req.body, function(result) {
+            res.json(result); 
+        });
+    });
+
+    app.post(url + '/:id/activity', function(req, res) {  
+         if (!req.body.hasOwnProperty('time') || !req.body.hasOwnProperty('content')) 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!",
+							data : ""
+						});
+
+        if (req.body.time == "" || req.body.content == "") 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!",
+							data : ""
+						});
+
+        if (req.headers['authen'] == null) 
+            return res.json({
+							responseCode : -1,
+							description : "Missing authen!",
+							data : ""
+						});
+
+        tripDAO.add_Activity(firebase, req.headers['authen'], req.params.id, req.body.time, req.body.content, function(result) {
             res.json(result); 
         });
     });
@@ -235,6 +292,33 @@ module.exports = function(app, firebase) {
         });
     });
 
+    app.put(url + '/:id/activity', function(req, res) {  
+         if (!req.body.hasOwnProperty('time') || !req.body.hasOwnProperty('content')) 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!",
+							data : ""
+						});
+
+        if (req.body.time == "" || req.body.content == "") 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!",
+							data : ""
+						});
+
+        if (req.headers['authen'] == null) 
+            return res.json({
+							responseCode : -1,
+							description : "Missing authen!",
+							data : ""
+						});
+
+        tripDAO.update_Activity(firebase, req.headers['authen'], req.params.id, req.body.time, req.body.content, function(result) {
+            res.json(result); 
+        });
+    });
+
     app.put(url + '/:id', function(req, res) {  
         if (req.headers['authen'] == null) 
             return res.json({
@@ -244,6 +328,33 @@ module.exports = function(app, firebase) {
 						});
 
         tripDAO.update(firebase, req.headers['authen'], req.params.id, req.body, function(result) {
+            res.json(result); 
+        });
+    });
+
+    app.delete(url + '/:id/activity', function(req, res) {  
+         if (!req.body.hasOwnProperty('time')) 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!",
+							data : ""
+						});
+
+        if (req.body.time == "") 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!",
+							data : ""
+						});
+
+        if (req.headers['authen'] == null) 
+            return res.json({
+							responseCode : -1,
+							description : "Missing authen!",
+							data : ""
+						});
+
+        tripDAO.delete_Activity(firebase, req.headers['authen'], req.params.id, req.body.time, function(result) {
             res.json(result); 
         });
     });
