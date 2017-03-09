@@ -7,7 +7,8 @@ module.exports = function() {
 
 	this.TripDAO = function() {
 		this.ref = 'TRIP/';
-		this.property = ['arrive', 'cover', 'depart', 'description', 'is_published', 'name', 'numberOfView', 'status', 'transfer'];
+		this.property = ['arrive', 'cover', 'depart', 'description', 'is_published', 'name', 
+						'numberOfView', 'status', 'transfer'];
 		
 	} 
 
@@ -465,14 +466,12 @@ module.exports = function() {
 					var members = [];
 
 					if (trip.members.hasOwnProperty(decoded.fbId)) {
-						for (key in trip.members) {
+						for (key in trip.members) 
 							members.push({
 								fbId : key,
 								avatar : trip.members[key].avatar,
 								name : trip.members[key].name
 							});
-						}
-						break;
 					}
 
 					callback({
@@ -606,10 +605,8 @@ module.exports = function() {
 						});
 					
 					var tríp = snapshot.val();
-					if (tríp.members.hasOwnProperty(fbId)) {
+					if (tríp.members.hasOwnProperty(fbId)) 
 						firebase.database().ref(that.ref + id + '/members' + '/' + fbId).set({});
-						break;
-					}
 									
 					callback({
 						responseCode : 1,	
@@ -1175,7 +1172,7 @@ module.exports = function() {
 							data : ""
 						});
 
-					firebase.database().ref(that.ref + id + '/activity' + '/' + time).set({);
+					firebase.database().ref(that.ref + id + '/activity' + '/' + time).set({});
 				
 					callback({
 						responseCode : 1,	
