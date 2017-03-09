@@ -180,13 +180,12 @@ module.exports = function() {
 							var childKey = childSnapshot.key;
 							var childData = childSnapshot.val();
 							
-							var name = childData.name.split(' - ');
-							var _arrive = helper.U2A(name[0].toLowerCase());
-							var _depart = helper.U2A(name[1].toLowerCase());
+							var _arrive = helper.U2A(childData.arrive.name.toLowerCase());
+							var _depart = helper.U2A(childData.depart.name.toLowerCase());
 							var _transfer = childData.transfer;
 
-							var timeArrive = parseInt(childData.arrive.split('_')[1]);
-							var timeDepart = parseInt(childData.depart.split('_')[1]);
+							var timeArrive = parseInt(childData.arrive.time);
+							var timeDepart = parseInt(childData.depart.time);
 							var _duration = Math.floor((timeDepart - timeArrive) / (24 * 60 * 60 * 1000) + 1);
 							
 							if (helper.compare(arrive, _arrive) && helper.compare(depart, _depart) && 
