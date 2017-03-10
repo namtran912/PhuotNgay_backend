@@ -405,10 +405,12 @@ module.exports = function() {
 					for (key in trip.comment) {
 						comment.push({
 							createdTime : key,
-							avatar : trip.comment[key].avatar,
 							content : trip.comment[key].content,
-							fbId : trip.comment[key].fbId,
-							name : trip.comment[key].name
+							from : {
+								avatar : trip.comment[key].avatar,
+								fbId : trip.comment[key].fbId,
+								name : trip.comment[key].name
+							}		
 						});
 					}
 
