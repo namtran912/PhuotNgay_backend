@@ -288,9 +288,9 @@ module.exports = function() {
 							createdTime : trip.createdTime,
 							transfer : trip.transfer,
 							album : album,
-							activity : (trip.activity == null) ? 0 : Object.keys(trip.activity).length,				
-							comment : (trip.comment == null) ? 0 : Object.keys(trip.comment).length,
-							members : (trip.members == null) ? 0 : Object.keys(trip.members).length,
+							numberOfActivities : (trip.activity == null) ? 0 : Object.keys(trip.activity).length,				
+							numberOfComments : (trip.comment == null) ? 0 : Object.keys(trip.comment).length,
+							numberOfMembers : (trip.members == null) ? 0 : Object.keys(trip.members).length,
 							role : role
 						}
 					});
