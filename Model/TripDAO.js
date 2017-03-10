@@ -112,19 +112,18 @@ module.exports = function() {
 						var childKey = childSnapshot.key;
 						var childData = childSnapshot.val();
 
-						for (i in childData.members)
-							if (childData.members[i].fbId == decoded.fbId) {
-								result.push({
-									id : childKey,
-									arrive : childData.arrive,
-									depart : childData.depart,
-									name : childData.name,
-									cover : childData.cover,
-									numberOfView : childData.numberOfView,
-									status : childData.status
-								});
-								break;
-							}
+						
+						if (childData.from.fbId == decoded.fbId) {
+							result.push({
+								id : childKey,
+								arrive : childData.arrive,
+								depart : childData.depart,
+								name : childData.name,
+								cover : childData.cover,
+								numberOfView : childData.numberOfView,
+								status : childData.status
+							});
+						}
 					});
 
 					callback({
