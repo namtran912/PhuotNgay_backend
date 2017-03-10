@@ -406,11 +406,7 @@ module.exports = function() {
 						comment.push({
 							createdTime : key,
 							content : trip.comment[key].content,
-							from : {
-								avatar : trip.comment[key].avatar,
-								fbId : trip.comment[key].fbId,
-								name : trip.comment[key].name
-							}		
+							from : trip.comment[key].from
 						});
 					}
 
