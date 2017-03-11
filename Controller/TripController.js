@@ -11,7 +11,7 @@ module.exports = function(app, firebase) {
 							description : "Missing authen!",
 							data : ""
 						});
-        tripDAO.readTripsData(firebase, req.headers['authen'], function(result) {
+        tripDAO.readTripsData(firebase, req.headers['authen'], req.query, function(result) {
             res.json(result); 
         });
     });
@@ -23,7 +23,7 @@ module.exports = function(app, firebase) {
 							description : "Missing authen!",
 							data : ""
 						});
-        tripDAO.readOwnTripsData(firebase, req.headers['authen'], function(result) {
+        tripDAO.readOwnTripsData(firebase, req.headers['authen'], req.query, function(result) {
             res.json(result); 
         });
     });

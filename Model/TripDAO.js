@@ -12,7 +12,7 @@ module.exports = function() {
 		this.transfer = ['Đi bộ', 'Xe đạp', 'Xe máy', 'Xe du lịch', 'Tàu hỏa', 'Tàu thuyền']
 	} 
 
-	TripDAO.prototype.readTripsData = function(firebase, token, callback) {
+	TripDAO.prototype.readTripsData = function(firebase, token, query, callback) {
 		var that = this;
 		helper.verifyToken(token, function(decoded){
 			if (decoded == null) 
@@ -43,6 +43,37 @@ module.exports = function() {
 							description : "Authen is expired",
 							data : ""
 						});
+				if ((query.sort == 'asc' || query.sort == 'desc') && query.orderBy != null) 
+					if (['arrive/time', 'arrive/name', 'depart/time', 'depart/name', 'name', 'numberOfView', 'status'].includes(query.orderBy)) {
+						firebase.database().ref(that.ref).orderByChild(query.orderBy).on('value', function(snapshot) {
+							var result = [];
+							
+							snapshot.forEach(function(childSnapshot) {
+								var childKey = childSnapshot.key;
+								var childData = childSnapshot.val();
+
+								if (childData.is_published == 1)
+									result.push({
+										id : childKey,
+										arrive : childData.arrive,
+										depart : childData.depart,
+										name : childData.name,
+										cover : childData.cover,
+										numberOfView : childData.numberOfView,
+										status : childData.status
+									});
+							});
+
+							if (query.sort == 'desc')
+								result = result.reverse();
+
+							callback({
+								responseCode : 1,
+								description : "",
+								data : result
+							});
+						});
+					}
 
 				firebase.database().ref(that.ref).once('value').then(function(snapshot) {
 					var result = [];
@@ -64,10 +95,10 @@ module.exports = function() {
 					});
 
 					callback({
-							responseCode : 1,
-							description : "",
-							data : result
-						});
+						responseCode : 1,
+						description : "",
+						data : result
+					});
 				});
 			});
 		});
@@ -104,6 +135,37 @@ module.exports = function() {
 							description : "Authen is expired",
 							data : ""
 						});
+				if ((query.sort == 'asc' || query.sort == 'desc') && query.orderBy != null) 
+					if (['arrive/time', 'arrive/name', 'depart/time', 'depart/name', 'name', 'numberOfView', 'status'].includes(query.orderBy)) {
+						firebase.database().ref(that.ref).orderByChild(query.orderBy).on('value', function(snapshot) {
+							var result = [];
+							
+							snapshot.forEach(function(childSnapshot) {
+								var childKey = childSnapshot.key;
+								var childData = childSnapshot.val();
+
+								if (childData.from.fbId == decoded.fbId) 
+									result.push({
+										id : childKey,
+										arrive : childData.arrive,
+										depart : childData.depart,
+										name : childData.name,
+										cover : childData.cover,
+										numberOfView : childData.numberOfView,
+										status : childData.status
+									});
+							});
+
+							if (query.sort == 'desc')
+								result = result.reverse();
+
+							callback({
+								responseCode : 1,
+								description : "",
+								data : result
+							});
+						});
+					}
 
 				firebase.database().ref(that.ref).once('value').then(function(snapshot) {
 					var result = [];
@@ -113,7 +175,7 @@ module.exports = function() {
 						var childData = childSnapshot.val();
 
 						
-						if (childData.from.fbId == decoded.fbId) {
+						if (childData.from.fbId == decoded.fbId) 
 							result.push({
 								id : childKey,
 								arrive : childData.arrive,
@@ -123,7 +185,6 @@ module.exports = function() {
 								numberOfView : childData.numberOfView,
 								status : childData.status
 							});
-						}
 					});
 
 					callback({
