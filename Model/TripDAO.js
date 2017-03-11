@@ -104,7 +104,7 @@ module.exports = function() {
 		});
 	}
 
-	TripDAO.prototype.readOwnTripsData = function(firebase, token, callback) {
+	TripDAO.prototype.readOwnTripsData = function(firebase, token, query, callback) {
 		var that = this;
 		helper.verifyToken(token, function(decoded){
 			if (decoded == null) 
