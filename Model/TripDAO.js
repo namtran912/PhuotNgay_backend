@@ -817,14 +817,7 @@ module.exports = function() {
 		});
 	}
 
-	TripDAO.prototype.addMember = function(firebase, token, id, fbId, callback) {
-		if (!helper.isFbId(fbId))
-			return callback({
-							responseCode : -1,
-							description : "FbId is incorrect",
-							data : ""
-					});
-
+	TripDAO.prototype.addMember = function(firebase, token, id, list, callback) {
 		var that = this;
 		helper.verifyToken(token, function(decoded){
 			if (decoded == null) 
@@ -864,43 +857,42 @@ module.exports = function() {
 							data : ""
 						});
 
-					userDAO.getSignInAndInfo(firebase, fbId, function(signIn, firstName, lastName, avatar) {
-						if (signIn == null) 
-							return callback({
-									responseCode : -1,
-									description : "User is not exist!",
-									data : ""
-								});	
+					var fbIds = list.split(';');
+					fbIds.forEach(function(fbId){
+						userDAO.getSignInAndInfo(firebase, fbId, function(signIn, firstName, lastName, avatar) {
+							if (signIn == null) 
+								return;
 
-						var member = {
-							name : firstName + lastName, 
-							avatar : avatar
-						}
+							var member = {
+								name : firstName + lastName, 
+								avatar : avatar
+							}
 
-						var trip = snapshot.val();
+							var trip = snapshot.val();
 
-						if (trip.from.fbId == decoded.fbId)
-							firebase.database().ref(that.ref + id + '/members' + '/' + fbId).set(member);
-						else
-							userDAO.getFCM(firebase, trip.from.fbId, function(fcm) {
-								helper.sendNoti(fcm,  {
-													fbId : fbId,
-													firstName : firstName, 
-													lastName : lastName, 
-													avatar : avatar
-												}, {
-													body : "Add",
-													title : "Add",
-													icon : "Add"
-												});
-							});
-										
-						callback({
-							responseCode : 1,	
-							description : "",
-							data : ""
-						});
-					});	
+							if (trip.from.fbId == decoded.fbId)
+								firebase.database().ref(that.ref + id + '/members' + '/' + fbId).set(member);
+							else
+								userDAO.getFCM(firebase, trip.from.fbId, function(fcm) {
+									helper.sendNoti(fcm,  {
+														fbId : fbId,
+														firstName : firstName, 
+														lastName : lastName, 
+														avatar : avatar
+													}, {
+														body : "Add",
+														title : "Add",
+														icon : "Add"
+													});
+								});
+						});	
+					});
+				
+					callback({
+						responseCode : 1,	
+						description : "",
+						data : ""
+					});
 				});
 			});
 		});
