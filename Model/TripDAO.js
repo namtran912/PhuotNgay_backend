@@ -994,6 +994,14 @@ module.exports = function() {
 	}
 
 	TripDAO.prototype.create = function(firebase, token, data, callback) {
+		if (!['0','1'].includes(data.is_published) || !['0','1', '2'].includes(data.status) ||
+			!['0','1','2','3','4','5'].includes(data.transfer) || 
+			data.arrive.split(';').length != 4 || data.depart.split(';').length != 4)
+			return callback({
+							responseCode : -1,
+							description : "Request body is incorrect!",
+							data : ""
+						});
 		var that = this;
 		helper.verifyToken(token, function(decoded){
 			if (decoded == null) 
@@ -1027,18 +1035,18 @@ module.exports = function() {
 
 				var info = data.arrive.split(';');
 				data.arrive = {
-					lat : info[0],
-					lng : info[1],
+					lat : parseFloat(info[0]),
+					lng : parseFloat(info[1]),
 					name : info[2],
-					time : info[3]
+					time : parseInt(info[3])
 				}
 
 				info = data.depart.split(';');
 				data.depart = {
-					lat : info[0],
-					lng : info[1],
+					lat : parseFloat(info[0]),
+					lng : parseFloat(info[1]),
 					name : info[2],
-					time : info[3]
+					time : parseInt(info[3])
 				}
 				
 				data.createdTime = new Date().getTime();
@@ -1047,6 +1055,11 @@ module.exports = function() {
 					fbId : decoded.fbId,
 					name : firstName + lastName
 				}
+
+				data.is_published = parseInt(data.is_published);
+				data.status = parseInt(data.status);
+				data.transfer = parseInt(data.transfer);
+				data.numberOfView = 0;
 
 				var id = firebase.database().ref().child(that.ref).push().key;
 				firebase.database().ref(that.ref + id).set(data);
