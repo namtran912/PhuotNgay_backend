@@ -232,7 +232,7 @@ module.exports = function() {
 				firebase.database().ref(that.ref).once('value').then(function(snapshot) {
 					arrive = helper.U2A(arrive.toLowerCase());
 					depart = helper.U2A(depart.toLowerCase());
-					transfer = helper.U2A(transfer.toLowerCase());
+				
 					var result = [];
 
 					snapshot.forEach(function(childSnapshot){ 
@@ -1236,6 +1236,59 @@ module.exports = function() {
 
 					firebase.database().ref(that.ref + id + '/activity' + '/' + time).set({});
 				
+					callback({
+						responseCode : 1,	
+						description : "",
+						data : ""
+					});
+				});
+			});
+		});
+	}
+
+	TripDAO.prototype.update_View = function(firebase, token, id, callback) {
+		var that = this;
+		helper.verifyToken(token, function(decoded){
+			if (decoded == null) 
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+			if (decoded.fbId == null)
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
+				if (signIn == null) 
+					return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+				if (signIn != decoded.signIn) 
+					return callback({
+							responseCode : 0,
+							description : "Authen is expired",
+							data : ""
+						});
+				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
+					if (snapshot.val() == null) 
+						return callback({
+							responseCode : -1,
+							description : "Trip is not exist!",
+							data : ""
+						});
+
+					firebase.database().ref(that.ref + id).update({
+						numberOfView : snapshot.val().numberOfView + 1
+					});
+
 					callback({
 						responseCode : 1,	
 						description : "",

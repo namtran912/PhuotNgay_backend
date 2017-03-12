@@ -292,6 +292,19 @@ module.exports = function(app, firebase) {
         });
     });
 
+    app.put(url + '/:id/view', function(req, res) {  
+        if (req.headers['authen'] == null) 
+            return res.json({
+							responseCode : -1,
+							description : "Missing authen!",
+							data : ""
+						});
+
+        tripDAO.update_View(firebase, req.headers['authen'], req.params.id, function(result) {
+            res.json(result); 
+        });
+    });
+
     app.put(url + '/:id', function(req, res) {  
         if (req.headers['authen'] == null) 
             return res.json({
