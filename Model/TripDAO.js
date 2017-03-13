@@ -1285,9 +1285,10 @@ module.exports = function() {
 							data : ""
 						});
 
-					firebase.database().ref(that.ref + id).update({
-						numberOfView : snapshot.val().numberOfView + 1
-					});
+					if (!snapshot.val().members.hasOwnProperty(decoded.fbId) && snapshot.val().from.fbId != decoded.fbId)
+						firebase.database().ref(that.ref + id).update({
+							numberOfView : snapshot.val().numberOfView + 1
+						});
 
 					callback({
 						responseCode : 1,	
