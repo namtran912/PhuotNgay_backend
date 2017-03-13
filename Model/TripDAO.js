@@ -1285,7 +1285,7 @@ module.exports = function() {
 							data : ""
 						});
 
-					if (!snapshot.val().members.hasOwnProperty(decoded.fbId) && snapshot.val().from.fbId != decoded.fbId)
+					if (snapshot.val().from.fbId != decoded.fbId && (snapshot.val().members == null || !snapshot.val().members.hasOwnProperty(decoded.fbId)))
 						firebase.database().ref(that.ref + id).update({
 							numberOfView : snapshot.val().numberOfView + 1
 						});
