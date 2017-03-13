@@ -654,7 +654,7 @@ module.exports = function() {
 							data : ""
 						});
 
-					if (snapshot.val().from != decoded.fbId)
+					if (snapshot.val().from.fbId != decoded.fbId)
 						return callback({
 							responseCode : -1,
 							description : "User is not Trip's admin!",
@@ -793,7 +793,7 @@ module.exports = function() {
 							data : ""
 						});
 
-					if (snapshot.val().from != decoded.fbId)
+					if (snapshot.val().from.fbId != decoded.fbId)
 						return callback({
 							responseCode : -1,
 							description : "User is not Trip's admin!",
@@ -946,7 +946,7 @@ module.exports = function() {
 							data : ""
 						});
 
-					if (snapshot.val().from != decoded.fbId)
+					if (snapshot.val().from.fbId != decoded.fbId)
 						return callback({
 							responseCode : -1,
 							description : "User is not Trip's admin!",
@@ -1105,7 +1105,7 @@ module.exports = function() {
 							data : ""
 						});
 
-					if (snapshot.val().from != decoded.fbId)
+					if (snapshot.val().from.fbId != decoded.fbId)
 						return callback({
 							responseCode : -1,
 							description : "User is not Trip's admin!",
@@ -1166,7 +1166,7 @@ module.exports = function() {
 							data : ""
 						});
 
-					if (snapshot.val().from != decoded.fbId)
+					if (snapshot.val().from.fbId != decoded.fbId)
 						return callback({
 							responseCode : -1,
 							description : "User is not Trip's admin!",
@@ -1227,7 +1227,7 @@ module.exports = function() {
 							data : ""
 						});
 
-					if (snapshot.val().from != decoded.fbId)
+					if (snapshot.val().from.fbId != decoded.fbId)
 						return callback({
 							responseCode : -1,
 							description : "User is not Trip's admin!",
