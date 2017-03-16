@@ -800,13 +800,6 @@ module.exports = function() {
 									data : ""
 								});
 
-							var member = {
-								name : noti.content.name, 
-								avatar : noti.content.avatar
-							};
-
-							firebase.database().ref(that.ref + id + '/members' + '/' + noti.content.fbId).set(member);
-							
 							var data = {
 									tripId : id,
 									name : snapshot.val().name,
@@ -823,6 +816,15 @@ module.exports = function() {
 
 									notificationDAO.addNoti(firebase, noti.content.fbId, data, 2);
 								});
+
+							if (noti.type == 0) {
+									var member = {
+									name : noti.content.name, 
+									avatar : noti.content.avatar
+								};
+
+								firebase.database().ref(that.ref + id + '/members' + '/' + noti.content.fbId).set(member);							
+							}
 											
 							callback({
 								responseCode : 1,	
