@@ -155,6 +155,19 @@ module.exports = function(app, firebase) {
     });
 
     app.put(url + '/:id/accept', function(req, res) {  
+         if ( !req.body.hasOwnProperty('verify') || !req.body.hasOwnProperty('notiId')) 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!",
+							data : ""
+						});
+
+        if (req.body.verify == "" || req.body.notiId == "") 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!",
+							data : ""
+						});
 
         if (req.headers['authen'] == null) 
             return res.json({
@@ -163,7 +176,7 @@ module.exports = function(app, firebase) {
 							data : ""
 						});
 
-        tripDAO.acceptToJoin(firebase, req.headers['authen'], req.params.id, function(result) {
+        tripDAO.acceptToJoin(firebase, req.headers['authen'], req.params.id, req.body.verify, req.body.notiId, function(result) {
             res.json(result); 
         });
     });
@@ -209,16 +222,14 @@ module.exports = function(app, firebase) {
     });
 
     app.put(url + '/:id/verify', function(req, res) {  
-        if ( !req.body.hasOwnProperty('fbId') || !req.body.hasOwnProperty('firstName') || 
-            !req.body.hasOwnProperty('lastName') || !req.body.hasOwnProperty('avatar')) 
+        if (!req.body.hasOwnProperty('verify') || !req.body.hasOwnProperty('notiId')) 
             return res.json({
 							responseCode : -1,
 							description : "Request body is incorrect!",
 							data : ""
 						});
 
-        if (req.body.fbId == "" || req.body.firstName == "" || 
-            req.body.lastName == "" || req.body.avatar == "") 
+        if (req.body.verify == "" || req.body.notiId == "") 
             return res.json({
 							responseCode : -1,
 							description : "Request body is incorrect!",
@@ -232,8 +243,7 @@ module.exports = function(app, firebase) {
 							data : ""
 						});
 
-        tripDAO.verifyToJoin(firebase, req.headers['authen'], req.params.id, req.body.fbId, req.body.firstName, req.body.lastName, 
-            req.body.avatar, function(result) {
+        tripDAO.verifyToJoin(firebase, req.headers['authen'], req.params.id, req.body.verify, req.body.notiId, function(result) {
             res.json(result); 
         });
     });

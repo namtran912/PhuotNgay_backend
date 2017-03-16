@@ -1,9 +1,11 @@
 require('./Helper')();
 require('./UserDAO')();
+require('./NotificationDAO')();
 
 module.exports = function() { 
 	var helper = new Helper();
 	var userDAO = new UserDAO();
+	var notificationDAO = new NotificationDAO();
 
 	this.TripDAO = function() {
 		this.ref = 'TRIP/';
@@ -541,7 +543,7 @@ module.exports = function() {
 		});
 	}
 
-	TripDAO.prototype.acceptToJoin = function(firebase, token, id, callback) {
+	TripDAO.prototype.acceptToJoin = function(firebase, token, id, verify, notiId, callback) {
 		var that = this;
 		helper.verifyToken(token, function(decoded){
 			if (decoded == null) 
@@ -582,21 +584,15 @@ module.exports = function() {
 						});
 					
 					var trip = snapshot.val();
-					
-					if (trip.members.hasOwnProperty(decoded.fbId))
-						return callback({
-							responseCode : 1,	
-							description : "",
-							data : ""
-						});
 
-					var member = {
-						name : firstName + lastName,
-						avatar : avatar
-					};
-						
-					firebase.database().ref(that.ref + id + '/members' + '/' + decoded.fbId).set(member);
+					if (verify == "1") 
+						firebase.database().ref(that.ref + id + '/members' + '/' + decoded.fbId).set({
+							name : firstName + " " + lastName, 
+							avatar : avatar
+						});
 				
+					notificationDAO.deleteNoti(firebase, decoded.fbId, notiId);
+
 					callback({
 						responseCode : 1,	
 						description : "",
@@ -723,17 +719,19 @@ module.exports = function() {
 						});
 					
 					var trip = snapshot.val();
+					var data = {
+								fbId : decoded.fbId,
+								name : firstName + " " + lastName, 
+								avatar : avatar
+							};
+
 					userDAO.getFCM(firebase, trip.from.fbId, function(fcm) {
-						helper.sendNoti(fcm, {
-											fbId : decoded.fbId,
-											firstName : firstName, 
-											lastName : lastName, 
-											avatar : avatar
-										}, {
+						data.notiId = notificationDAO.addNoti(firebase, trip.from.fbId, data, 0);
+						helper.sendNoti(fcm, data, {
 											body : "Join",
 											title : "Join",
 											icon : "Join"
-										});
+										});					
 					});
 				
 					callback({
@@ -746,14 +744,7 @@ module.exports = function() {
 		});
 	}
 
-	TripDAO.prototype.verifyToJoin = function(firebase, token, id, fbId, firstName, lastName, avatar, callback) {
-		if (!helper.isFbId(fbId))
-			return callback({
-							responseCode : -1,
-							description : "FbId is incorrect",
-							data : ""
-					});
-					
+	TripDAO.prototype.verifyToJoin = function(firebase, token, id, verify, notiId, callback) {				
 		var that = this;
 		helper.verifyToken(token, function(decoded){
 			if (decoded == null) 
@@ -800,18 +791,53 @@ module.exports = function() {
 							data : ""
 						});
 					
-					var member = {
-						name : firstName + lastName, 
-						avatar : avatar
-					};
+					if (verify == "1")
+						notificationDAO.readNotiById(firebase, decoded.fbId, notiId, function(noti) {
+							if (noti == null) 
+								return callback({
+									responseCode : -1,	
+									description : "Notification was deleted!",
+									data : ""
+								});
 
-					firebase.database().ref(that.ref + id + '/members' + '/' + fbId).set(member);
-									
-					callback({
-						responseCode : 1,	
-						description : "",
-						data : ""
-					});
+							var member = {
+								name : noti.content.name, 
+								avatar : noti.content.avatar
+							};
+
+							firebase.database().ref(that.ref + id + '/members' + '/' + noti.content.fbId).set(member);
+							
+							var data = {
+									tripId : id,
+									name : snapshot.val().name,
+									cover : snapshot.val().cover
+								};
+
+							if (noti.type == 1)
+								userDAO.getFCM(firebase, noti.content.fbId, function(fcm) {
+									helper.sendNoti(fcm, data, {
+														body : "Added",
+														title : "Added",
+														icon : "Added"
+													});
+
+									notificationDAO.addNoti(firebase, noti.content.fbId, data, 2);
+								});
+											
+							callback({
+								responseCode : 1,	
+								description : "",
+								data : ""
+							});
+
+							notificationDAO.deleteNoti(firebase, snapshot.val().from.fbId, notiId);
+						});
+					else 
+						callback({
+							responseCode : 1,	
+							description : "",
+							data : ""
+						});
 				});
 			});
 		});
@@ -863,28 +889,40 @@ module.exports = function() {
 							if (signIn == null) 
 								return;
 
-							var member = {
-								name : firstName + lastName, 
-								avatar : avatar
-							}
-
 							var trip = snapshot.val();
 
-							if (trip.from.fbId == decoded.fbId)
-								firebase.database().ref(that.ref + id + '/members' + '/' + fbId).set(member);
-							else
+							if (trip.from.fbId == decoded.fbId) {	
+								var data = {
+										tripId : id,
+										name : trip.name,
+										cover : trip.cover
+									};
+
+								userDAO.getFCM(firebase, fbId, function(fcm) {
+									data.notiId = notificationDAO.addNoti(firebase, fbId, data, 2);
+									helper.sendNoti(fcm, data, {
+														body : "Added",
+														title : "Added",
+														icon : "Added"
+													});
+								});
+							}
+							else {
+								var data = {
+										fbId : fbId,
+										name : firstName + " " + lastName, 
+										avatar : avatar
+									};
+
 								userDAO.getFCM(firebase, trip.from.fbId, function(fcm) {
-									helper.sendNoti(fcm,  {
-														fbId : fbId,
-														firstName : firstName, 
-														lastName : lastName, 
-														avatar : avatar
-													}, {
+									data.notiId = notificationDAO.addNoti(firebase, trip.from.fbId, data, 1);
+									helper.sendNoti(fcm, data, {
 														body : "Add",
 														title : "Add",
 														icon : "Add"
-													});
+													});				
 								});
+							}
 						});	
 					});
 				
@@ -1045,7 +1083,7 @@ module.exports = function() {
 				data.from = {
 					avatar : avatar,
 					fbId : decoded.fbId,
-					name : firstName + lastName
+					name : firstName + " " + lastName
 				}
 
 				data.is_published = parseInt(data.is_published);
