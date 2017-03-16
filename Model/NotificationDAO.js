@@ -1,4 +1,9 @@
+require('./Helper')();
+require('./UserDAO')();
+
 module.exports = function() { 
+    var helper = new Helper();
+	var userDAO = new UserDAO();
 
 	this.NotificationDAO = function() {
 		this.ref = 'NOTIFICATION/';
@@ -22,6 +27,66 @@ module.exports = function() {
         firebase.database().ref(this.ref + fbId + '/' + id).once('value').then(function(snapshot) {
             callback(snapshot.val());
         });
+    }
+
+    NotificationDAO.prototype.readNotiByFbId = function(firebase, token, callback) {
+        var that = this;
+		helper.verifyToken(token, function(decoded){
+			if (decoded == null) 
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+			if (decoded.fbId == null)
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
+				if (signIn == null) 
+					return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+				if (signIn != decoded.signIn) 
+					return callback({
+							responseCode : 0,
+							description : "Authen is expired",
+							data : ""
+						});
+
+				 firebase.database().ref(that.ref + decoded.fbId).once('value').then(function(snapshot) {
+                     var noties = [];
+
+                     if (snapshot.val() == null)
+                        return callback({
+                            responseCode : 1,
+                            description : "",
+                            data : noties
+                        });
+                     
+                     snapshot.forEach(function(childSnapshot) {
+                        var id = childSnapshot.key;
+                        var noti = childSnapshot.val();
+
+                        noti.id = id;
+                        noties.push(noti)
+                     });
+                     
+                     callback({
+						responseCode : 1,
+						description : "",
+						data : noties
+					});
+                 });
+			});
+		});
     }
 
 }
