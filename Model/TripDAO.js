@@ -717,6 +717,13 @@ module.exports = function() {
 							description : "Trip is not published!",
 							data : ""
 						});
+
+					if (snapshot.val().members.hasOwnProperty(decoded.fbId) || trip.from.fbId == decoded.fbId)
+						return callback({
+							responseCode : -1,
+							description : "User is Trip's member or Trip's admin!",
+							data : ""
+						});
 					
 					var trip = snapshot.val();
 					var data = {
@@ -909,22 +916,29 @@ module.exports = function() {
 													});
 								});
 							}
-							else {
-								var data = {
-										fbId : fbId,
-										name : firstName + " " + lastName, 
-										avatar : avatar
-									};
+							else 
+								if (trip.members.hasOwnProperty(decoded.fbId)){
+									var data = {
+											fbId : fbId,
+											name : firstName + " " + lastName, 
+											avatar : avatar
+										};
 
-								userDAO.getFCM(firebase, trip.from.fbId, function(fcm) {
-									data.notiId = notificationDAO.addNoti(firebase, trip.from.fbId, data, 1);
-									helper.sendNoti(fcm, data, {
-														body : "Add",
-														title : "Add",
-														icon : "Add"
-													});				
-								});
-							}
+									userDAO.getFCM(firebase, trip.from.fbId, function(fcm) {
+										data.notiId = notificationDAO.addNoti(firebase, trip.from.fbId, data, 1);
+										helper.sendNoti(fcm, data, {
+															body : "Add",
+															title : "Add",
+															icon : "Add"
+														});				
+									});
+								}
+								else 
+									return callback({
+										responseCode : -1,
+										description : "User is not Trip's admin or Trip's member!",
+										data : ""
+									});
 						});	
 					});
 				
