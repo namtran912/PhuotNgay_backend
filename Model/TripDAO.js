@@ -723,7 +723,7 @@ module.exports = function() {
 							data : ""
 						});
 
-					if (snapshot.val().members.hasOwnProperty(decoded.fbId) || snapshot.val().from.fbId == decoded.fbId)
+					if ((snapshot.val().members != null && snapshot.val().members.hasOwnProperty(decoded.fbId)) || snapshot.val().from.fbId == decoded.fbId)
 						return callback({
 							responseCode : -1,
 							description : "User is Trip's member or Trip's admin!",
@@ -945,7 +945,7 @@ module.exports = function() {
 								});
 							}
 							else 
-								if (trip.members.hasOwnProperty(decoded.fbId)){
+								if (snapshot.val().members != null || trip.members.hasOwnProperty(decoded.fbId)){
 									var data = {
 											from : {
 												fbId : fbId,
