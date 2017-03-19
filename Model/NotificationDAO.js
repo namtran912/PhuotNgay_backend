@@ -19,8 +19,17 @@ module.exports = function() {
         return id;
     }
 
-    NotificationDAO.prototype.deleteNoti = function(firebase, fbId, id) {
-        firebase.database().ref(this.ref + fbId + '/' + id).set({});
+    NotificationDAO.prototype.deleteNoti = function(firebase, fbId, id, callback) {
+        var that = this;
+        firebase.database().ref(this.ref + fbId + '/' + id).once('value').then(function(snapshot) {
+            if (snapshot.val() == null)
+                callback(false);
+            else {
+                firebase.database().ref(that.ref + fbId + '/' + id).set({});
+                callback(true);
+            }
+        });
+        
     }
 
     NotificationDAO.prototype.readNotiById = function(firebase, fbId, id, callback) {

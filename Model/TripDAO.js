@@ -582,22 +582,27 @@ module.exports = function() {
 							description : "Trip is not exist!",
 							data : ""
 						});
-					
-					var trip = snapshot.val();
-
-					if (verify == "1") 
-						firebase.database().ref(that.ref + id + '/members' + '/' + decoded.fbId).set({
-							name : firstName + " " + lastName, 
-							avatar : avatar
-						});
 				
-					notificationDAO.deleteNoti(firebase, decoded.fbId, notiId);
+					notificationDAO.deleteNoti(firebase, decoded.fbId, notiId, function(result){
+						if (result == false) 
+							return callback({
+								responseCode : -1,	
+								description : "Notification is not exist!",
+								data : ""
+							});
 
-					callback({
-						responseCode : 1,	
-						description : "",
-						data : ""
-					});
+						if (verify == "1") 
+							firebase.database().ref(that.ref + id + '/members' + '/' + decoded.fbId).set({
+								name : firstName + " " + lastName, 
+								avatar : avatar
+							});
+						
+						callback({
+							responseCode : 1,	
+							description : "",
+							data : ""
+						});
+					});	
 				});
 			});
 		});
@@ -727,9 +732,16 @@ module.exports = function() {
 					
 					var trip = snapshot.val();
 					var data = {
-								fbId : decoded.fbId,
-								name : firstName + " " + lastName, 
-								avatar : avatar
+								from : {
+									fbId : decoded.fbId,
+									name : firstName + " " + lastName, 
+									avatar : avatar
+								},
+								trip : {
+									tripId : id,
+									cover : trip.cover,
+									name : trip.name
+								}
 							};
 
 					userDAO.getFCM(firebase, trip.from.fbId, function(fcm) {
@@ -768,7 +780,7 @@ module.exports = function() {
 							data : ""
 						});
 
-			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
+			userDAO.getSignInAndInfo(firebase, decoded.fbId, function(signIn, firstName, lastName, avatar) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
@@ -798,6 +810,8 @@ module.exports = function() {
 							data : ""
 						});
 					
+					var trip = snapshot.val();
+					
 					if (verify == "1")
 						notificationDAO.readNotiById(firebase, decoded.fbId, notiId, function(noti) {
 							if (noti == null) 
@@ -808,9 +822,16 @@ module.exports = function() {
 								});
 
 							var data = {
-									tripId : id,
-									name : snapshot.val().name,
-									cover : snapshot.val().cover
+									from : {
+										fbId : decoded.fbId,
+										name : firstName + " " + lastName, 
+										avatar : avatar
+									},
+									trip : {
+										tripId : id,
+										cover : trip.cover,
+										name : trip.name
+									}
 								};
 
 							if (noti.type == 1)
@@ -821,16 +842,16 @@ module.exports = function() {
 														icon : "Added"
 													});
 
-									notificationDAO.addNoti(firebase, noti.content.fbId, data, 2);
+									notificationDAO.addNoti(firebase, noti.content.from.fbId, data, 2);
 								});
 
 							if (noti.type == 0) {
-									var member = {
-									name : noti.content.name, 
-									avatar : noti.content.avatar
+								var member = {
+									name : noti.content.from.name, 
+									avatar : noti.content.from.avatar
 								};
 
-								firebase.database().ref(that.ref + id + '/members' + '/' + noti.content.fbId).set(member);							
+								firebase.database().ref(that.ref + id + '/members' + '/' + noti.content.from.fbId).set(member);							
 							}
 											
 							callback({
@@ -869,7 +890,7 @@ module.exports = function() {
 							data : ""
 						});
 
-			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
+			userDAO.getSignInAndInfo(firebase, decoded.fbId, function(signIn, firstName, lastName, avatar) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
@@ -894,7 +915,7 @@ module.exports = function() {
 
 					var fbIds = list.split(';');
 					fbIds.forEach(function(fbId){
-						userDAO.getSignInAndInfo(firebase, fbId, function(signIn, firstName, lastName, avatar) {
+						userDAO.getSignInAndInfo(firebase, fbId, function(signIn, _firstName, _lastName, _avatar) {
 							if (signIn == null) 
 								return;
 
@@ -902,9 +923,16 @@ module.exports = function() {
 
 							if (trip.from.fbId == decoded.fbId) {	
 								var data = {
-										tripId : id,
-										name : trip.name,
-										cover : trip.cover
+										from : {
+											fbId : decoded.fbId,
+											name : firstName + " " + lastName, 
+											avatar : avatar
+										},
+										trip : {
+											tripId : id,
+											cover : trip.cover,
+											name : trip.name
+										}
 									};
 
 								userDAO.getFCM(firebase, fbId, function(fcm) {
@@ -919,9 +947,16 @@ module.exports = function() {
 							else 
 								if (trip.members.hasOwnProperty(decoded.fbId)){
 									var data = {
-											fbId : fbId,
-											name : firstName + " " + lastName, 
-											avatar : avatar
+											from : {
+												fbId : fbId,
+												name : _firstName + " " + _lastName, 
+												avatar : _avatar
+											},
+											trip : {
+												tripId : id,
+												cover : trip.cover,
+												name : trip.name
+											}
 										};
 
 									userDAO.getFCM(firebase, trip.from.fbId, function(fcm) {
