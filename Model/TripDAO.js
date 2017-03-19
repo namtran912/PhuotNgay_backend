@@ -718,7 +718,7 @@ module.exports = function() {
 							data : ""
 						});
 
-					if (snapshot.val().members.hasOwnProperty(decoded.fbId) || trip.from.fbId == decoded.fbId)
+					if (snapshot.val().members.hasOwnProperty(decoded.fbId) || snapshot.val().from.fbId == decoded.fbId)
 						return callback({
 							responseCode : -1,
 							description : "User is Trip's member or Trip's admin!",
