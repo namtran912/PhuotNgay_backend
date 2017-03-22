@@ -7,6 +7,7 @@ module.exports = function() {
 
 	this.NotificationDAO = function() {
 		this.ref = 'NOTIFICATION/';
+        this.tripRef = 'TRIP/';
     }
 
     NotificationDAO.prototype.addNoti = function(firebase, fbId, data, type) {
@@ -98,4 +99,80 @@ module.exports = function() {
 		});
     }
 
+    NotificationDAO.prototype.sendNoti = function (firebase, token, tripId, fbIds, title, message, callback) {
+        var that = this;
+		helper.verifyToken(token, function(decoded){
+			if (decoded == null) 
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+			if (decoded.fbId == null)
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
+				if (signIn == null) 
+					return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!",
+							data : ""
+						});
+
+				if (signIn != decoded.signIn) 
+					return callback({
+							responseCode : 0,
+							description : "Authen is expired",
+							data : ""
+						});
+
+				firebase.database().ref(that.tripRef + tripId).once('value').then(function(snapshot) {
+					if (snapshot.val() == null) 
+						return callback({
+							responseCode : -1,
+							description : "Trip is not exist!",
+							data : ""
+						});
+
+					if (snapshot.val().is_published == 0) 
+						return callback({
+							responseCode : -1,
+							description : "Trip is not published!",
+							data : ""
+						});
+
+					if (snapshot.val().from.fbId != decoded.fbId && (snapshot.val().members == null || !snapshot.val().members.hasOwnProperty(decoded.fbId)))
+						return callback({
+							responseCode : -1,
+							description : "User is not Trip's member or Trip's admin!",
+							data : ""
+						});
+
+                    var trip = snapshot.val();
+					
+                    fbIds.split(';').forEach(function(fbId){
+                        if (trip.members != null && trip.members.hasOwnProperty(fbId))
+                            userDAO.getFCM(firebase, fbId, function(fcm) {
+                                helper.sendNoti(fcm, {}, {
+                                                    body : message,
+                                                    title : title,
+                                                    icon : "noti"
+                                                });		
+                            });			
+					});
+				
+					callback({
+						responseCode : 1,	
+						description : "",
+						data : ""
+					});
+				});
+			});
+		});
+	}
 }
