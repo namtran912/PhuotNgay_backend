@@ -1,7 +1,9 @@
 var express = require('express');
 var firebase = require('firebase');
 var config = require('./config');
+const NodeCache = require( "node-cache" );
 
+const myCache = new NodeCache();
 var app = express();
 var PORT = 8080;
 
@@ -18,7 +20,7 @@ app.use(allowCrossDomain);
 
 firebase.initializeApp(config.firebase);
 
-require('./Controller/TripController.js')(app, firebase);
+require('./Controller/TripController.js')(app, firebase, myCache);
 require('./Controller/UserController.js')(app, firebase);
 require('./Controller/NotificationController.js')(app, firebase);
 

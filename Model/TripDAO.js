@@ -11,10 +11,11 @@ module.exports = function() {
 		this.ref = 'TRIP/';
 		this.property = ['arrive', 'cover', 'depart', 'description', 'is_published', 'name', 
 						'numberOfView', 'status', 'transfer'];
-		this.transfer = ['Đi bộ', 'Xe đạp', 'Xe máy', 'Xe du lịch', 'Tàu hỏa', 'Tàu thuyền']
+		this.transfer = ['Đi bộ', 'Xe đạp', 'Xe máy', 'Xe du lịch', 'Tàu hỏa', 'Tàu thuyền'];
+		this.orderBy = ['arrive/time', 'arrive/name', 'depart/time', 'depart/name', 'name', 'numberOfView', 'status'];
 	} 
 
-	TripDAO.prototype.readTripsData = function(firebase, token, query, callback) {
+	TripDAO.prototype.readTripsData = function(firebase, myCache,  token, query, callback) {
 		var that = this;
 		helper.verifyToken(token, function(decoded){
 			if (decoded == null) 
@@ -45,11 +46,65 @@ module.exports = function() {
 							description : "Authen is expired",
 							data : ""
 						});
-				if ((query.sort == 'asc' || query.sort == 'desc') && query.orderBy != null) 
-					if (['arrive/time', 'arrive/name', 'depart/time', 'depart/name', 'name', 'numberOfView', 'status'].includes(query.orderBy)) {
-						firebase.database().ref(that.ref).orderByChild(query.orderBy).on('value', function(snapshot) {
+				if ((query.sort == 'asc' || query.sort == 'desc') && query.orderBy != null) {
+					if (that.orderBy.includes(query.orderBy)) {
+						try{
+							value = myCache.get("trips/" + query.orderBy, true);
+							if (query.sort == 'desc')
+								value = value.reverse();
+
+							callback({
+								responseCode : 1,
+								description : "",
+								data : value
+							});
+						} catch( err ){
+							firebase.database().ref(that.ref).orderByChild(query.orderBy).on('value', function(snapshot) {
+								var result = [];
+								
+								snapshot.forEach(function(childSnapshot) {
+									var childKey = childSnapshot.key;
+									var childData = childSnapshot.val();
+
+									if (childData.is_published == 1)
+										result.push({
+											id : childKey,
+											arrive : childData.arrive,
+											depart : childData.depart,
+											name : childData.name,
+											cover : childData.cover,
+											numberOfView : childData.numberOfView,
+											status : childData.status
+										});
+								});
+
+								myCache.set("trips/" + query.orderBy, result);
+
+								if (query.sort == 'desc')
+									result = result.reverse();
+								
+								callback({
+									responseCode : 1,
+									description : "",
+									data : result
+								});
+							});
+						}
+					}
+				}
+				else
+					try{
+						value = myCache.get("trips", true);
+						
+						callback({
+							responseCode : 1,
+							description : "",
+							data : value
+						});
+					} catch( err ){
+						firebase.database().ref(that.ref).once('value').then(function(snapshot) {
 							var result = [];
-							
+
 							snapshot.forEach(function(childSnapshot) {
 								var childKey = childSnapshot.key;
 								var childData = childSnapshot.val();
@@ -66,9 +121,8 @@ module.exports = function() {
 									});
 							});
 
-							if (query.sort == 'desc')
-								result = result.reverse();
-
+							myCache.set("trips", result);
+							
 							callback({
 								responseCode : 1,
 								description : "",
@@ -76,32 +130,6 @@ module.exports = function() {
 							});
 						});
 					}
-
-				firebase.database().ref(that.ref).once('value').then(function(snapshot) {
-					var result = [];
-
-					snapshot.forEach(function(childSnapshot) {
-						var childKey = childSnapshot.key;
-						var childData = childSnapshot.val();
-
-						if (childData.is_published == 1)
-							result.push({
-								id : childKey,
-								arrive : childData.arrive,
-								depart : childData.depart,
-								name : childData.name,
-								cover : childData.cover,
-								numberOfView : childData.numberOfView,
-								status : childData.status
-							});
-					});
-
-					callback({
-						responseCode : 1,
-						description : "",
-						data : result
-					});
-				});
 			});
 		});
 	}
@@ -137,8 +165,8 @@ module.exports = function() {
 							description : "Authen is expired",
 							data : ""
 						});
-				if ((query.sort == 'asc' || query.sort == 'desc') && query.orderBy != null) 
-					if (['arrive/time', 'arrive/name', 'depart/time', 'depart/name', 'name', 'numberOfView', 'status'].includes(query.orderBy)) {
+				if ((query.sort == 'asc' || query.sort == 'desc') && query.orderBy != null) {
+					if (that.orderBy.includes(query.orderBy)) {
 						firebase.database().ref(that.ref).orderByChild(query.orderBy).on('value', function(snapshot) {
 							var result = [];
 							
@@ -168,7 +196,8 @@ module.exports = function() {
 							});
 						});
 					}
-
+				}
+				else
 				firebase.database().ref(that.ref).once('value').then(function(snapshot) {
 					var result = [];
 
@@ -190,10 +219,10 @@ module.exports = function() {
 					});
 
 					callback({
-							responseCode : 1,
-							description : "",
-							data : result
-						});
+						responseCode : 1,
+						description : "",
+						data : result
+					});
 				});
 			});
 		});
@@ -305,7 +334,7 @@ module.exports = function() {
 							description : "Authen is expired",
 							data : ""
 						});
-
+				
 				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
 					var trip = snapshot.val();
 					if (trip == null)
@@ -334,10 +363,7 @@ module.exports = function() {
 						});
 					}
 
-					callback({
-						responseCode : 1,
-						description : "",
-						data : {
+					var data = {
 							arrive : trip.arrive,
 							depart : trip.depart,
 							name : trip.name,
@@ -354,7 +380,12 @@ module.exports = function() {
 							numberOfComments : (trip.comment == null) ? 0 : Object.keys(trip.comment).length,
 							numberOfMembers : (trip.members == null) ? 0 : Object.keys(trip.members).length,
 							role : role
-						}
+						};
+
+					callback({
+						responseCode : 1,
+						description : "",
+						data : data
 					});
 				});
 			});
@@ -987,7 +1018,7 @@ module.exports = function() {
 		});
 	}
 
-	TripDAO.prototype.update = function(firebase, token, id, data, callback) {
+	TripDAO.prototype.update = function(firebaseb, myCache, token, id, data, callback) {
 		for (key in data) 
 			if (this.property.indexOf(key) == -1 ||  data[key] == "")
 				return callback({
@@ -1064,6 +1095,10 @@ module.exports = function() {
 					
 					firebase.database().ref(that.ref + id).update(data);
 				
+					myCache.del("trips");
+					for (i in that.orderBy)
+						myCache.del("trips/" + that.orderBy[i]);
+
 					callback({
 						responseCode : 1,	
 						description : "",
@@ -1074,7 +1109,7 @@ module.exports = function() {
 		});
 	}
 
-	TripDAO.prototype.create = function(firebase, token, data, callback) {
+	TripDAO.prototype.create = function(firebase, myCache, token, data, callback) {
 		if (!['0','1'].includes(data.is_published) || !['0','1', '2'].includes(data.status) ||
 			!['0','1','2','3','4','5'].includes(data.transfer) || 
 			data.arrive.split(';').length != 4 || data.depart.split(';').length != 4)
@@ -1144,6 +1179,10 @@ module.exports = function() {
 
 				var id = firebase.database().ref().child(that.ref).push().key;
 				firebase.database().ref(that.ref + id).set(data);
+
+				myCache.del("trips");
+				for (i in that.orderBy)
+					myCache.del("trips/" + that.orderBy[i]);
 			
 				callback({
 					responseCode : 1,	

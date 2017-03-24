@@ -1,6 +1,6 @@
 require('../Model/TripDAO')();
 
-module.exports = function(app, firebase) { 
+module.exports = function(app, firebase, myCache) { 
     var tripDAO = new TripDAO();
     var url = '/api/trips';   
 
@@ -11,7 +11,7 @@ module.exports = function(app, firebase) {
 							description : "Missing authen!",
 							data : ""
 						});
-        tripDAO.readTripsData(firebase, req.headers['authen'], req.query, function(result) {
+        tripDAO.readTripsData(firebase, myCache, req.headers['authen'], req.query, function(result) {
             res.json(result); 
         });
     });
@@ -122,7 +122,7 @@ module.exports = function(app, firebase) {
 							data : ""
 						});
 
-        tripDAO.create(firebase, req.headers['authen'], req.body, function(result) {
+        tripDAO.create(firebase, myCache, req.headers['authen'], req.body, function(result) {
             res.json(result); 
         });
     });
@@ -323,7 +323,7 @@ module.exports = function(app, firebase) {
 							data : ""
 						});
 
-        tripDAO.update(firebase, req.headers['authen'], req.params.id, req.body, function(result) {
+        tripDAO.update(firebase, myCache, req.headers['authen'], req.params.id, req.body, function(result) {
             res.json(result); 
         });
     });
