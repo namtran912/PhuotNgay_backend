@@ -555,7 +555,7 @@ module.exports = function() {
 						});
 					var members = [];
 
-					if (trip.members.hasOwnProperty(decoded.fbId)) {
+					if (trip.from.fbId == decoded.fbId || (trip.members != null && trip.members.hasOwnProperty(decoded.fbId))) {
 						for (key in trip.members) 
 							members.push({
 								fbId : key,
