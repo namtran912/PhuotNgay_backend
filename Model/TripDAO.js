@@ -556,6 +556,12 @@ module.exports = function() {
 					var members = [];
 
 					if (trip.from.fbId == decoded.fbId || (trip.members != null && trip.members.hasOwnProperty(decoded.fbId))) {
+						members.push({
+							fbId : trip.from.fbId,
+							avatar : trip.from.avatar,
+							name : trip.from.name
+						});
+
 						for (key in trip.members) 
 							members.push({
 								fbId : key,
