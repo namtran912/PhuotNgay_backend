@@ -782,12 +782,14 @@ module.exports = function() {
 							};
 
 					userDAO.getFCM(firebase, trip.from.fbId, function(fcm) {
-						data.notiId = notificationDAO.addNoti(firebase, trip.from.fbId, data, 0);
-						helper.sendNoti(fcm, data, {
+						notificationDAO.addNoti(firebase, trip.from.fbId, data, 0, function(notiId){
+							data.notiId = notiId;
+							helper.sendNoti(fcm, data, {
 											body : "Join",
 											title : "Join",
 											icon : "Join"
-										});					
+										});		
+						});			
 					});
 				
 					callback({
@@ -879,7 +881,7 @@ module.exports = function() {
 														icon : "Added"
 													});
 
-									notificationDAO.addNoti(firebase, noti.content.from.fbId, data, 2);
+									notificationDAO.addNoti(firebase, noti.content.from.fbId, data, 2, function(notiId){});
 								});
 							}
 
@@ -975,12 +977,14 @@ module.exports = function() {
 									};
 
 								userDAO.getFCM(firebase, fbId, function(fcm) {
-									data.notiId = notificationDAO.addNoti(firebase, fbId, data, 2);
-									helper.sendNoti(fcm, data, {
-														body : "Added",
-														title : "Added",
-														icon : "Added"
-													});
+									notificationDAO.addNoti(firebase, fbId, data, 2, function(notiId){
+										data.notiId = notiId;
+										helper.sendNoti(fcm, data, {
+															body : "Added",
+															title : "Added",
+															icon : "Added"
+														});
+									});
 								});
 							}
 							else 
@@ -999,12 +1003,14 @@ module.exports = function() {
 										};
 
 									userDAO.getFCM(firebase, trip.from.fbId, function(fcm) {
-										data.notiId = notificationDAO.addNoti(firebase, trip.from.fbId, data, 1);
-										helper.sendNoti(fcm, data, {
-															body : "Add",
-															title : "Add",
-															icon : "Add"
-														});				
+										notificationDAO.addNoti(firebase, trip.from.fbId, data, 1, function(notiId){
+											data.notiId = notiId;
+											helper.sendNoti(fcm, data, {
+																body : "Add",
+																title : "Add",
+																icon : "Add"
+															});	
+										});			
 									});
 								}
 								else 

@@ -10,14 +10,31 @@ module.exports = function() {
         this.tripRef = 'TRIP/';
     }
 
-    NotificationDAO.prototype.addNoti = function(firebase, fbId, data, type) {
-        var id = firebase.database().ref().child(this.ref + fbId).push().key;
-        firebase.database().ref(this.ref + fbId + '/' + id).set({
+    NotificationDAO.prototype.addNoti = function(firebase, fbId, data, type, callback) {
+		var that = this;
+		var noti = {
             content : data,
             type : type
-        });
+        };
+		var id = null;
+        firebase.database().ref(this.ref + fbId).once('value').then(function(snapshot) {
+            if (snapshot.val() != null)
+			 	snapshot.val().forEach(function(childSnapshot){
+					var childKey = childSnapshot.key;
+					var childData = childSnapshot.val();
 
-        return id;
+					if (childData == noti) {
+						id = childKey;
+						return callback(id);
+					}
+				});
+
+			if (id == null) {
+				var id = firebase.database().ref().child(that.ref + fbId).push().key;
+				firebase.database().ref(that.ref + fbId + '/' + id).set(noti);
+				callback(id);
+			}
+        });
     }
 
     NotificationDAO.prototype.deleteNoti = function(firebase, fbId, id, callback) {
