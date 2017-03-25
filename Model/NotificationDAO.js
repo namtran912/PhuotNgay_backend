@@ -23,16 +23,24 @@ module.exports = function() {
 					var childKey = childSnapshot.key;
 					var childData = childSnapshot.val();
 
-					if (childData == noti) {
+					if (childData.type == noti.type && 
+					childData.content.from.fbId == noti.content.from.fbId &&
+					childData.content.trip.tripId == noti.content.trip.tripId) {
 						id = childKey;
-						return callback(id);
+						return callback({
+							id : id,
+							success : 0
+						});
 					}
 				});
 
 			if (id == null) {
 				var id = firebase.database().ref().child(that.ref + fbId).push().key;
 				firebase.database().ref(that.ref + fbId + '/' + id).set(noti);
-				callback(id);
+				callback({
+					id : id,
+					success : 1
+				});
 			}
         });
     }

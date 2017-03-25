@@ -783,8 +783,9 @@ module.exports = function() {
 
 					userDAO.getFCM(firebase, trip.from.fbId, function(fcm) {
 						notificationDAO.addNoti(firebase, trip.from.fbId, data, 0, function(notiId){
-							data.notiId = notiId;
-							helper.sendNoti(fcm, {}, {
+							data.notiId = notiId.id;
+							if (notiId.success == 1)
+								helper.sendNoti(fcm, {}, {
 											title : "IZIGO",
 											body : "<b>" + data.from.name + "</b> xin vào trip <b>" + data.trip.name + "</b> của bạn.",
 											icon : "#"
@@ -876,8 +877,9 @@ module.exports = function() {
 								
 								userDAO.getFCM(firebase, noti.content.fbId, function(fcm) {
 									notificationDAO.addNoti(firebase, noti.content.from.fbId, data, 2, function(notiId){
-										data.notiId = notiId;
-										helper.sendNoti(fcm, {}, {
+										data.notiId = notiId.id;
+										if (notiId.success == 1)
+											helper.sendNoti(fcm, {}, {
 														title : "IZIGO",
 														body : "<b>" + data.from.name + "</b> thêm bạn vào trip <b>" + data.trip.name + "</b> ",
 														icon : "#"
@@ -979,8 +981,9 @@ module.exports = function() {
 
 								userDAO.getFCM(firebase, fbId, function(fcm) {
 									notificationDAO.addNoti(firebase, fbId, data, 2, function(notiId){
-										data.notiId = notiId;
-										helper.sendNoti(fcm, {}, {
+										data.notiId = notiId.id;
+										if (notiId.success == 1)
+											helper.sendNoti(fcm, {}, {
 															title : "IZIGO",
 															body : "<b>" + data.from.name + "</b> thêm bạn vào trip <b>" + data.trip.name + "</b> ",
 															icon : "#"
@@ -1005,8 +1008,9 @@ module.exports = function() {
 
 									userDAO.getFCM(firebase, trip.from.fbId, function(fcm) {
 										notificationDAO.addNoti(firebase, trip.from.fbId, data, 1, function(notiId){
-											data.notiId = notiId;
-											helper.sendNoti(fcm, {}, {
+											data.notiId = notiId.id;
+											if (notiId.success == 1)
+												helper.sendNoti(fcm, {}, {
 																title : "IZIGO",
 																body : "<b>" + data.from.name + "</b> được thêm vào trip <b>" + data.trip.name + "</b> của bạn.",
 																icon : "#"
