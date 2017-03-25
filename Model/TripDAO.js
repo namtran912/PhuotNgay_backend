@@ -858,7 +858,8 @@ module.exports = function() {
 									data : ""
 								});
 
-							var data = {
+							if (noti.type == 1) {
+								var data = {
 									from : {
 										fbId : decoded.fbId,
 										name : firstName + " " + lastName, 
@@ -870,8 +871,7 @@ module.exports = function() {
 										name : trip.name
 									}
 								};
-
-							if (noti.type == 1)
+								
 								userDAO.getFCM(firebase, noti.content.fbId, function(fcm) {
 									helper.sendNoti(fcm, data, {
 														body : "Added",
@@ -881,6 +881,7 @@ module.exports = function() {
 
 									notificationDAO.addNoti(firebase, noti.content.from.fbId, data, 2);
 								});
+							}
 
 							if (noti.type == 0) {
 								var member = {
@@ -896,15 +897,16 @@ module.exports = function() {
 								description : "",
 								data : ""
 							});
-
-							notificationDAO.deleteNoti(firebase, snapshot.val().from.fbId, notiId);
+							notificationDAO.deleteNoti(firebase, trip.from.fbId, notiId);
 						});
-					else 
+					else {
+						notificationDAO.deleteNoti(firebase, trip.from.fbId, notiId);
 						callback({
 							responseCode : 1,	
 							description : "",
 							data : ""
 						});
+					}
 				});
 			});
 		});
