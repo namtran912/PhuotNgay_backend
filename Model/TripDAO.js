@@ -696,8 +696,8 @@ module.exports = function() {
 							data : ""
 						});
 					
-					var tríp = snapshot.val();
-					if (tríp.members.hasOwnProperty(fbId)) 
+					var trip = snapshot.val();
+					if (trip.members.hasOwnProperty(fbId)) 
 						firebase.database().ref(that.ref + id + '/members' + '/' + fbId).set({});
 									
 					callback({
