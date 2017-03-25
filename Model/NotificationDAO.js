@@ -19,7 +19,7 @@ module.exports = function() {
 		var id = null;
         firebase.database().ref(this.ref + fbId).once('value').then(function(snapshot) {
             if (snapshot.val() != null)
-			 	snapshot.val().forEach(function(childSnapshot){
+			 	snapshot.forEach(function(childSnapshot){
 					var childKey = childSnapshot.key;
 					var childData = childSnapshot.val();
 
@@ -178,7 +178,7 @@ module.exports = function() {
                                 helper.sendNoti(fcm, {}, {
                                                     body : message,
                                                     title : title,
-                                                    icon : "noti"
+                                                    icon : "#"
                                                 });		
                             });			
 					});
