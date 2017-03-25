@@ -348,7 +348,7 @@ module.exports = function() {
 					if (decoded.fbId == trip.from.fbId)
 						role = 2;
 					else 
-						if (tríp.members.hasOwnProperty(decoded.fbId)) 
+						if (trip.members.hasOwnProperty(decoded.fbId)) 
 							role = 1;
 						
 					var album = [];
