@@ -1034,7 +1034,7 @@ module.exports = function() {
 		});
 	}
 
-	TripDAO.prototype.update = function(firebaseb, myCache, token, id, data, callback) {
+	TripDAO.prototype.update = function(firebase, myCache, token, id, data, callback) {
 		for (key in data) 
 			if (this.property.indexOf(key) == -1 ||  data[key] == "")
 				return callback({
