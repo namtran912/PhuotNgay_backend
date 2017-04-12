@@ -5,13 +5,13 @@ module.exports = function(app, firebase) {
     var url = '/api/notification';   
 
     app.get(url, function(req, res) {  
-        if (req.headers['authen'] == null) 
+        if (req.headers['authorization'] == null) 
             return res.json({
 							responseCode : -1,
-							description : "Missing authen!",
+							description : "Missing authorization!",
 							data : ""
 						});
-        notificationDAO.readNotiByFbId(firebase, req.headers['authen'], function(result) {
+        notificationDAO.readNotiByFbId(firebase, req.headers['authorization'], function(result) {
             res.json(result); 
         });
     });
@@ -32,13 +32,13 @@ module.exports = function(app, firebase) {
 							data : ""
 						});
 
-        if (req.headers['authen'] == null) 
+        if (req.headers['authorization'] == null) 
             return res.json({
 							responseCode : -1,
-							description : "Missing authen!",
+							description : "Missing authorization!",
 							data : ""
 						});
-        notificationDAO.sendNoti(firebase, req.headers['authen'], req.body.tripId, req.body.fbId, req.body.title,
+        notificationDAO.sendNoti(firebase, req.headers['authorization'], req.body.tripId, req.body.fbId, req.body.title,
             req.body.message, function(result) {
             res.json(result); 
         });

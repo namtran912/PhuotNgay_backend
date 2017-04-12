@@ -25,44 +25,44 @@ module.exports = function(app, firebase) {
     });
 
     app.put(url, function(req, res) {  
-        if (req.headers['authen'] == null) 
+        if (req.headers['authorization'] == null) 
             return res.json({
 							responseCode : -1,
-							description : "Missing authen!",
+							description : "Missing authorization!",
 							data : ""
 						});
-        userDAO.update(firebase, req.headers['authen'], req.body, function(result) {
+        userDAO.update(firebase, req.headers['authorization'], req.body, function(result) {
             res.json(result); 
         });
     });
 
      app.get(url, function(req, res) {  
-        if (req.headers['authen'] == null) 
+        if (req.headers['authorization'] == null) 
             return res.json({
 							responseCode : -1,
-							description : "Missing authen!",
+							description : "Missing authorization!",
 							data : ""
 						});
-        userDAO.readUserById(firebase, req.headers['authen'], function(result) {
+        userDAO.readUserById(firebase, req.headers['authorization'], function(result) {
             res.json(result); 
         });
     });
 
     app.get(url + '/friends', function(req, res) {  
-        if (req.headers['x-access-token'] == null) 
+        if (req.headers['fbToken'] == null) 
             return res.json({
 							responseCode : -1,
-							description : "Missing access token!",
+							description : "Missing facebook token!",
 							data : ""
 						});
 
-        if (req.headers['authen'] == null) 
+        if (req.headers['authorization'] == null) 
             return res.json({
 							responseCode : -1,
-							description : "Missing authen!",
+							description : "Missing authorization!",
 							data : ""
 						});
-        userDAO.getListFriends(firebase, req.headers['authen'], req.headers['x-access-token'], function(result) {
+        userDAO.getListFriends(firebase, req.headers['authorization'], req.headers['fbToken'], function(result) {
             res.json(result); 
         });
     });

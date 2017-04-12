@@ -5,25 +5,25 @@ module.exports = function(app, firebase, myCache) {
     var url = '/api/trips';   
 
     app.get(url, function(req, res) {  
-        if (req.headers['authen'] == null) 
+        if (req.headers['authorization'] == null) 
             return res.json({
 							responseCode : -1,
-							description : "Missing authen!",
+							description : "Missing authorization!",
 							data : ""
 						});
-        tripDAO.readTripsData(firebase, myCache, req.headers['authen'], req.query, function(result) {
+        tripDAO.readTripsData(firebase, myCache, req.headers['authorization'], req.query, function(result) {
             res.json(result); 
         });
     });
 
     app.get(url + '/own', function(req, res) {  
-        if (req.headers['authen'] == null) 
+        if (req.headers['authorization'] == null) 
             return res.json({
 							responseCode : -1,
-							description : "Missing authen!",
+							description : "Missing authorization!",
 							data : ""
 						});
-        tripDAO.readOwnTripsData(firebase, req.headers['authen'], req.query, function(result) {
+        tripDAO.readOwnTripsData(firebase, req.headers['authorization'], req.query, function(result) {
             res.json(result); 
         });
     });
@@ -37,62 +37,62 @@ module.exports = function(app, firebase, myCache) {
 							data : ""
 						});
 
-        if (req.headers['authen'] == null) 
+        if (req.headers['authorization'] == null) 
             return res.json({
 							responseCode : -1,
-							description : "Missing authen!",
+							description : "Missing authorization!",
 							data : ""
 						});
-        tripDAO.searchTripsData(firebase, req.headers['authen'], req.query.arrive, req.query.depart, 
+        tripDAO.searchTripsData(firebase, req.headers['authorization'], req.query.arrive, req.query.depart, 
         req.query.duration, req.query.transfer, function(result) {
             res.json(result); 
         });
     });
 
     app.get(url + '/:id/activity', function(req, res) {  
-        if (req.headers['authen'] == null) 
+        if (req.headers['authorization'] == null) 
             return res.json({
 							responseCode : -1,
-							description : "Missing authen!",
+							description : "Missing authorization!",
 							data : ""
 						});
-        tripDAO.readTripsDataById_Activity(firebase, req.headers['authen'], req.params.id, function(result) {
+        tripDAO.readTripsDataById_Activity(firebase, req.headers['authorization'], req.params.id, function(result) {
             res.json(result); 
         });
     });
 
     app.get(url + '/:id/comment', function(req, res) {  
-        if (req.headers['authen'] == null) 
+        if (req.headers['authorization'] == null) 
             return res.json({
 							responseCode : -1,
-							description : "Missing authen!",
+							description : "Missing authorization!",
 							data : ""
 						});
-        tripDAO.readTripsDataById_Comment(firebase, req.headers['authen'], req.params.id, function(result) {
+        tripDAO.readTripsDataById_Comment(firebase, req.headers['authorization'], req.params.id, function(result) {
             res.json(result); 
         });
     });
 
     app.get(url + '/:id/members', function(req, res) {  
-        if (req.headers['authen'] == null) 
+        if (req.headers['authorization'] == null) 
             return res.json({
 							responseCode : -1,
-							description : "Missing authen!",
+							description : "Missing authorization!",
 							data : ""
 						});
-        tripDAO.readTripsDataById_Members(firebase, req.headers['authen'], req.params.id, function(result) {
+        tripDAO.readTripsDataById_Members(firebase, req.headers['authorization'], req.params.id, function(result) {
             res.json(result); 
         });
     });
 
     app.get(url + '/:id', function(req, res) {  
-        if (req.headers['authen'] == null) 
+        if (req.headers['authorization'] == null) 
             return res.json({
 							responseCode : -1,
-							description : "Missing authen!",
+							description : "Missing authorization!",
 							data : ""
 						});
-        tripDAO.readTripsDataById(firebase, req.headers['authen'], req.params.id, function(result) {
+        tripDAO.readTripsDataById(firebase, req.headers['authorization'], req.params.id, function(result) {
             res.json(result); 
         });
     });
@@ -115,14 +115,14 @@ module.exports = function(app, firebase, myCache) {
 							data : ""
 						});
 
-        if (req.headers['authen'] == null) 
+        if (req.headers['authorization'] == null) 
             return res.json({
 							responseCode : -1,
-							description : "Missing authen!",
+							description : "Missing authorization!",
 							data : ""
 						});
 
-        tripDAO.create(firebase, myCache, req.headers['authen'], req.body, function(result) {
+        tripDAO.create(firebase, myCache, req.headers['authorization'], req.body, function(result) {
             res.json(result); 
         });
     });
@@ -142,14 +142,14 @@ module.exports = function(app, firebase, myCache) {
 							data : ""
 						});
 
-        if (req.headers['authen'] == null) 
+        if (req.headers['authorization'] == null) 
             return res.json({
 							responseCode : -1,
-							description : "Missing authen!",
+							description : "Missing authorization!",
 							data : ""
 						});
 
-        tripDAO.add_Activity(firebase, req.headers['authen'], req.params.id, req.body.time, req.body.content, function(result) {
+        tripDAO.add_Activity(firebase, req.headers['authorization'], req.params.id, req.body.time, req.body.content, function(result) {
             res.json(result); 
         });
     });
@@ -169,14 +169,14 @@ module.exports = function(app, firebase, myCache) {
 							data : ""
 						});
 
-        if (req.headers['authen'] == null) 
+        if (req.headers['authorization'] == null) 
             return res.json({
 							responseCode : -1,
-							description : "Missing authen!",
+							description : "Missing authorization!",
 							data : ""
 						});
 
-        tripDAO.acceptToJoin(firebase, req.headers['authen'], req.params.id, req.body.verify, req.body.notiId, function(result) {
+        tripDAO.acceptToJoin(firebase, req.headers['authorization'], req.params.id, req.body.verify, req.body.notiId, function(result) {
             res.json(result); 
         });
     });
@@ -196,27 +196,27 @@ module.exports = function(app, firebase, myCache) {
 							data : ""
 						});
 
-        if (req.headers['authen'] == null) 
+        if (req.headers['authorization'] == null) 
             return res.json({
 							responseCode : -1,
-							description : "Missing authen!",
+							description : "Missing authorization!",
 							data : ""
 						});
 
-        tripDAO.kickMember(firebase, req.headers['authen'], req.params.id, req.body.fbId, function(result) {
+        tripDAO.kickMember(firebase, req.headers['authorization'], req.params.id, req.body.fbId, function(result) {
             res.json(result); 
         });
     });
 
     app.put(url + '/:id/join', function(req, res) {  
-        if (req.headers['authen'] == null) 
+        if (req.headers['authorization'] == null) 
             return res.json({
 							responseCode : -1,
-							description : "Missing authen!",
+							description : "Missing authorization!",
 							data : ""
 						});
 
-        tripDAO.joinTrip(firebase, req.headers['authen'], req.params.id, function(result) {
+        tripDAO.joinTrip(firebase, req.headers['authorization'], req.params.id, function(result) {
             res.json(result); 
         });
     });
@@ -236,14 +236,14 @@ module.exports = function(app, firebase, myCache) {
 							data : ""
 						});
 
-        if (req.headers['authen'] == null) 
+        if (req.headers['authorization'] == null) 
             return res.json({
 							responseCode : -1,
-							description : "Missing authen!",
+							description : "Missing authorization!",
 							data : ""
 						});
 
-        tripDAO.verifyToJoin(firebase, req.headers['authen'], req.params.id, req.body.verify, req.body.notiId, function(result) {
+        tripDAO.verifyToJoin(firebase, req.headers['authorization'], req.params.id, req.body.verify, req.body.notiId, function(result) {
             res.json(result); 
         });
     });
@@ -263,14 +263,14 @@ module.exports = function(app, firebase, myCache) {
 							data : ""
 						});
 
-        if (req.headers['authen'] == null) 
+        if (req.headers['authorization'] == null) 
             return res.json({
 							responseCode : -1,
-							description : "Missing authen!",
+							description : "Missing authorization!",
 							data : ""
 						});
 
-        tripDAO.addMember(firebase, req.headers['authen'], req.params.id, req.body.fbId, function(result) {
+        tripDAO.addMember(firebase, req.headers['authorization'], req.params.id, req.body.fbId, function(result) {
             res.json(result); 
         });
     });
@@ -290,40 +290,40 @@ module.exports = function(app, firebase, myCache) {
 							data : ""
 						});
 
-        if (req.headers['authen'] == null) 
+        if (req.headers['authorization'] == null) 
             return res.json({
 							responseCode : -1,
-							description : "Missing authen!",
+							description : "Missing authorization!",
 							data : ""
 						});
 
-        tripDAO.update_Activity(firebase, req.headers['authen'], req.params.id, req.body.time, req.body.content, function(result) {
+        tripDAO.update_Activity(firebase, req.headers['authorization'], req.params.id, req.body.time, req.body.content, function(result) {
             res.json(result); 
         });
     });
 
     app.put(url + '/:id/view', function(req, res) {  
-        if (req.headers['authen'] == null) 
+        if (req.headers['authorization'] == null) 
             return res.json({
 							responseCode : -1,
-							description : "Missing authen!",
+							description : "Missing authorization!",
 							data : ""
 						});
 
-        tripDAO.update_View(firebase, req.headers['authen'], req.params.id, function(result) {
+        tripDAO.update_View(firebase, req.headers['authorization'], req.params.id, function(result) {
             res.json(result); 
         });
     });
 
     app.put(url + '/:id', function(req, res) {  
-        if (req.headers['authen'] == null) 
+        if (req.headers['authorization'] == null) 
             return res.json({
 							responseCode : -1,
-							description : "Missing authen!",
+							description : "Missing authorization!",
 							data : ""
 						});
 
-        tripDAO.update(firebase, myCache, req.headers['authen'], req.params.id, req.body, function(result) {
+        tripDAO.update(firebase, myCache, req.headers['authorization'], req.params.id, req.body, function(result) {
             res.json(result); 
         });
     });
@@ -343,14 +343,14 @@ module.exports = function(app, firebase, myCache) {
 							data : ""
 						});
 
-        if (req.headers['authen'] == null) 
+        if (req.headers['authorization'] == null) 
             return res.json({
 							responseCode : -1,
-							description : "Missing authen!",
+							description : "Missing authorization!",
 							data : ""
 						});
 
-        tripDAO.delete_Activity(firebase, req.headers['authen'], req.params.id, req.body.time, function(result) {
+        tripDAO.delete_Activity(firebase, req.headers['authorization'], req.params.id, req.body.time, function(result) {
             res.json(result); 
         });
     });
