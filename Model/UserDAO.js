@@ -86,7 +86,7 @@ module.exports = function() {
 		});
 	}
 
-	UserDAO.prototype.login = function(firebase, firebaseUid, fbId, email, fcm, callback) {
+	UserDAO.prototype.login = function(firebase, fbToken, firebaseUid, fbId, email, fcm, callback) {
 		if (!helper.isEmail(email) || !helper.isFbId(fbId))
 			return callback({
 							responseCode : -1,
@@ -95,63 +95,90 @@ module.exports = function() {
 					});
 
 		var that = this;
-		var now = new Date().getTime();
-		firebase.database().ref(this.ref + fbId).once('value').then(function(snapshot) {
-			if (snapshot.val() != null) {
-				if (snapshot.val().firebaseUid != firebaseUid)
-					return callback({
-							responseCode : -1,
-							description : "firebaseUid and fbId are incorrect",
-							data : ""
-						});
 
+		var url = 'https://graph.facebook.com/v2.8/me?access_token=' + fbToken;
+		request(url, function (error, response, body) {
+			if (response.statusCode != 200)
+				return callback({
+					responseCode : -1,
+					description : "FacebookToken incorrect!",
+					data : ""
+				});
+
+			var _body = JSON.parse(body);
+			if (_body.id != fbId) 
+				return callback({
+					responseCode : -1,
+					description : "FacebookId does not match!",
+					data : ""
+				});
+
+			var now = new Date().getTime();
+			var expireTime = now + helper.expireTime * 1000;
+
+			firebase.database().ref(that.ref + fbId).once('value').then(function(snapshot) {
+				if (snapshot.val() != null) {
+					if (snapshot.val().firebaseUid != firebaseUid)
+						return callback({
+								responseCode : -1,
+								description : "firebaseUid and fbId are incorrect",
+								data : ""
+							});
+
+					firebase.database().ref(that.ref + fbId).set({
+						avatar : snapshot.val().avatar,
+						email : email,
+						firebaseUid : firebaseUid,
+						firstName : snapshot.val().firstName,
+						gender : snapshot.val().gender,
+						lastName : snapshot.val().lastName,
+						memberShip : snapshot.val().memberShip,
+						dateOfBirth : snapshot.val().dateOfBirth,
+						signIn : now,
+						fcm : fcm
+					});
+					
+					return callback({
+						responseCode : 1,
+						description : "",
+						data : {
+								token : helper.genToken({
+									firebaseUid : firebaseUid,
+									fbId : fbId,
+									signIn : now
+								}),
+								expired : expireTime
+						}
+					});
+				}
+
+				helper.sendEmail(email, "Welcome to PhuotNgay", "Welcome to PhuotNgay");
+				
 				firebase.database().ref(that.ref + fbId).set({
-					avatar : snapshot.val().avatar,
+					avatar : "",
 					email : email,
 					firebaseUid : firebaseUid,
-					firstName : snapshot.val().firstName,
-					gender : snapshot.val().gender,
-					lastName : snapshot.val().lastName,
-					memberShip : snapshot.val().memberShip,
-					dateOfBirth : snapshot.val().dateOfBirth,
+					firstName : "",
+					gender : "",
+					lastName : "",
+					memberShip : now,
+					dateOfBirth : "",
 					signIn : now,
 					fcm : fcm
 				});
-				
-				return callback({
+
+				callback({
 					responseCode : 1,
 					description : "",
-					data : helper.genToken({
-							firebaseUid : firebaseUid,
-							fbId : fbId,
-							signIn : now
-						})
+					data : {
+							token : helper.genToken({
+								firebaseUid : firebaseUid,
+								fbId : fbId,
+								signIn : now
+							}),
+							expired : expireTime
+					}
 				});
-			}
-
-			helper.sendEmail(email, "Welcome to PhuotNgay", "Welcome to PhuotNgay");
-			
-			firebase.database().ref(that.ref + fbId).set({
-				avatar : "",
-				email : email,
-				firebaseUid : firebaseUid,
-				firstName : "",
-				gender : "",
-				lastName : "",
-				memberShip : now,
-				dateOfBirth : "",
-				signIn : now,
-				fcm : fcm
-			});
-
-			callback({
-				responseCode : 1,
-				description : "",
-				data : helper.genToken({
-						firebaseUid : firebaseUid,
-						fbId : fbId,
-						signIn : now
-					})
 			});
 		});
 	}
@@ -220,7 +247,7 @@ module.exports = function() {
 		});
 	}
 
-	UserDAO.prototype.getListFriends = function(firebase, token, access_token, callback) {
+	UserDAO.prototype.getListFriends = function(firebase, token, fbToken, callback) {
 		var that = this;
 		helper.verifyToken(token, function(decoded){
 			if (decoded == null) 
@@ -252,7 +279,7 @@ module.exports = function() {
 							data : ""
 						});
 
-				var url = 'https://graph.facebook.com/v2.8/' + decoded.fbId + '/friends?access_token=' + access_token;
+				var url = 'https://graph.facebook.com/v2.8/' + decoded.fbId + '/friends?access_token=' + fbToken;
 
 				request(url, function (error, response, body) {
 					if (response.statusCode != 200)

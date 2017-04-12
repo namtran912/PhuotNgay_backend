@@ -7,6 +7,7 @@ var config = require('../config');
 module.exports = function() { 
 
     this.Helper = function() {
+        this.expireTime = 2592000;
     }
 
     Helper.prototype.U2A = function(str) {
@@ -46,9 +47,9 @@ module.exports = function() {
 
     Helper.prototype.genToken = function(firebaseUid) {
 		var secrectToken = new Buffer(config.SecrectToken, 'base64').toString('ascii');
-		var token = jwt.sign(firebaseUid, secrectToken/*, {
-			expiresIn: 86400
-		}*/);
+		var token = jwt.sign(firebaseUid, secrectToken, {
+			expiresIn: this.expireTime
+		});
 		return token;
 	}
 

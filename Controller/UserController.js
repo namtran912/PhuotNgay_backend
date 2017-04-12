@@ -5,6 +5,13 @@ module.exports = function(app, firebase) {
     var url = '/api/user';   
 
     app.post(url + '/login', function(req, res) {  
+        if (req.headers['fbtoken'] == null) 
+            return res.json({
+							responseCode : -1,
+							description : "Missing facebook token!",
+							data : ""
+						});
+
         if (!req.body.hasOwnProperty('firebaseUid') || !req.body.hasOwnProperty('fbId') || 
             !req.body.hasOwnProperty('email') || !req.body.hasOwnProperty('fcm')) 
             return res.json({
@@ -19,7 +26,7 @@ module.exports = function(app, firebase) {
 							description : "Request body is incorrect!",
 							data : ""
 						});
-        userDAO.login(firebase, req.body.firebaseUid, req.body.fbId, req.body.email, req.body.fcm, function(result) {
+        userDAO.login(firebase, req.headers['fbtoken'], req.body.firebaseUid, req.body.fbId, req.body.email, req.body.fcm, function(result) {
             res.json(result); 
         });
     });
@@ -49,7 +56,7 @@ module.exports = function(app, firebase) {
     });
 
     app.get(url + '/friends', function(req, res) {  
-        if (req.headers['fbToken'] == null) 
+        if (req.headers['fbtoken'] == null) 
             return res.json({
 							responseCode : -1,
 							description : "Missing facebook token!",
@@ -62,7 +69,7 @@ module.exports = function(app, firebase) {
 							description : "Missing authorization!",
 							data : ""
 						});
-        userDAO.getListFriends(firebase, req.headers['authorization'], req.headers['fbToken'], function(result) {
+        userDAO.getListFriends(firebase, req.headers['authorization'], req.headers['fbtoken'], function(result) {
             res.json(result); 
         });
     });
