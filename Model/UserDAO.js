@@ -90,8 +90,8 @@ module.exports = function() {
 		if (!helper.isEmail(email) || !helper.isFbId(fbId))
 			return callback({
 							responseCode : -1,
-							description : "Email or fbId is incorrect",
-							data : ""
+							description : "Email or fbId is incorrect"//,
+							//data : ""
 					});
 
 		var that = this;
@@ -101,16 +101,16 @@ module.exports = function() {
 			if (response.statusCode != 200)
 				return callback({
 					responseCode : -1,
-					description : "FacebookToken incorrect!",
-					data : ""
+					description : "FacebookToken incorrect!"//,
+					//data : ""
 				});
 
 			var _body = JSON.parse(body);
 			if (_body.id != fbId) 
 				return callback({
 					responseCode : -1,
-					description : "FacebookId does not match!",
-					data : ""
+					description : "FacebookId does not match!"//,
+					//data : ""
 				});
 
 			var now = new Date().getTime();
@@ -121,8 +121,8 @@ module.exports = function() {
 					if (snapshot.val().firebaseUid != firebaseUid)
 						return callback({
 								responseCode : -1,
-								description : "firebaseUid and fbId are incorrect",
-								data : ""
+								description : "firebaseUid and fbId are incorrect"//,
+								//data : ""
 							});
 
 					firebase.database().ref(that.ref + fbId).set({
