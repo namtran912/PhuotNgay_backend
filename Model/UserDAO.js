@@ -40,30 +40,26 @@ module.exports = function() {
 			if (decoded == null) 
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			if (decoded.fbId == null)
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			that.getSignIn(firebase, decoded.fbId, function(signIn) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 				if (signIn != decoded.signIn) 
 					return callback({
 							responseCode : 0,
-							description : "Authen is expired",
-							data : ""
+							description : "Authen is expired"
 						});
 
 				firebase.database().ref(that.ref + decoded.fbId).once('value').then(function(snapshot) {
@@ -90,8 +86,7 @@ module.exports = function() {
 		if (!helper.isEmail(email) || !helper.isFbId(fbId))
 			return callback({
 							responseCode : -1,
-							description : "Email or fbId is incorrect"//,
-							//data : ""
+							description : "Email or fbId is incorrect"
 					});
 
 		var that = this;
@@ -101,16 +96,14 @@ module.exports = function() {
 			if (response.statusCode != 200)
 				return callback({
 					responseCode : -1,
-					description : "FacebookToken incorrect!"//,
-					//data : ""
+					description : "FacebookToken incorrect!"
 				});
 
 			var _body = JSON.parse(body);
 			if (_body.id != fbId) 
 				return callback({
 					responseCode : -1,
-					description : "FacebookId does not match!"//,
-					//data : ""
+					description : "FacebookId does not match!"
 				});
 
 			var now = new Date().getTime();
@@ -121,8 +114,7 @@ module.exports = function() {
 					if (snapshot.val().firebaseUid != firebaseUid)
 						return callback({
 								responseCode : -1,
-								description : "firebaseUid and fbId are incorrect"//,
-								//data : ""
+								description : "firebaseUid and fbId are incorrect"
 							});
 
 					firebase.database().ref(that.ref + fbId).set({
@@ -187,22 +179,19 @@ module.exports = function() {
 		if (data.hasOwnProperty('email') && !helper.isEmail(data.email))
 			return callback({
 							responseCode : -1,
-							description : "Email is incorrect!",
-							data : ""
+							description : "Email is incorrect!"
 					});
 
 		if (data.hasOwnProperty('dateOfBirth') && !helper.isDayOfBirth(data.dateOfBirth))
 			return callback({
 							responseCode : -1,
-							description : "DateOfBirth is incorrect!",
-							data : ""
+							description : "DateOfBirth is incorrect!"
 					});
 		for (key in data) 
 			if (this.property.indexOf(key) == -1 ||  data[key] == "")
 				return callback({
 							responseCode : -1,
-							description : "Request body is incorrect!",
-							data : ""
+							description : "Request body is incorrect!"
 					});
 
 		var that = this;
@@ -210,38 +199,33 @@ module.exports = function() {
 			if (decoded == null) 
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			if (decoded.fbId == null)
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			that.getSignIn(firebase, decoded.fbId, function(signIn) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 				if (signIn != decoded.signIn) 
 					return callback({
 							responseCode : 0,
-							description : "Authen is expired",
-							data : ""
+							description : "Authen is expired"
 						});
 
 				firebase.database().ref(that.ref + decoded.fbId).update(data);
 
 				callback({
 					responseCode : 1,
-					description : "",
-					data : ""
+					description : ""
 				});
 			});
 		});
@@ -253,30 +237,26 @@ module.exports = function() {
 			if (decoded == null) 
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			if (decoded.fbId == null)
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			that.getSignIn(firebase, decoded.fbId, function(signIn) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 				if (signIn != decoded.signIn) 
 					return callback({
 							responseCode : 0,
-							description : "Authen is expired",
-							data : ""
+							description : "Authen is expired"
 						});
 
 				var url = 'https://graph.facebook.com/v2.8/' + decoded.fbId + '/friends?access_token=' + fbToken;
@@ -285,8 +265,7 @@ module.exports = function() {
 					if (response.statusCode != 200)
 						return callback({
 							responseCode : -1,
-							description : "Error Graph API!",
-							data : ""
+							description : "Error Graph API!"
 						});
 						
 					var _body = JSON.parse(body);

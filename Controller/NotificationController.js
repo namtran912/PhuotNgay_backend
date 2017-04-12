@@ -8,8 +8,7 @@ module.exports = function(app, firebase) {
         if (req.headers['authorization'] == null) 
             return res.json({
 							responseCode : -1,
-							description : "Missing authorization!",
-							data : ""
+							description : "Missing authorization!"
 						});
         notificationDAO.readNotiByFbId(firebase, req.headers['authorization'], function(result) {
             res.json(result); 
@@ -21,22 +20,19 @@ module.exports = function(app, firebase) {
             !req.body.hasOwnProperty('message')) 
             return res.json({
 							responseCode : -1,
-							description : "Request body is incorrect!",
-							data : ""
+							description : "Request body is incorrect!"
 						});
 
         if (req.body.tripId == "" || req.body.fbId == "" || req.body.title == "" || req.body.message == "") 
             return res.json({
 							responseCode : -1,
-							description : "Request body is incorrect!",
-							data : ""
+							description : "Request body is incorrect!"
 						});
 
         if (req.headers['authorization'] == null) 
             return res.json({
 							responseCode : -1,
-							description : "Missing authorization!",
-							data : ""
+							description : "Missing authorization!"
 						});
         notificationDAO.sendNoti(firebase, req.headers['authorization'], req.body.tripId, req.body.fbId, req.body.title,
             req.body.message, function(result) {

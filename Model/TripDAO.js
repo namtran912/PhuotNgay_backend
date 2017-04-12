@@ -21,30 +21,26 @@ module.exports = function() {
 			if (decoded == null) 
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			if (decoded.fbId == null)
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 				if (signIn != decoded.signIn) 
 					return callback({
 							responseCode : 0,
-							description : "Authen is expired",
-							data : ""
+							description : "Authen is expired"
 						});
 				if ((query.sort == 'asc' || query.sort == 'desc') && query.orderBy != null) {
 					if (that.orderBy.includes(query.orderBy)) {
@@ -140,30 +136,26 @@ module.exports = function() {
 			if (decoded == null) 
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			if (decoded.fbId == null)
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 				if (signIn != decoded.signIn) 
 					return callback({
 							responseCode : 0,
-							description : "Authen is expired",
-							data : ""
+							description : "Authen is expired"
 						});
 				if ((query.sort == 'asc' || query.sort == 'desc') && query.orderBy != null) {
 					if (that.orderBy.includes(query.orderBy)) {
@@ -234,30 +226,26 @@ module.exports = function() {
 			if (decoded == null) 
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			if (decoded.fbId == null)
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 				if (signIn != decoded.signIn) 
 					return callback({
 							responseCode : 0,
-							description : "Authen is expired",
-							data : ""
+							description : "Authen is expired"
 						});
 
 				firebase.database().ref(that.ref).once('value').then(function(snapshot) {
@@ -309,30 +297,26 @@ module.exports = function() {
 			if (decoded == null) 
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			if (decoded.fbId == null)
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 				if (signIn != decoded.signIn) 
 					return callback({
 							responseCode : 0,
-							description : "Authen is expired",
-							data : ""
+							description : "Authen is expired"
 						});
 				
 				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
@@ -395,30 +379,26 @@ module.exports = function() {
 			if (decoded == null) 
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			if (decoded.fbId == null)
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 				if (signIn != decoded.signIn) 
 					return callback({
 							responseCode : 0,
-							description : "Authen is expired",
-							data : ""
+							description : "Authen is expired"
 						});
 
 				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
@@ -455,30 +435,26 @@ module.exports = function() {
 			if (decoded == null) 
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			if (decoded.fbId == null)
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 				if (signIn != decoded.signIn) 
 					return callback({
 							responseCode : 0,
-							description : "Authen is expired",
-							data : ""
+							description : "Authen is expired"
 						});
 
 				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
@@ -516,30 +492,26 @@ module.exports = function() {
 			if (decoded == null) 
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			if (decoded.fbId == null)
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 				if (signIn != decoded.signIn) 
 					return callback({
 							responseCode : 0,
-							description : "Authen is expired",
-							data : ""
+							description : "Authen is expired"
 						});
 
 				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
@@ -583,46 +555,40 @@ module.exports = function() {
 			if (decoded == null) 
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			if (decoded.fbId == null)
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			userDAO.getSignInAndInfo(firebase, decoded.fbId, function(signIn, firstName, lastName, avatar) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 				if (signIn != decoded.signIn) 
 					return callback({
 							responseCode : 0,
-							description : "Authen is expired",
-							data : ""
+							description : "Authen is expired"
 						});
 
 				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
 					if (snapshot.val() == null) 
 						return callback({
 							responseCode : -1,
-							description : "Trip is not exist!",
-							data : ""
+							description : "Trip is not exist!"
 						});
 				
 					notificationDAO.deleteNoti(firebase, decoded.fbId, notiId, function(result){
 						if (result == false) 
 							return callback({
 								responseCode : -1,	
-								description : "Notification is not exist!",
-								data : ""
+								description : "Notification is not exist!"
 							});
 
 						if (verify == "1") 
@@ -633,8 +599,7 @@ module.exports = function() {
 						
 						callback({
 							responseCode : 1,	
-							description : "",
-							data : ""
+							description : ""
 						});
 					});	
 				});
@@ -646,8 +611,7 @@ module.exports = function() {
 		if (!helper.isFbId(fbId))
 			return callback({
 							responseCode : -1,
-							description : "FbId is incorrect",
-							data : ""
+							description : "FbId is incorrect"
 					});
 
 		var that = this;
@@ -655,45 +619,39 @@ module.exports = function() {
 			if (decoded == null) 
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			if (decoded.fbId == null)
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 				if (signIn != decoded.signIn) 
 					return callback({
 							responseCode : 0,
-							description : "Authen is expired",
-							data : ""
+							description : "Authen is expired"
 						});
 
 				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
 					if (snapshot.val() == null) 
 						return callback({
 							responseCode : -1,
-							description : "Trip is not exist!",
-							data : ""
+							description : "Trip is not exist!"
 						});
 
 					if (snapshot.val().from.fbId != decoded.fbId)
 						return callback({
 							responseCode : -1,
-							description : "User is not Trip's admin!",
-							data : ""
+							description : "User is not Trip's admin!"
 						});
 					
 					var trip = snapshot.val();
@@ -702,8 +660,7 @@ module.exports = function() {
 									
 					callback({
 						responseCode : 1,	
-						description : "",
-						data : ""
+						description : ""
 					});
 				});
 			});
@@ -716,52 +673,45 @@ module.exports = function() {
 			if (decoded == null) 
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			if (decoded.fbId == null)
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			userDAO.getSignInAndInfo(firebase, decoded.fbId, function(signIn, firstName, lastName, avatar) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 				if (signIn != decoded.signIn) 
 					return callback({
 							responseCode : 0,
-							description : "Authen is expired",
-							data : ""
+							description : "Authen is expired"
 						});
 
 				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
 					if (snapshot.val() == null) 
 						return callback({
 							responseCode : -1,
-							description : "Trip is not exist!",
-							data : ""
+							description : "Trip is not exist!"
 						});
 
 					if (snapshot.val().is_published == 0) 
 						return callback({
 							responseCode : -1,
-							description : "Trip is not published!",
-							data : ""
+							description : "Trip is not published!"
 						});
 
 					if ((snapshot.val().members != null && snapshot.val().members.hasOwnProperty(decoded.fbId)) || snapshot.val().from.fbId == decoded.fbId)
 						return callback({
 							responseCode : -1,
-							description : "User is Trip's member or Trip's admin!",
-							data : ""
+							description : "User is Trip's member or Trip's admin!"
 						});
 					
 					var trip = snapshot.val();
@@ -792,8 +742,7 @@ module.exports = function() {
 				
 					callback({
 						responseCode : 1,	
-						description : "",
-						data : ""
+						description : ""
 					});
 				});
 			});
@@ -806,45 +755,39 @@ module.exports = function() {
 			if (decoded == null) 
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			if (decoded.fbId == null)
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			userDAO.getSignInAndInfo(firebase, decoded.fbId, function(signIn, firstName, lastName, avatar) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 				if (signIn != decoded.signIn) 
 					return callback({
 							responseCode : 0,
-							description : "Authen is expired",
-							data : ""
+							description : "Authen is expired"
 						});
 
 				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
 					if (snapshot.val() == null) 
 						return callback({
 							responseCode : -1,
-							description : "Trip is not exist!",
-							data : ""
+							description : "Trip is not exist!"
 						});
 
 					if (snapshot.val().from.fbId != decoded.fbId)
 						return callback({
 							responseCode : -1,
-							description : "User is not Trip's admin!",
-							data : ""
+							description : "User is not Trip's admin!"
 						});
 					
 					var trip = snapshot.val();
@@ -854,8 +797,7 @@ module.exports = function() {
 							if (noti == null) 
 								return callback({
 									responseCode : -1,	
-									description : "Notification was deleted!",
-									data : ""
+									description : "Notification was deleted!"
 								});
 
 							if (noti.type == 1) {
@@ -896,8 +838,7 @@ module.exports = function() {
 											
 							callback({
 								responseCode : 1,	
-								description : "",
-								data : ""
+								description : ""
 							});
 							notificationDAO.deleteNoti(firebase, trip.from.fbId, notiId);
 						});
@@ -905,8 +846,7 @@ module.exports = function() {
 						notificationDAO.deleteNoti(firebase, trip.from.fbId, notiId);
 						callback({
 							responseCode : 1,	
-							description : "",
-							data : ""
+							description : ""
 						});
 					}
 				});
@@ -920,38 +860,33 @@ module.exports = function() {
 			if (decoded == null) 
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			if (decoded.fbId == null)
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			userDAO.getSignInAndInfo(firebase, decoded.fbId, function(signIn, firstName, lastName, avatar) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 				if (signIn != decoded.signIn) 
 					return callback({
 							responseCode : 0,
-							description : "Authen is expired",
-							data : ""
+							description : "Authen is expired"
 						});
 
 				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
 					if (snapshot.val() == null) 
 						return callback({
 							responseCode : -1,
-							description : "Trip is not exist!",
-							data : ""
+							description : "Trip is not exist!"
 						});
 
 					var fbIds = list.split(';');
@@ -1018,16 +953,14 @@ module.exports = function() {
 								else 
 									return callback({
 										responseCode : -1,
-										description : "User is not Trip's admin or Trip's member!",
-										data : ""
+										description : "User is not Trip's admin or Trip's member!"
 									});
 						});	
 					});
 				
 					callback({
 						responseCode : 1,	
-						description : "",
-						data : ""
+						description : ""
 					});
 				});
 			});
@@ -1039,8 +972,7 @@ module.exports = function() {
 			if (this.property.indexOf(key) == -1 ||  data[key] == "")
 				return callback({
 							responseCode : -1,
-							description : "Request body is incorrect!",
-							data : ""
+							description : "Request body is incorrect!"
 					});
 
 		var that = this;
@@ -1048,45 +980,39 @@ module.exports = function() {
 			if (decoded == null) 
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			if (decoded.fbId == null)
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 				if (signIn != decoded.signIn) 
 					return callback({
 							responseCode : 0,
-							description : "Authen is expired",
-							data : ""
+							description : "Authen is expired"
 						});
 
 				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
 					if (snapshot.val() == null) 
 						return callback({
 							responseCode : -1,
-							description : "Trip is not exist!",
-							data : ""
+							description : "Trip is not exist!"
 						});
 
 					if (snapshot.val().from.fbId != decoded.fbId)
 						return callback({
 							responseCode : -1,
-							description : "User is not Trip's admin!",
-							data : ""
+							description : "User is not Trip's admin!"
 						});
 
 					if (data.hasOwnProperty('arrive')) {
@@ -1117,8 +1043,7 @@ module.exports = function() {
 
 					callback({
 						responseCode : 1,	
-						description : "",
-						data : ""
+						description : ""
 					});
 				});
 			});
@@ -1131,38 +1056,33 @@ module.exports = function() {
 			data.arrive.split(';').length != 4 || data.depart.split(';').length != 4)
 			return callback({
 							responseCode : -1,
-							description : "Request body is incorrect!",
-							data : ""
+							description : "Request body is incorrect!"
 						});
 		var that = this;
 		helper.verifyToken(token, function(decoded){
 			if (decoded == null) 
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			if (decoded.fbId == null)
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			userDAO.getSignInAndInfo(firebase, decoded.fbId, function(signIn, firstName, lastName, avatar) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 				if (signIn != decoded.signIn) 
 					return callback({
 							responseCode : 0,
-							description : "Authen is expired",
-							data : ""
+							description : "Authen is expired"
 						});
 
 				var info = data.arrive.split(';');
@@ -1215,45 +1135,39 @@ module.exports = function() {
 			if (decoded == null) 
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			if (decoded.fbId == null)
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 				if (signIn != decoded.signIn) 
 					return callback({
 							responseCode : 0,
-							description : "Authen is expired",
-							data : ""
+							description : "Authen is expired"
 						});
 				
 				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
 					if (snapshot.val() == null) 
 						return callback({
 							responseCode : -1,
-							description : "Trip is not exist!",
-							data : ""
+							description : "Trip is not exist!"
 						});
 
 					if (snapshot.val().from.fbId != decoded.fbId)
 						return callback({
 							responseCode : -1,
-							description : "User is not Trip's admin!",
-							data : ""
+							description : "User is not Trip's admin!"
 						});
 
 					firebase.database().ref(that.ref + id + '/activity' + '/' + time).set({
@@ -1262,8 +1176,7 @@ module.exports = function() {
 				
 					callback({
 						responseCode : 1,	
-						description : "",
-						data : ""
+						description : ""
 					});
 				});
 			});
@@ -1277,44 +1190,38 @@ module.exports = function() {
 				return callback({
 							responseCode : -1,
 							description : "Authen is incorrect!",
-							data : ""
 						});
 
 			if (decoded.fbId == null)
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 				if (signIn != decoded.signIn) 
 					return callback({
 							responseCode : 0,
-							description : "Authen is expired",
-							data : ""
+							description : "Authen is expired"
 						});
 				
 				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
 					if (snapshot.val() == null) 
 						return callback({
 							responseCode : -1,
-							description : "Trip is not exist!",
-							data : ""
+							description : "Trip is not exist!"
 						});
 
 					if (snapshot.val().from.fbId != decoded.fbId)
 						return callback({
 							responseCode : -1,
-							description : "User is not Trip's admin!",
-							data : ""
+							description : "User is not Trip's admin!"
 						});
 
 					firebase.database().ref(that.ref + id + '/activity' + '/' + time).update({
@@ -1323,8 +1230,7 @@ module.exports = function() {
 				
 					callback({
 						responseCode : 1,	
-						description : "",
-						data : ""
+						description : ""
 					});
 				});
 			});
@@ -1337,53 +1243,46 @@ module.exports = function() {
 			if (decoded == null) 
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			if (decoded.fbId == null)
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 				if (signIn != decoded.signIn) 
 					return callback({
 							responseCode : 0,
-							description : "Authen is expired",
-							data : ""
+							description : "Authen is expired"
 						});
 				
 				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
 					if (snapshot.val() == null) 
 						return callback({
 							responseCode : -1,
-							description : "Trip is not exist!",
-							data : ""
+							description : "Trip is not exist!"
 						});
 
 					if (snapshot.val().from.fbId != decoded.fbId)
 						return callback({
 							responseCode : -1,
-							description : "User is not Trip's admin!",
-							data : ""
+							description : "User is not Trip's admin!"
 						});
 
 					firebase.database().ref(that.ref + id + '/activity' + '/' + time).set({});
 				
 					callback({
 						responseCode : 1,	
-						description : "",
-						data : ""
+						description : ""
 					});
 				});
 			});
@@ -1396,37 +1295,32 @@ module.exports = function() {
 			if (decoded == null) 
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			if (decoded.fbId == null)
 				return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
-							description : "Authen is incorrect!",
-							data : ""
+							description : "Authen is incorrect!"
 						});
 
 				if (signIn != decoded.signIn) 
 					return callback({
 							responseCode : 0,
-							description : "Authen is expired",
-							data : ""
+							description : "Authen is expired"
 						});
 				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
 					if (snapshot.val() == null) 
 						return callback({
 							responseCode : -1,
-							description : "Trip is not exist!",
-							data : ""
+							description : "Trip is not exist!"
 						});
 
 					if (snapshot.val().from.fbId != decoded.fbId && (snapshot.val().members == null || !snapshot.val().members.hasOwnProperty(decoded.fbId)))
@@ -1436,8 +1330,7 @@ module.exports = function() {
 
 					callback({
 						responseCode : 1,	
-						description : "",
-						data : ""
+						description : ""
 					});
 				});
 			});	
