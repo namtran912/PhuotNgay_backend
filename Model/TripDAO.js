@@ -564,7 +564,7 @@ module.exports = function() {
 							description : "Authen is incorrect!"
 						});
 
-			userDAO.getSignInAndInfo(firebase, decoded.fbId, function(signIn, firstName, lastName, avatar) {
+			userDAO.getSignInAndInfo(firebase, decoded.fbId, function(signIn, name, avatar) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
@@ -593,7 +593,7 @@ module.exports = function() {
 
 						if (verify == "1") 
 							firebase.database().ref(that.ref + id + '/members' + '/' + decoded.fbId).set({
-								name : firstName + " " + lastName, 
+								name : name, 
 								avatar : avatar
 							});
 						
@@ -682,7 +682,7 @@ module.exports = function() {
 							description : "Authen is incorrect!"
 						});
 
-			userDAO.getSignInAndInfo(firebase, decoded.fbId, function(signIn, firstName, lastName, avatar) {
+			userDAO.getSignInAndInfo(firebase, decoded.fbId, function(signIn, name, avatar) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
@@ -718,7 +718,7 @@ module.exports = function() {
 					var data = {
 								from : {
 									fbId : decoded.fbId,
-									name : firstName + " " + lastName, 
+									name : name, 
 									avatar : avatar
 								},
 								trip : {
@@ -764,7 +764,7 @@ module.exports = function() {
 							description : "Authen is incorrect!"
 						});
 
-			userDAO.getSignInAndInfo(firebase, decoded.fbId, function(signIn, firstName, lastName, avatar) {
+			userDAO.getSignInAndInfo(firebase, decoded.fbId, function(signIn, name, avatar) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
@@ -804,7 +804,7 @@ module.exports = function() {
 								var data = {
 									from : {
 										fbId : decoded.fbId,
-										name : firstName + " " + lastName, 
+										name : name, 
 										avatar : avatar
 									},
 									trip : {
@@ -869,7 +869,7 @@ module.exports = function() {
 							description : "Authen is incorrect!"
 						});
 
-			userDAO.getSignInAndInfo(firebase, decoded.fbId, function(signIn, firstName, lastName, avatar) {
+			userDAO.getSignInAndInfo(firebase, decoded.fbId, function(signIn, name, avatar) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
@@ -891,7 +891,7 @@ module.exports = function() {
 
 					var fbIds = list.split(';');
 					fbIds.forEach(function(fbId){
-						userDAO.getSignInAndInfo(firebase, fbId, function(signIn, _firstName, _lastName, _avatar) {
+						userDAO.getSignInAndInfo(firebase, fbId, function(signIn, _name, _avatar) {
 							if (signIn == null) 
 								return;
 
@@ -901,7 +901,7 @@ module.exports = function() {
 								var data = {
 										from : {
 											fbId : decoded.fbId,
-											name : firstName + " " + lastName, 
+											name : name, 
 											avatar : avatar
 										},
 										trip : {
@@ -928,7 +928,7 @@ module.exports = function() {
 									var data = {
 											from : {
 												fbId : fbId,
-												name : _firstName + " " + _lastName, 
+												name : _name, 
 												avatar : _avatar
 											},
 											trip : {
@@ -1072,7 +1072,7 @@ module.exports = function() {
 							description : "Authen is incorrect!"
 						});
 
-			userDAO.getSignInAndInfo(firebase, decoded.fbId, function(signIn, firstName, lastName, avatar) {
+			userDAO.getSignInAndInfo(firebase, decoded.fbId, function(signIn, name, avatar) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
@@ -1105,7 +1105,7 @@ module.exports = function() {
 				data.from = {
 					avatar : avatar,
 					fbId : decoded.fbId,
-					name : firstName + " " + lastName
+					name : name
 				}
 
 				data.is_published = parseInt(data.is_published);

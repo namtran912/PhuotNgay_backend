@@ -6,8 +6,8 @@ module.exports = function() {
 
 	this.UserDAO = function() {
 		this.ref = 'USER/';		
-		this.property = ['avatar', 'dateOfBirth', 'email', 'fcm', 'firebaseUid', 'firstName', 
-						'gender', 'lastName', 'memberShip', 'signIn'];
+		this.property = ['avatar', 'dateOfBirth', 'email', 'fcm', 'firebaseUid', 'name', 
+						'gender', 'memberShip', 'signIn'];
 	} 
 
 	UserDAO.prototype.getFCM = function(firebase, fbId, callback) {
@@ -30,7 +30,7 @@ module.exports = function() {
 		firebase.database().ref(this.ref + fbId).once('value').then(function(snapshot) {
 			if (snapshot.val() == null) 
 				return callback(null);
-			callback(snapshot.val().signIn, snapshot.val().firstName, snapshot.val().lastName, snapshot.val().avatar);
+			callback(snapshot.val().signIn, snapshot.val().name, snapshot.val().avatar);
 		});
 	}
 
@@ -70,9 +70,8 @@ module.exports = function() {
 						data : {
 							avatar : user.avatar,
 							dateOfBirth : user.dateOfBirth,
-							firstName : user.firstName,
+							name : user.name,
 							gender : user.gender,
-							lastName : user.lastName,
 							memberShip : user.memberShip,
 							email : user.email
 						}
@@ -121,9 +120,8 @@ module.exports = function() {
 						avatar : snapshot.val().avatar,
 						email : email,
 						firebaseUid : firebaseUid,
-						firstName : snapshot.val().firstName,
+						name : snapshot.val().name,
 						gender : snapshot.val().gender,
-						lastName : snapshot.val().lastName,
 						memberShip : snapshot.val().memberShip,
 						dateOfBirth : snapshot.val().dateOfBirth,
 						signIn : now,
@@ -150,9 +148,8 @@ module.exports = function() {
 					avatar : "",
 					email : email,
 					firebaseUid : firebaseUid,
-					firstName : "",
+					name : "",
 					gender : "",
-					lastName : "",
 					memberShip : now,
 					dateOfBirth : "",
 					signIn : now,
@@ -275,7 +272,7 @@ module.exports = function() {
 						firebase.database().ref(that.ref + _body.data[i].id).once('value').then(function(snapshot) {
 							result.push({
 								fbId : snapshot.key,
-								name : snapshot.val().firstName + ' ' + snapshot.val().lastName,
+								name : snapshot.val().name,
 								avatar : snapshot.val().avatar
 							});
 
