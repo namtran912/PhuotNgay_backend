@@ -24,4 +24,12 @@ require('./Controller/TripController.js')(app, firebase, myCache);
 require('./Controller/UserController.js')(app, firebase);
 require('./Controller/NotificationController.js')(app, firebase);
 
+app.get('/api/cache', function(req, res) { 
+	var orderBy = ['arrive/time', 'arrive/name', 'depart/time', 'depart/name', 'name', 'numberOfView', 'status'];
+	myCache.del("trips");
+	for (i in orderBy)
+		myCache.del("trips/" + orderBy[i]);
+	res.json('done');
+});
+
 app.listen(PORT);  
