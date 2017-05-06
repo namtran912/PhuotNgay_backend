@@ -332,7 +332,7 @@ module.exports = function() {
 					if (decoded.fbId == trip.from.fbId)
 						role = 2;
 					else 
-						if (trip.members.hasOwnProperty(decoded.fbId)) 
+						if (trip.members != null && trip.members.hasOwnProperty(decoded.fbId)) 
 							role = 1;
 						
 					var album = [];
@@ -655,7 +655,7 @@ module.exports = function() {
 						});
 					
 					var trip = snapshot.val();
-					if (trip.members.hasOwnProperty(fbId)) 
+					if (trip.members != null && trip.members.hasOwnProperty(fbId)) 
 						firebase.database().ref(that.ref + id + '/members' + '/' + fbId).set({});
 									
 					callback({
