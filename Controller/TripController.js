@@ -345,13 +345,13 @@ module.exports = function(app, firebase, myCache) {
     });
 
     app.delete(url + '/:id/comment', function(req, res) {  
-         if (!req.body.hasOwnProperty('createdTime')) 
+         if (!req.body.hasOwnProperty('id')) 
             return res.json({
 							responseCode : -1,
 							description : "Request body is incorrect!"
 						});
 
-        if ( req.body.createdTime == "") 
+        if ( req.body.id == "") 
             return res.json({
 							responseCode : -1,
 							description : "Request body is incorrect!"
@@ -363,7 +363,7 @@ module.exports = function(app, firebase, myCache) {
 							description : "Missing authorization!"
 						});
 
-        tripDAO.delete_Comment(firebase, req.headers['authorization'], req.params.id, req.body.createdTime, function(result) {
+        tripDAO.delete_Comment(firebase, req.headers['authorization'], req.params.id, req.body.id, function(result) {
             res.json(result); 
         });
     });
