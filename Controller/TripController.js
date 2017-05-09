@@ -140,6 +140,30 @@ module.exports = function(app, firebase, myCache) {
         });
     });
 
+     app.post(url + '/:id/comment', function(req, res) {  
+         if (!req.body.hasOwnProperty('content')) 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!"
+						});
+
+        if ( req.body.content == "") 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!"
+						});
+
+        if (req.headers['authorization'] == null) 
+            return res.json({
+							responseCode : -1,
+							description : "Missing authorization!"
+						});
+
+        tripDAO.add_Comment(firebase, req.headers['authorization'], req.params.id, req.body.content, function(result) {
+            res.json(result); 
+        });
+    });
+
     app.put(url + '/:id/accept', function(req, res) {  
          if ( !req.body.hasOwnProperty('verify') || !req.body.hasOwnProperty('notiId')) 
             return res.json({
@@ -319,4 +343,29 @@ module.exports = function(app, firebase, myCache) {
             res.json(result); 
         });
     });
+
+    app.delete(url + '/:id/comment', function(req, res) {  
+         if (!req.body.hasOwnProperty('createdTime')) 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!"
+						});
+
+        if ( req.body.createdTime == "") 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!"
+						});
+
+        if (req.headers['authorization'] == null) 
+            return res.json({
+							responseCode : -1,
+							description : "Missing authorization!"
+						});
+
+        tripDAO.delete_Comment(firebase, req.headers['authorization'], req.params.id, req.body.createdTime, function(result) {
+            res.json(result); 
+        });
+    });
+
 }

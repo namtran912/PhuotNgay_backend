@@ -1183,6 +1183,61 @@ module.exports = function() {
 		});
 	}
 
+	TripDAO.prototype.add_Comment = function(firebase, token, id, content, callback) {
+		var that = this;
+		helper.verifyToken(token, function(decoded){
+			if (decoded == null) 
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!"
+						});
+
+			if (decoded.fbId == null)
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!"
+						});
+
+			userDAO.getSignInAndInfo(firebase, decoded.fbId, function(signIn, name, avatar) {
+				if (signIn == null) 
+					return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!"
+						});
+
+				if (signIn != decoded.signIn) 
+					return callback({
+							responseCode : 0,
+							description : "Authen is expired"
+						});
+				
+				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
+					if (snapshot.val() == null) 
+						return callback({
+							responseCode : -1,
+							description : "Trip is not exist!"
+						});
+
+					var time = new Date().getTime();
+
+					firebase.database().ref(that.ref + id + '/comment' + '/' + time).set({
+						content : content,
+						from : {
+							avatar : avatar,
+							fbId : decoded.fbId,
+							name : name
+						}
+					});
+				
+					callback({
+						responseCode : 1,	
+						description : ""
+					});
+				});
+			});
+		});
+	}
+
 	TripDAO.prototype.update_Activity = function(firebase, token, id, time, content, callback) {
 		var that = this;
 		helper.verifyToken(token, function(decoded){
@@ -1284,6 +1339,75 @@ module.exports = function() {
 						responseCode : 1,	
 						description : ""
 					});
+				});
+			});
+		});
+	}
+
+	TripDAO.prototype.delete_Comment = function(firebase, token, id, time, callback) {
+		var that = this;
+		helper.verifyToken(token, function(decoded){
+			if (decoded == null) 
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!"
+						});
+
+			if (decoded.fbId == null)
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!"
+						});
+
+			userDAO.getSignInAndInfo(firebase, decoded.fbId, function(signIn, name, avatar) {
+				if (signIn == null) 
+					return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!"
+						});
+
+				if (signIn != decoded.signIn) 
+					return callback({
+							responseCode : 0,
+							description : "Authen is expired"
+						});
+				
+				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
+					if (snapshot.val() == null) 
+						return callback({
+							responseCode : -1,
+							description : "Trip is not exist!"
+						});
+
+					if (snapshot.val().from.fbId == decoded.fbId) {
+						firebase.database().ref(that.ref + id + '/comment' + '/' + time).set({});
+				
+						callback({
+							responseCode : 1,	
+							description : ""
+						});
+					}
+					else 
+						firebase.database().ref(that.ref + id + '/comment' + '/' + time).once('value').then(function(_snapshot) {
+							if (_snapshot.val() == null) 
+								return callback({
+									responseCode : -1,
+									description : "Comment is not exist!"
+								});
+
+							if (_snapshot.val().from.fbId != decoded.fbId) 
+								return callback({
+									responseCode : -1,	
+									description : "You are not Group's admin or the own comment"
+								});
+
+							firebase.database().ref(that.ref + id + '/comment' + '/' + time).set({});
+					
+							callback({
+								responseCode : 1,	
+								description : ""
+							});
+						});
 				});
 			});
 		});
