@@ -470,7 +470,7 @@ module.exports = function() {
 
 					for (key in trip.comment) {
 						comment.push({
-							createdTime : key,
+							id : parseInt(key),
 							content : trip.comment[key].content,
 							from : trip.comment[key].from
 						});
