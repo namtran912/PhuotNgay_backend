@@ -3,11 +3,13 @@ var nodemailer = require("nodemailer");
 var smtpTransport = require('nodemailer-smtp-transport');
 var request = require('request');
 var config = require('../config');
+var kmeans = require('node-kmeans');
 
 module.exports = function() { 
 
     this.Helper = function() {
         this.expireTime = 2592000;
+        this.security = [];
     }
 
     Helper.prototype.U2A = function(str) {
@@ -72,7 +74,7 @@ module.exports = function() {
         return /^\d+$/.test(fbId);
     }
 
-     Helper.prototype.isDayOfBirth = function(dayOfBirth) {
+    Helper.prototype.isDayOfBirth = function(dayOfBirth) {
         var pattern = /^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/;
         return pattern.test(dayOfBirth);
     }
@@ -116,5 +118,66 @@ module.exports = function() {
         }, function(error, response, body){
             console.log(body);
         });
+    }
+
+    Helper.prototype.rad = function(x) {
+        return x * Math.PI / 180;
+    };
+
+    Helper.prototype.getDistance = function(x1, y1, x2, y2) {
+        var R = 6378137;
+        var dLat = this.rad(x2 - x1);
+        var dLong = this.rad(y2 - y1);
+        var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(this.rad(x1)) * Math.cos(this.rad(x2)) *
+            Math.sin(dLong / 2) * Math.sin(dLong / 2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        var d = R * c;
+        return d; 
+    };
+
+    Helper.prototype.isSecured = function(radius, res) {
+        for (i in res[0].cluster)
+            for (j in res[1].cluster) {
+                var x1 = res[0].cluster[i];
+                var y1 = res[0].cluster[i];
+                var x2 = res[1].cluster[j];
+                var y2 = res[1].cluster[j];
+
+                if (this.getDistance(x1, y1, x2, y2) <= radius) 
+                    return true;
+            }
+        return false;
+    }
+
+    Helper.prototype.kmeans = function(radius, vectors, callback) {
+        var that = this;
+        kmeans.clusterize(vectors, {k: 2}, (err,res) => {
+            if (err) 
+                return callback([]);
+
+            if (that.isSecured(radius, res)) 
+                return callback(that.security);
+
+            if (res[0].cluster.length > res[1].cluster.length) {
+                that.security = that.security.concat(res[1].clusterInd);
+                if (res[0].cluster.length < 2) 
+                     return callback(that.security);
+                that.kmeans(radius, res[0].cluster, callback);
+            }
+            else {
+                that.security = that.security.concat(res[0].clusterInd);
+                if (res[1].cluster.length < 2) 
+                    return callback(that.security);
+                that.kmeans(radius, res[1].cluster, callback);
+            }
+        });
+    }
+
+    Helper.prototype.checkSecurity = function(radius, vectors, callback) {
+        this.security = [];
+        if (vectors.length < 2) 
+            return callback(this.security);
+        this.kmeans(radius, vectors, callback);
     }
 }
