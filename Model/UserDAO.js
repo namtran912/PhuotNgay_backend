@@ -117,11 +117,11 @@ module.exports = function() {
 							});
 
 					firebase.database().ref(that.ref + fbId).set({
-						avatar : snapshot.val().avatar,
+						avatar : avatar,
 						email : email,
 						firebaseUid : firebaseUid,
-						name : snapshot.val().name,
-						gender : snapshot.val().gender,
+						name : name,
+						gender : gender,
 						memberShip : snapshot.val().memberShip,
 						dateOfBirth : snapshot.val().dateOfBirth,
 						signIn : now,
