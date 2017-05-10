@@ -81,7 +81,7 @@ module.exports = function() {
 		});
 	}
 
-	UserDAO.prototype.login = function(firebase, fbToken, firebaseUid, fbId, email, fcm, callback) {
+	UserDAO.prototype.login = function(firebase, fbToken, firebaseUid, fbId, email, fcm, name, avatar, gender, callback) {
 		if (!helper.isEmail(email) || !helper.isFbId(fbId))
 			return callback({
 							responseCode : -1,
@@ -145,13 +145,13 @@ module.exports = function() {
 				helper.sendEmail(email, "Welcome to PhuotNgay", "Welcome to PhuotNgay");
 				
 				firebase.database().ref(that.ref + fbId).set({
-					avatar : "",
+					avatar : avatar,
 					email : email,
 					firebaseUid : firebaseUid,
-					name : "",
-					gender : "",
+					name : name,
+					gender : gender,
 					memberShip : now,
-					dateOfBirth : "",
+					dateOfBirth : "--/--/----",
 					signIn : now,
 					fcm : fcm
 				});

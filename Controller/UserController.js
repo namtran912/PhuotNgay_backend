@@ -12,18 +12,21 @@ module.exports = function(app, firebase) {
 						});
 
         if (!req.body.hasOwnProperty('firebaseUid') || !req.body.hasOwnProperty('fbId') || 
-            !req.body.hasOwnProperty('email') || !req.body.hasOwnProperty('fcm')) 
+            !req.body.hasOwnProperty('email') || !req.body.hasOwnProperty('fcm') || !req.body.hasOwnProperty('name') ||
+            !req.body.hasOwnProperty('avatar') || !req.body.hasOwnProperty('gender')) 
             return res.json({
 							responseCode : -1,
 							description : "Request body is incorrect!"
 						});
 
-        if (req.body.firebaseUid == "" || req.body.fbId == "" || req.body.email == "" || req.body.fcm == "") 
+        if (req.body.firebaseUid == "" || req.body.fbId == "" || req.body.email == "" || req.body.fcm == "" ||
+            req.body.name == "" || req.body.avatar == "" || req.body.gender == "") 
             return res.json({
 							responseCode : -1,
 							description : "Request body is incorrect!"
 						});
-        userDAO.login(firebase, req.headers['fbtoken'], req.body.firebaseUid, req.body.fbId, req.body.email, req.body.fcm, function(result) {
+        userDAO.login(firebase, req.headers['fbtoken'], req.body.firebaseUid, req.body.fbId, req.body.email, 
+            req.body.fcm, req.body.name, req.body.avatar, req.body.gender, function(result) {
             res.json(result); 
         });
     });
