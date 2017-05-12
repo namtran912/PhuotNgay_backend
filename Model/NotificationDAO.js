@@ -135,7 +135,7 @@ module.exports = function() {
 							description : "Authen is incorrect!"
 						});
 
-			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
+			userDAO.getSignInAndInfo(firebase, decoded.fbId, function(signIn, name, avatar) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
@@ -172,6 +172,24 @@ module.exports = function() {
                     fbIds.split(';').forEach(function(fbId){
                         if (trip.members != null && trip.members.hasOwnProperty(fbId))
                             userDAO.getFCM(firebase, fbId, function(fcm) {
+								var noti = {
+									content : {
+										from : {
+											fbId : decoded.fbId,
+											name : name, 
+											avatar : avatar
+										},
+										trip : {
+											tripId : tripId,
+											cover : trip.cover,
+											name : trip.name
+										},
+										message : message
+									},
+									type : 3
+								};
+								var id = firebase.database().ref().child(that.ref + fbId).push().key;
+								firebase.database().ref(that.ref + fbId + '/' + id).set(noti);
                                 helper.sendNoti(fcm, {}, {
                                                     body : message,
                                                     title : title,
