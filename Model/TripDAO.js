@@ -983,6 +983,16 @@ module.exports = function() {
 							description : "Request body is incorrect!"
 					});
 
+		if ((data.is_published != null && !['0','1'].includes(data.is_published)) || 
+			(data.status != null && !['0','1', '2'].includes(data.status)) ||
+            (data.transfer != null && !['0','1','2','3','4','5'].includes(data.transfer)) || 
+            (data.arrive != null && data.arrive.split(';').length != 4) || 
+			(data.depart != null && data.depart.split(';').length != 4))
+				return callback({
+					responseCode : -1,
+					description : "Request body is incorrect!"
+			});
+
 		var that = this;
 		helper.verifyToken(token, function(decoded){
 			if (decoded == null) 
@@ -1059,8 +1069,7 @@ module.exports = function() {
 	}
 
 	TripDAO.prototype.create = function(firebase, myCache, token, data, callback) {
-		if (!['0','1'].includes(data.is_published) || !['0','1', '2'].includes(data.status) ||
-			!['0','1','2','3','4','5'].includes(data.transfer) || 
+		if (!['0','1','2','3','4','5'].includes(data.transfer) || 
 			data.arrive.split(';').length != 4 || data.depart.split(';').length != 4)
 			return callback({
 							responseCode : -1,
@@ -1116,8 +1125,8 @@ module.exports = function() {
 					name : name
 				}
 
-				data.is_published = parseInt(data.is_published);
-				data.status = parseInt(data.status);
+				data.is_published = 0;
+				data.status = 0;
 				data.transfer = parseInt(data.transfer);
 				data.numberOfView = 0;
 
