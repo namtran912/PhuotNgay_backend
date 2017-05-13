@@ -66,7 +66,7 @@ module.exports = function() {
     }
 
     NotificationDAO.prototype.readNotiByFbId = function(firebase, token, type, callback) {
-		if (type != null && !this.contains(type))
+		if (type != null && !this.includes(type))
 			return callback({
 				responseCode : -1,
 				description : "Type is incorrect!"

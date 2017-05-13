@@ -131,7 +131,7 @@ module.exports = function() {
 	}
 
 	TripDAO.prototype.readOwnTripsData = function(firebase, token, query, type, callback) {
-		if (!['0', '1'].contains(type))
+		if (!['0', '1'].includes(type))
 			return callback({
 				responseCode : -1,
 				description : "Type is incorrect!"
