@@ -8,7 +8,7 @@ module.exports = function() {
 	this.NotificationDAO = function() {
 		this.ref = 'NOTIFICATION/';
         this.tripRef = 'TRIP/';
-		this.typeD = ['0', '1', '2'];
+		this.typeD = [0, 1, 2];
 		this.type = ['0', '1', '2', '3', '4'];
     }
 
@@ -114,7 +114,7 @@ module.exports = function() {
                         var id = childSnapshot.key;
                         var noti = childSnapshot.val();
 
-						if (type == null || noti.type == type) {
+						if (type == null || noti.type == parseInt(type)) {
 							noti.id = id;
                         	noties.push(noti)
 						}
