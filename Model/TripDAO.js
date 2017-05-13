@@ -1087,9 +1087,9 @@ module.exports = function() {
 						for (member in trip.members) {
 							var info = {
 								from : {
-									fbId : member,
-									name : trip.members[member].name, 
-									avatar : trip.members[member].avatar
+									fbId : decoded.fbId,
+									name : name, 
+									avatar : avatar
 								},
 								trip : {
 									tripId : id,
