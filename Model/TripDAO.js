@@ -727,7 +727,7 @@ module.exports = function() {
 					
 					var trip = snapshot.val();
 
-					var message = "<b>" + data.from.name + "</b> xin vào trip <b>" + data.trip.name + "</b> của bạn.";
+					var message = "<b>" + name + "</b> xin vào trip <b>" + trip.name + "</b> của bạn.";
 					var data = {
 								from : {
 									fbId : decoded.fbId,
@@ -815,7 +815,7 @@ module.exports = function() {
 								});
 
 							if (noti.type == 1) {
-								var message = "<b>" + data.from.name + "</b> thêm bạn vào trip <b>" + data.trip.name + "</b> ";
+								var message = "<b>" + name + "</b> thêm bạn vào trip <b>" + trip.name + "</b> ";
 								var data = {
 										from : {
 											fbId : decoded.fbId,
@@ -914,7 +914,7 @@ module.exports = function() {
 							var trip = snapshot.val();
 
 							if (trip.from.fbId == decoded.fbId) {	
-								var message = "<b>" + data.from.name + "</b> thêm bạn vào trip <b>" + data.trip.name + "</b> ";
+								var message = "<b>" + name + "</b> thêm bạn vào trip <b>" + trip.name + "</b> ";
 								var data = {
 										from : {
 											fbId : decoded.fbId,
@@ -943,7 +943,7 @@ module.exports = function() {
 							}
 							else 
 								if (snapshot.val().members != null || trip.members.hasOwnProperty(decoded.fbId)){
-									var message = "<b>" + data.from.name + "</b> được thêm vào trip <b>" + data.trip.name + "</b> của bạn.";
+									var message = "<b>" + _name + "</b> được thêm vào trip <b>" + trip.name + "</b> của bạn.";
 									var data = {
 											from : {
 												fbId : fbId,
