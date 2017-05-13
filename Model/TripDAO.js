@@ -526,13 +526,13 @@ module.exports = function() {
 						});
 
 				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
-					var trip = snapshot.val();
-					if (trip == null)
+					if (snapshot.val() == null) 
 						return callback({
-							responseCode : 1,
-							description : "",
-							data : null
-						});
+							responseCode : -1,
+							description : "Trip is not exist!"
+						});	
+
+					var trip = snapshot.val();
 					var members = [];
 
 					if (trip.from.fbId == decoded.fbId || (trip.members != null && trip.members.hasOwnProperty(decoded.fbId))) {
