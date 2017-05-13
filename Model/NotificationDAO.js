@@ -8,7 +8,8 @@ module.exports = function() {
 	this.NotificationDAO = function() {
 		this.ref = 'NOTIFICATION/';
         this.tripRef = 'TRIP/';
-		this.type = ['0', '1', '2', '3'];
+		this.typeD = ['0', '1', '2'];
+		this.type = ['0', '1', '2', '3', '4'];
     }
 
     NotificationDAO.prototype.addNoti = function(firebase, fbId, data, type, callback) {
@@ -24,7 +25,7 @@ module.exports = function() {
 					var childKey = childSnapshot.key;
 					var childData = childSnapshot.val();
 
-					if (childData.type == noti.type && 
+					if (childData.type == noti.type && that.typeD.includes(noti.type) &&
 					childData.content.from.fbId == noti.content.from.fbId &&
 					childData.content.trip.tripId == noti.content.trip.tripId) {
 						id = childKey;

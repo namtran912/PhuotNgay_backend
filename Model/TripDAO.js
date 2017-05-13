@@ -13,6 +13,9 @@ module.exports = function() {
 						'numberOfView', 'status', 'transfer'];
 		this.transfer = ['Đi bộ', 'Xe đạp', 'Xe máy', 'Xe du lịch', 'Tàu hỏa', 'Tàu thuyền'];
 		this.orderBy = ['arrive/time', 'arrive/name', 'depart/time', 'depart/name', 'name', 'numberOfView', 'status'];
+
+		this.status = ["Chuẩn bị", "Bắt đầu", "Kết thúc"];
+		this.is_published = ["Cá nhân", "Công khai"];
 	} 
 
 	TripDAO.prototype.readTripsData = function(firebase, myCache,  token, query, callback) {
@@ -1007,7 +1010,7 @@ module.exports = function() {
 							description : "Authen is incorrect!"
 						});
 
-			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
+			userDAO.getSignInAndInfo(firebase, decoded.fbId, function(signIn, name, avatar) {
 				if (signIn == null) 
 					return callback({
 							responseCode : -1,
@@ -1036,24 +1039,69 @@ module.exports = function() {
 					if (data.hasOwnProperty('arrive')) {
 						var info = data.arrive.split(';');
 						data.arrive = {
-							lat : info[0],
-							lng : info[1],
+							lat : parseFloat(info[0]),
+							lng : parseFloat(info[1]),
 							name : info[2],
-							time : info[3]
+							time : parseInt(info[3])
 						}
 					}
 
 					if (data.hasOwnProperty('depart')) {
 						var info = data.depart.split(';');
 						data.depart = {
-							lat : info[0],
-							lng : info[1],
+							lat : parseFloat(info[0]),
+							lng : parseFloat(info[1]),
 							name : info[2],
-							time : info[3]
+							time : parseInt(info[3])
 						}
 					}
 					
+					if (data.hasOwnProperty('status'))
+						 data.status = parseInt(data.status);
+					if (data.hasOwnProperty('is_published'))
+						 data.is_published = parseInt(data.is_published);
+					if (data.hasOwnProperty('transfer'))
+						 data.transfer = parseInt(data.transfer);
+					
 					firebase.database().ref(that.ref + id).update(data);
+					if (data.hasOwnProperty('status') || data.hasOwnProperty('is_published')) {
+						var trip = snapshot.val();	
+
+						for (member in trip.members) {
+							var info = {
+								from : {
+									fbId : member,
+									name : trip.members[member].name, 
+									avatar : trip.members[member].avatar
+								},
+								trip : {
+									tripId : id,
+									cover : trip.cover,
+									name : trip.name
+								}
+							};
+
+							userDAO.getFCM(firebase, member, function(fcm) {
+								notificationDAO.addNoti(firebase, member, info, 4, function(notiId){
+									if (notiId.success == 1) {
+										var message = "";
+										if (data.hasOwnProperty('is_published'))
+											message = "<b>" + name + "</b> đã thay đổi chế độ của trip <b>" + trip.name + 
+																"</b> sang " + "<b>" + that.is_published[data.is_published] + "</b>.";
+										else
+											message = "<b>" + name + "</b> đã thay đổi trạng thái của trip <b>" + trip.name + 
+																"</b> sang " + "<b>" + that.status[data.status] + "</b>.";
+
+										helper.sendNoti(fcm, {}, {
+														title : "IZIGO",
+														body : message,
+														icon : "#"
+													});	
+									}
+								});			
+							});
+						}
+					}
 				
 					myCache.del("trips");
 					for (i in that.orderBy)
