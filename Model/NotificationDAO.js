@@ -8,7 +8,7 @@ module.exports = function() {
 	this.NotificationDAO = function() {
 		this.ref = 'NOTIFICATION/';
         this.tripRef = 'TRIP/';
-		this.type = [0, 1, 2, 3];
+		this.type = ['0', '1', '2', '3'];
     }
 
     NotificationDAO.prototype.addNoti = function(firebase, fbId, data, type, callback) {
@@ -113,7 +113,7 @@ module.exports = function() {
                         var id = childSnapshot.key;
                         var noti = childSnapshot.val();
 
-						if (type == null || noti.type) {
+						if (type == null || noti.type == type) {
 							noti.id = id;
                         	noties.push(noti)
 						}

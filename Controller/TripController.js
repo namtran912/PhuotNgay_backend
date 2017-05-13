@@ -21,7 +21,7 @@ module.exports = function(app, firebase, myCache) {
 							responseCode : -1,
 							description : "Missing authorization!"
 						});
-        tripDAO.readOwnTripsData(firebase, req.headers['authorization'], req.query, function(result) {
+        tripDAO.readOwnTripsData(firebase, req.headers['authorization'], req.query, req.query.type, function(result) {
             res.json(result); 
         });
     });

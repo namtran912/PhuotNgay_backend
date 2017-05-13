@@ -130,7 +130,13 @@ module.exports = function() {
 		});
 	}
 
-	TripDAO.prototype.readOwnTripsData = function(firebase, token, query, callback) {
+	TripDAO.prototype.readOwnTripsData = function(firebase, token, query, type, callback) {
+		if (!['0', '1'].contains(type))
+			return callback({
+				responseCode : -1,
+				description : "Type is incorrect!"
+			});
+
 		var that = this;
 		helper.verifyToken(token, function(decoded){
 			if (decoded == null) 
@@ -166,7 +172,8 @@ module.exports = function() {
 								var childKey = childSnapshot.key;
 								var childData = childSnapshot.val();
 
-								if (childData.from.fbId == decoded.fbId) 
+								if ((type == '0' && childData.from.fbId == decoded.fbId) ||
+									(type == '1' && childData.members != null && childData.members.hasOwnProperty(decoded.fbId))) 
 									result.push({
 										id : childKey,
 										arrive : childData.arrive,
@@ -198,7 +205,8 @@ module.exports = function() {
 						var childData = childSnapshot.val();
 
 						
-						if (childData.from.fbId == decoded.fbId) 
+						if ((type == '0' && childData.from.fbId == decoded.fbId) ||
+							(type == '1' && childData.members != null && childData.members.hasOwnProperty(decoded.fbId))) 
 							result.push({
 								id : childKey,
 								arrive : childData.arrive,
