@@ -8,6 +8,7 @@ module.exports = function() {
 	this.NotificationDAO = function() {
 		this.ref = 'NOTIFICATION/';
         this.tripRef = 'TRIP/';
+		this.type = [0, 1, 2, 3];
     }
 
     NotificationDAO.prototype.addNoti = function(firebase, fbId, data, type, callback) {
@@ -35,7 +36,7 @@ module.exports = function() {
 				});
 
 			if (id == null) {
-				var id = firebase.database().ref().child(that.ref + fbId).push().key;
+				var id = new Date().getTime();
 				firebase.database().ref(that.ref + fbId + '/' + id).set(noti);
 				callback({
 					id : id,
@@ -64,7 +65,13 @@ module.exports = function() {
         });
     }
 
-    NotificationDAO.prototype.readNotiByFbId = function(firebase, token, callback) {
+    NotificationDAO.prototype.readNotiByFbId = function(firebase, token, type, callback) {
+		if (type != null && !this.contains(type))
+			return callback({
+				responseCode : -1,
+				description : "Type is incorrect!"
+			});
+
         var that = this;
 		helper.verifyToken(token, function(decoded){
 			if (decoded == null) 
@@ -106,14 +113,16 @@ module.exports = function() {
                         var id = childSnapshot.key;
                         var noti = childSnapshot.val();
 
-                        noti.id = id;
-                        noties.push(noti)
+						if (type == null || noti.type) {
+							noti.id = id;
+                        	noties.push(noti)
+						}
                      });
                      
                      callback({
 						responseCode : 1,
 						description : "",
-						data : noties
+						data : noties.reverse()
 					});
                  });
 			});
@@ -188,7 +197,7 @@ module.exports = function() {
 									},
 									type : 3
 								};
-								var id = firebase.database().ref().child(that.ref + fbId).push().key;
+								var id = new Date().getTime();
 								firebase.database().ref(that.ref + fbId + '/' + id).set(noti);
                                 helper.sendNoti(fcm, {}, {
                                                     body : message,

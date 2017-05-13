@@ -10,7 +10,7 @@ module.exports = function(app, firebase) {
 							responseCode : -1,
 							description : "Missing authorization!"
 						});
-        notificationDAO.readNotiByFbId(firebase, req.headers['authorization'], function(result) {
+        notificationDAO.readNotiByFbId(firebase, req.headers['authorization'], req.query.type, function(result) {
             res.json(result); 
         });
     });
