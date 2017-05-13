@@ -481,7 +481,7 @@ module.exports = function() {
 
 					for (key in trip.comment) {
 						comment.push({
-							id : parseInt(key),
+							id : key,
 							content : trip.comment[key].content,
 							from : trip.comment[key].from
 						});
@@ -726,6 +726,8 @@ module.exports = function() {
 						});
 					
 					var trip = snapshot.val();
+
+					var message = "<b>" + data.from.name + "</b> xin vào trip <b>" + data.trip.name + "</b> của bạn.";
 					var data = {
 								from : {
 									fbId : decoded.fbId,
@@ -736,7 +738,8 @@ module.exports = function() {
 									tripId : id,
 									cover : trip.cover,
 									name : trip.name
-								}
+								},
+								message : message
 							};
 
 					userDAO.getFCM(firebase, trip.from.fbId, function(fcm) {
@@ -745,7 +748,7 @@ module.exports = function() {
 							if (notiId.success == 1)
 								helper.sendNoti(fcm, {}, {
 											title : "IZIGO",
-											body : "<b>" + data.from.name + "</b> xin vào trip <b>" + data.trip.name + "</b> của bạn.",
+											body : message,
 											icon : "#"
 										});		
 						});			
@@ -812,18 +815,20 @@ module.exports = function() {
 								});
 
 							if (noti.type == 1) {
+								var message = "<b>" + data.from.name + "</b> thêm bạn vào trip <b>" + data.trip.name + "</b> ";
 								var data = {
-									from : {
-										fbId : decoded.fbId,
-										name : name, 
-										avatar : avatar
-									},
-									trip : {
-										tripId : id,
-										cover : trip.cover,
-										name : trip.name
-									}
-								};
+										from : {
+											fbId : decoded.fbId,
+											name : name, 
+											avatar : avatar
+										},
+										trip : {
+											tripId : id,
+											cover : trip.cover,
+											name : trip.name
+										},
+										message : message
+									};
 								
 								userDAO.getFCM(firebase, noti.content.fbId, function(fcm) {
 									notificationDAO.addNoti(firebase, noti.content.from.fbId, data, 2, function(notiId){
@@ -831,7 +836,7 @@ module.exports = function() {
 										if (notiId.success == 1)
 											helper.sendNoti(fcm, {}, {
 														title : "IZIGO",
-														body : "<b>" + data.from.name + "</b> thêm bạn vào trip <b>" + data.trip.name + "</b> ",
+														body : message,
 														icon : "#"
 													});
 									});
@@ -909,6 +914,7 @@ module.exports = function() {
 							var trip = snapshot.val();
 
 							if (trip.from.fbId == decoded.fbId) {	
+								var message = "<b>" + data.from.name + "</b> thêm bạn vào trip <b>" + data.trip.name + "</b> ";
 								var data = {
 										from : {
 											fbId : decoded.fbId,
@@ -919,7 +925,8 @@ module.exports = function() {
 											tripId : id,
 											cover : trip.cover,
 											name : trip.name
-										}
+										},
+										message : message
 									};
 
 								userDAO.getFCM(firebase, fbId, function(fcm) {
@@ -928,7 +935,7 @@ module.exports = function() {
 										if (notiId.success == 1)
 											helper.sendNoti(fcm, {}, {
 															title : "IZIGO",
-															body : "<b>" + data.from.name + "</b> thêm bạn vào trip <b>" + data.trip.name + "</b> ",
+															body : message,
 															icon : "#"
 														});
 									});
@@ -936,6 +943,7 @@ module.exports = function() {
 							}
 							else 
 								if (snapshot.val().members != null || trip.members.hasOwnProperty(decoded.fbId)){
+									var message = "<b>" + data.from.name + "</b> được thêm vào trip <b>" + data.trip.name + "</b> của bạn.";
 									var data = {
 											from : {
 												fbId : fbId,
@@ -946,7 +954,8 @@ module.exports = function() {
 												tripId : id,
 												cover : trip.cover,
 												name : trip.name
-											}
+											},
+											message : message
 										};
 
 									userDAO.getFCM(firebase, trip.from.fbId, function(fcm) {
@@ -955,7 +964,7 @@ module.exports = function() {
 											if (notiId.success == 1)
 												helper.sendNoti(fcm, {}, {
 																title : "IZIGO",
-																body : "<b>" + data.from.name + "</b> được thêm vào trip <b>" + data.trip.name + "</b> của bạn.",
+																body : message,
 																icon : "#"
 															});	
 										});			
@@ -1067,6 +1076,14 @@ module.exports = function() {
 					if (data.hasOwnProperty('status') || data.hasOwnProperty('is_published')) {
 						var trip = snapshot.val();	
 
+						var message = "";
+						if (data.hasOwnProperty('is_published'))
+							message = "<b>" + name + "</b> đã thay đổi chế độ của trip <b>" + trip.name + 
+												"</b> sang " + "<b>" + that.is_published[data.is_published] + "</b>.";
+						else
+							message = "<b>" + name + "</b> đã thay đổi trạng thái của trip <b>" + trip.name + 
+												"</b> sang " + "<b>" + that.status[data.status] + "</b>.";
+
 						for (member in trip.members) {
 							var info = {
 								from : {
@@ -1078,26 +1095,18 @@ module.exports = function() {
 									tripId : id,
 									cover : trip.cover,
 									name : trip.name
-								}
+								},
+								message : message
 							};
 
 							userDAO.getFCM(firebase, member, function(fcm) {
 								notificationDAO.addNoti(firebase, member, info, 4, function(notiId){
-									if (notiId.success == 1) {
-										var message = "";
-										if (data.hasOwnProperty('is_published'))
-											message = "<b>" + name + "</b> đã thay đổi chế độ của trip <b>" + trip.name + 
-																"</b> sang " + "<b>" + that.is_published[data.is_published] + "</b>.";
-										else
-											message = "<b>" + name + "</b> đã thay đổi trạng thái của trip <b>" + trip.name + 
-																"</b> sang " + "<b>" + that.status[data.status] + "</b>.";
-
+									if (notiId.success == 1) 									
 										helper.sendNoti(fcm, {}, {
 														title : "IZIGO",
 														body : message,
 														icon : "#"
-													});	
-									}
+													});										
 								});			
 							});
 						}
