@@ -1,0 +1,24 @@
+.DS_Store
+
+# npm packages
+node_modules
+npm-debug.log
+
+# *Storm
+.idea/*
+.idea/workspace.xml
+
+# *Sublime
+*.sublime-*
+
+#jasmine-npm generate
+.grunt
+
+# Cordova build
+**/build
+
+*.xcarchive
+
+# Android
+.gradle
+.idea

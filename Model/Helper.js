@@ -4,6 +4,7 @@ var smtpTransport = require('nodemailer-smtp-transport');
 var request = require('request');
 var config = require('../config');
 var kmeans = require('node-kmeans');
+var QB = require('quickblox');
 
 module.exports = function() { 
 
@@ -179,5 +180,17 @@ module.exports = function() {
         if (vectors.length < 2) 
             return callback(this.security);
         this.kmeans(radius, vectors, callback);
+    }
+
+    Helper.prototype.quickblox = function(token) {
+        QB.init(config.quickblox.appId, config.quickblox.authKey, config.quickblox.authSecret);
+
+        var params = {provider: 'facebook', keys: {token: token}};
+        QB.createSession(function(err, result) {
+            QB.login(params, function(err, result) {
+                console.log(result);
+            });
+        });
+        
     }
 }

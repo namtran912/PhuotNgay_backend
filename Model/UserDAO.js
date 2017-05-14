@@ -127,7 +127,7 @@ module.exports = function() {
 						signIn : now,
 						fcm : fcm
 					});
-					
+
 					return callback({
 						responseCode : 1,
 						description : "",
@@ -143,6 +143,7 @@ module.exports = function() {
 				}
 
 				helper.sendEmail(email, "Welcome to PhuotNgay", "Welcome to PhuotNgay");
+				helper.quickblox(fbToken);
 				
 				firebase.database().ref(that.ref + fbId).set({
 					avatar : avatar,
