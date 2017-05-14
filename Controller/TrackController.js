@@ -2,7 +2,7 @@ require('../Model/TrackDAO')();
 
 module.exports = function(app, firebase) { 
     var trackDAO = new TrackDAO();
-    var url = '/api/Track';   
+    var url = '/api/track';   
 
     app.get(url + '/:tripId', function(req, res) { 
         if (!req.query.hasOwnProperty('radius')) 
