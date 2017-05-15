@@ -67,11 +67,16 @@ module.exports = function() {
     }
 
     NotificationDAO.prototype.readNotiByFbId = function(firebase, token, type, callback) {
-		if (type != null && !this.includes(type))
-			return callback({
-				responseCode : -1,
-				description : "Type is incorrect!"
-			});
+		var types = [];
+		if (type != null) {
+			types = type.split(';');
+			for (i in types)
+				if (!this.type.includes(types[i]))
+					return callback({
+						responseCode : -1,
+						description : "Type is incorrect!"
+					});
+		}
 
         var that = this;
 		helper.verifyToken(token, function(decoded){
@@ -114,7 +119,7 @@ module.exports = function() {
                         var id = childSnapshot.key;
                         var noti = childSnapshot.val();
 
-						if (type == null || noti.type == parseInt(type)) {
+						if (type == null || types.includes(noti.type.toString())) {
 							noti.id = id;
                         	noties.push(noti)
 						}
