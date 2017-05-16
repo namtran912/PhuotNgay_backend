@@ -66,7 +66,7 @@ module.exports = function() {
         });
     }
 
-    NotificationDAO.prototype.readNotiByFbId = function(firebase, token, type, callback) {
+    NotificationDAO.prototype.readNotiByFbId = function(firebase, token, type, tripId, callback) {
 		var types = [];
 		if (type != null) {
 			types = type.split(';');
@@ -119,7 +119,7 @@ module.exports = function() {
                         var id = childSnapshot.key;
                         var noti = childSnapshot.val();
 
-						if (type == null || types.includes(noti.type.toString())) {
+						if ((type == null || types.includes(noti.type.toString())) && (tripId == null || noti.content.trip.tripId == tripId)) {
 							noti.id = id;
                         	noties.push(noti)
 						}
