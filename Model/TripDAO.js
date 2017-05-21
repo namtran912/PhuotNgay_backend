@@ -2,6 +2,8 @@ require('./Helper')();
 require('./UserDAO')();
 require('./NotificationDAO')();
 
+var fs = require('fs');
+
 module.exports = function() { 
 	var helper = new Helper();
 	var userDAO = new UserDAO();
@@ -1302,6 +1304,64 @@ module.exports = function() {
 							name : name
 						}
 					});
+				
+					callback({
+						responseCode : 1,	
+						description : ""
+					});
+				});
+			});
+		});
+	}
+
+	TripDAO.prototype.add_Album = function(firebase, token, id, album, callback) {
+		var that = this;
+		helper.verifyToken(token, function(decoded){
+			if (decoded == null) 
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!"
+						});
+
+			if (decoded.fbId == null)
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!"
+						});
+
+			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
+				if (signIn == null) 
+					return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!"
+						});
+
+				if (signIn != decoded.signIn) 
+					return callback({
+							responseCode : 0,
+							description : "Authen is expired"
+						});
+				
+				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
+					if (snapshot.val() == null) 
+						return callback({
+							responseCode : -1,
+							description : "Trip is not exist!"
+						});
+
+					// firebase.database().ref(that.ref + id + '/comment' + '/' + time).set({
+					// 	content : content,
+					// 	from : {
+					// 		avatar : avatar,
+					// 		fbId : decoded.fbId,
+					// 		name : name
+					// 	}
+					// });
+				////	for(i in album)
+						// firebase.storage().ref().child(id + '/album/' + new Date().getTime()).put(album[i]).then(function(snapshot) {
+						// 	console.log('Uploaded a blob or file!');
+						// });
+					//	album[i].ws.write('zzzzzzzzzzzzzz');
 				
 					callback({
 						responseCode : 1,	

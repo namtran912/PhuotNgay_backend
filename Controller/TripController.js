@@ -140,7 +140,7 @@ module.exports = function(app, firebase, myCache) {
         });
     });
 
-     app.post(url + '/:id/comment', function(req, res) {  
+    app.post(url + '/:id/comment', function(req, res) {  
          if (!req.body.hasOwnProperty('content')) 
             return res.json({
 							responseCode : -1,
@@ -160,6 +160,18 @@ module.exports = function(app, firebase, myCache) {
 						});
 
         tripDAO.add_Comment(firebase, req.headers['authorization'], req.params.id, req.body.content, function(result) {
+            res.json(result); 
+        });
+    });
+
+    app.post(url + '/:id/album', function(req, res) {  
+        if (req.headers['authorization'] == null) 
+            return res.json({
+							responseCode : -1,
+							description : "Missing authorization!"
+						});
+
+        tripDAO.add_Album(firebase, req.headers['authorization'], req.params.id, req.files, function(result) {
             res.json(result); 
         });
     });
