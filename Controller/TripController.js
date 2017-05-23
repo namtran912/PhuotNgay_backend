@@ -78,6 +78,17 @@ module.exports = function(app, firebase, myCache) {
         });
     });
 
+    app.get(url + '/:id/album', function(req, res) {  
+        if (req.headers['authorization'] == null) 
+            return res.json({
+							responseCode : -1,
+							description : "Missing authorization!"
+						});
+        tripDAO.readTripsDataById_Album(firebase, req.headers['authorization'], req.params.id, function(result) {
+            res.json(result); 
+        });
+    });
+
     app.get(url + '/:id', function(req, res) {  
         if (req.headers['authorization'] == null) 
             return res.json({
@@ -398,4 +409,26 @@ module.exports = function(app, firebase, myCache) {
         });
     });
 
+    app.delete(url + '/:id/album', function(req, res) {  
+         if (!req.body.hasOwnProperty('id')) 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!"
+						});
+
+        if ( req.body.id == "") 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!"
+						});
+
+        if (req.headers['authorization'] == null) 
+            return res.json({
+							responseCode : -1,
+							description : "Missing authorization!"
+						});
+        tripDAO.delete_Album(firebase, req.headers['authorization'], req.params.id, req.body.id, function(result) {
+            res.json(result); 
+        });
+    });
 }

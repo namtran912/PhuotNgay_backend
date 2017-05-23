@@ -21,12 +21,6 @@ module.exports = function() {
                 region: 'ap-southeast-1',
             },
         });
-
-        this.params = {
-            s3Params: {
-                Bucket: config.bucket
-            },
-        };
     }
 
     Helper.prototype.U2A = function(str) {
@@ -199,13 +193,33 @@ module.exports = function() {
         
     }
 
-     Helper.prototype.upload = function(localFile, key, callback) {
-        this.params.localFile = localFile;
-        this.params.s3Params.Key = key;
-
-        var uploader = this.client.uploadFile(this.params);  
+    Helper.prototype.upload = function(localFile, key, callback) {
+        var uploader = this.client.uploadFile({
+            localFile : localFile,
+            s3Params: {
+                Bucket: config.bucket,
+                Key : key
+            },
+        });  
         uploader.on('end', function() {
             callback(s3.getPublicUrlHttp(config.bucket, key));
+        });
+    }
+
+    Helper.prototype.deleteStorage = function(key, callback) {
+        var deleter = this.client.deleteObjects({
+            Bucket: config.bucket,
+            Delete : {
+                Objects : [{
+                    Key : key
+                }]
+            }
+        });
+        deleter.on('error', function(err) {
+            callback(false)
+        });  
+        deleter .on('end', function() {
+            callback(true);
         });
     }
 }

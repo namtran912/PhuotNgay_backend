@@ -560,6 +560,62 @@ module.exports = function() {
 		});
 	}
 
+	TripDAO.prototype.readTripsDataById_Album = function(firebase, token, id, callback) {
+		var that = this;
+		helper.verifyToken(token, function(decoded){
+			if (decoded == null) 
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!"
+						});
+
+			if (decoded.fbId == null)
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!"
+						});
+
+			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
+				if (signIn == null) 
+					return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!"
+						});
+
+				if (signIn != decoded.signIn) 
+					return callback({
+							responseCode : 0,
+							description : "Authen is expired"
+						});
+
+				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
+					var trip = snapshot.val();
+					if (trip == null)
+						return callback({
+							responseCode : 1,
+							description : "",
+							data : null
+						});
+
+					var album = [];
+
+					for (key in trip.album) {
+						album.push({
+							id : key,
+							url : trip.album[key]	
+						});
+					}
+
+					callback({
+						responseCode : 1,
+						description : "",
+						data : album,
+					});
+				});
+			});
+		});
+	}
+
 	TripDAO.prototype.acceptToJoin = function(firebase, token, id, verify, notiId, callback) {
 		var that = this;
 		helper.verifyToken(token, function(decoded){
@@ -1591,6 +1647,68 @@ module.exports = function() {
 								description : ""
 							});
 						});
+				});
+			});
+		});
+	}
+
+	TripDAO.prototype.delete_Album = function(firebase, token, id, album, callback) {
+		var that = this;
+		helper.verifyToken(token, function(decoded){
+			if (decoded == null) 
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!"
+						});
+
+			if (decoded.fbId == null)
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!"
+						});
+
+			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
+				if (signIn == null) 
+					return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!"
+						});
+
+				if (signIn != decoded.signIn) 
+					return callback({
+							responseCode : 0,
+							description : "Authen is expired"
+						});
+				
+				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
+					if (snapshot.val() == null) 
+						return callback({
+							responseCode : -1,
+							description : "Trip is not exist!"
+						});
+					
+					if (snapshot.val().from.fbId != decoded.fbId)
+						return callback({
+							responseCode : -1,
+							description : "User is not Trip's admin!"
+						});
+
+					var trip = snapshot.val();
+					var albums = album.split(';');
+
+					for(i in albums) 
+						if (trip.album != null && trip.album.hasOwnProperty(albums[i])) {
+							var idStorage = trip.album[albums[i]].split('/');
+							helper.deleteStorage(id + '/album/' + idStorage[idStorage.length - 1], function(success){
+								if (success)
+									firebase.database().ref(that.ref + id + '/album/' + albums[i]).set({});
+							});
+						}
+				
+					callback({
+						responseCode : 1,	
+						description : ""
+					});
 				});
 			});
 		});
