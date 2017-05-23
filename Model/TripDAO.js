@@ -2,8 +2,6 @@ require('./Helper')();
 require('./UserDAO')();
 require('./NotificationDAO')();
 
-var fs = require('fs');
-
 module.exports = function() { 
 	var helper = new Helper();
 	var userDAO = new UserDAO();
@@ -1349,19 +1347,11 @@ module.exports = function() {
 							description : "Trip is not exist!"
 						});
 
-					// firebase.database().ref(that.ref + id + '/comment' + '/' + time).set({
-					// 	content : content,
-					// 	from : {
-					// 		avatar : avatar,
-					// 		fbId : decoded.fbId,
-					// 		name : name
-					// 	}
-					// });
-				////	for(i in album)
-						// firebase.storage().ref().child(id + '/album/' + new Date().getTime()).put(album[i]).then(function(snapshot) {
-						// 	console.log('Uploaded a blob or file!');
-						// });
-					//	album[i].ws.write('zzzzzzzzzzzzzz');
+					
+					for(i in album)
+						helper.upload(album[i].path, id + '/album/' + new Date().getTime() + i, function(url){
+							firebase.database().ref(that.ref + id + '/album/' + new Date().getTime()).set(url);
+						});
 				
 					callback({
 						responseCode : 1,	

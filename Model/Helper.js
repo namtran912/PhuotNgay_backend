@@ -5,12 +5,27 @@ var request = require('request');
 var config = require('../config');
 var kmeans = require('node-kmeans');
 var QB = require('quickblox');
+var s3 = require('s3');
 
 module.exports = function() { 
 
     this.Helper = function() {
         this.expireTime = 2592000;
         this.security = [];
+
+        this.client = s3.createClient({
+            s3Options: {
+                accessKeyId: 'AKIAIFU2XLC5PISWJXRA',
+                secretAccessKey: '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',
+                region: 'ap-southeast-1',
+            },
+        });
+
+        this.params = {
+            s3Params: {
+                Bucket: config.bucket
+            },
+        };
     }
 
     Helper.prototype.U2A = function(str) {
@@ -192,5 +207,15 @@ module.exports = function() {
             });
         });
         
+    }
+
+     Helper.prototype.upload = function(localFile, key, callback) {
+        this.params.localFile = localFile;
+        this.params.s3Params.Key = key;
+
+        var uploader = this.client.uploadFile(this.params);  
+        uploader.on('end', function() {
+            callback(s3.getPublicUrlHttp(config.bucket, key));
+        });
     }
 }
