@@ -1652,7 +1652,7 @@ module.exports = function() {
 		});
 	}
 
-	TripDAO.prototype.delete_Album = function(firebase, token, id, album, callback) {
+	TripDAO.prototype.delete_Album = function(firebase, token, id, albumId, callback) {
 		var that = this;
 		helper.verifyToken(token, function(decoded){
 			if (decoded == null) 
@@ -1694,16 +1694,18 @@ module.exports = function() {
 						});
 
 					var trip = snapshot.val();
-					var albums = album.split(';');
 
-					for(i in albums) 
-						if (trip.album != null && trip.album.hasOwnProperty(albums[i])) {
-							var idStorage = trip.album[albums[i]].split('/');
-							helper.deleteStorage(id + '/album/' + idStorage[idStorage.length - 1], function(success){
-								if (success)
-									firebase.database().ref(that.ref + id + '/album/' + albums[i]).set({});
-							});
-						}
+					if (trip.album == null || !trip.album.hasOwnProperty(albumId)) 
+						return callback({
+							responseCode : -1,
+							description : "Trip's album is not exist!"
+						});
+
+					var idStorage = trip.album[albumId].split('/');
+					helper.deleteStorage(id + '/album/' + idStorage[idStorage.length - 1], function(success){
+						if (success)
+							firebase.database().ref(that.ref + id + '/album/' + albumId).set({});
+					});
 				
 					callback({
 						responseCode : 1,	
