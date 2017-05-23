@@ -6,6 +6,7 @@ var config = require('../config');
 var kmeans = require('node-kmeans');
 var QB = require('quickblox');
 var s3 = require('s3');
+var removeDiacritics = require('diacritics').remove;
 
 module.exports = function() { 
 
@@ -29,18 +30,7 @@ module.exports = function() {
     }
 
     Helper.prototype.U2A = function(str) {
-		var reserved = '';
-		var code = str.match(/&#(d+);/g);
-
-		if (code === null) {
-			return str;
-		}
-
-		for (var i = 0; i < code.length; i++) {
-			reserved += String.fromCharCode(code[i].replace(/[&#;]/g, ''));
-		}
-       
-		return reserved;
+		return removeDiacritics(str);
 	}
 
     Helper.prototype.compare = function(item, _item) {
