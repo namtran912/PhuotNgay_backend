@@ -1347,10 +1347,10 @@ module.exports = function() {
 							description : "Trip is not exist!"
 						});
 					
-					if ((snapshot.val().members != null && snapshot.val().members.hasOwnProperty(decoded.fbId)) || snapshot.val().from.fbId == decoded.fbId)
+					if ((snapshot.val().members == null || !snapshot.val().members.hasOwnProperty(decoded.fbId)) && snapshot.val().from.fbId != decoded.fbId)
 						return callback({
 							responseCode : -1,
-							description : "User is Trip's member or Trip's admin!"
+							description : "User is not Trip's member or Trip's admin!"
 						});
 
 					for(i in album)
@@ -1410,6 +1410,60 @@ module.exports = function() {
 
 					firebase.database().ref(that.ref + id + '/activity' + '/' + time).update({
 						content : content
+					});
+				
+					callback({
+						responseCode : 1,	
+						description : ""
+					});
+				});
+			});
+		});
+	}
+
+	TripDAO.prototype.update_Cover = function(firebase, token, id, cover, callback) {
+		var that = this;
+		helper.verifyToken(token, function(decoded){
+			if (decoded == null) 
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!"
+						});
+
+			if (decoded.fbId == null)
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!"
+						});
+
+			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
+				if (signIn == null) 
+					return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!"
+						});
+
+				if (signIn != decoded.signIn) 
+					return callback({
+							responseCode : 0,
+							description : "Authen is expired"
+						});
+				
+				firebase.database().ref(that.ref + id).once('value').then(function(snapshot) {
+					if (snapshot.val() == null) 
+						return callback({
+							responseCode : -1,
+							description : "Trip is not exist!"
+						});
+					
+					if (snapshot.val().from.fbId != decoded.fbId)
+						return callback({
+							responseCode : -1,
+							description : "User is not Trip's admin!"
+						});
+					
+					helper.upload(cover.path, id + '/cover', function(url){
+						firebase.database().ref(that.ref + id + '/cover').set(url);
 					});
 				
 					callback({

@@ -320,6 +320,24 @@ module.exports = function(app, firebase, myCache) {
         });
     });
 
+    app.put(url + '/:id/cover', function(req, res) {  
+        if (!req.files.hasOwnProperty('cover')) 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!"
+						});
+
+        if (req.headers['authorization'] == null) 
+            return res.json({
+							responseCode : -1,
+							description : "Missing authorization!"
+						});
+
+        tripDAO.update_Cover(firebase, req.headers['authorization'], req.params.id, req.files.cover, function(result) {
+            res.json(result); 
+        });
+    });
+
     app.put(url + '/:id', function(req, res) {  
         if (req.headers['authorization'] == null) 
             return res.json({
