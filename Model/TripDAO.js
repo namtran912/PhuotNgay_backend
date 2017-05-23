@@ -1346,8 +1346,13 @@ module.exports = function() {
 							responseCode : -1,
 							description : "Trip is not exist!"
 						});
-
 					
+					if ((snapshot.val().members != null && snapshot.val().members.hasOwnProperty(decoded.fbId)) || snapshot.val().from.fbId == decoded.fbId)
+						return callback({
+							responseCode : -1,
+							description : "User is Trip's member or Trip's admin!"
+						});
+
 					for(i in album)
 						helper.upload(album[i].path, id + '/album/' + new Date().getTime() + i, function(url){
 							firebase.database().ref(that.ref + id + '/album/' + new Date().getTime()).set(url);
