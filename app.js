@@ -15,7 +15,7 @@ var allowCrossDomain = function(req, res, next) {
 	next();
 }	
 
-app.use(express.bodyParser({uploadDir:'./uploads'}));
+app.use(express.bodyParser({uploadDir:'./uploads', limit : '4MB'}));
 app.use(allowCrossDomain);
 
 firebase.initializeApp(config.firebase);
