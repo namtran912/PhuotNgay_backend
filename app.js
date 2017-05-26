@@ -25,6 +25,7 @@ require('./Controller/UserController.js')(app, firebase);
 require('./Controller/NotificationController.js')(app, firebase);
 require('./Controller/TrackController.js')(app, firebase);
 require('./Controller/MapController.js')(app, firebase);
+require('./Controller/SuggestionController.js')(app, firebase);
 
 app.get('/api/cache', function(req, res) { 
 	var orderBy = ['arrive/time', 'arrive/name', 'depart/time', 'depart/name', 'name', 'numberOfView', 'status'];
