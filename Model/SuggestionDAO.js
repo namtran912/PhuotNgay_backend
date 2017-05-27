@@ -29,7 +29,16 @@ module.exports = function() {
 					description : "Suggest is not exist!"
 				});
 
-			that.list = snapshot.val();
+			that.list = [];
+
+			snapshot.forEach(function(childSnapshot) {
+				var childKey = childSnapshot.key;
+				var childData = childSnapshot.val();
+				childData.id = childKey;
+
+				that.list.push(childData);
+			});
+
 			callback({
 				responseCode : 1,
 				description : ""

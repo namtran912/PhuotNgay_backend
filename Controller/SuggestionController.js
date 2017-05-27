@@ -7,13 +7,13 @@ module.exports = function(app, firebase) {
     suggestionDAO.updateSuggestList(firebase, function(result) {});
 
     app.get(url, function(req, res) { 
-        if (!req.query.hasOwnProperty('lat') || !req.query.hasOwnProperty('long')) 
+        if (!req.query.hasOwnProperty('lat') || !req.query.hasOwnProperty('lng')) 
             return res.json({
 							responseCode : -1,
 							description : "Request query is incorrect!"
 						});
 
-        if (req.query.lat == "" || req.query.long == "") 
+        if (req.query.lat == "" || req.query.lng == "") 
             return res.json({
 							responseCode : -1,
 							description : "Request query is incorrect!"
@@ -25,7 +25,7 @@ module.exports = function(app, firebase) {
 							description : "Missing authorization!"
 						});
 
-        suggestionDAO.getSuggestList(firebase, req.headers['authorization'], req.query.lat, req.query.long, function(result) {
+        suggestionDAO.getSuggestList(firebase, req.headers['authorization'], req.query.lat, req.query.lng, function(result) {
             res.json(result); 
         });
     });
