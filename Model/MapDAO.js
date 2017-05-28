@@ -1,9 +1,11 @@
 require('./Helper')();
 require('./UserDAO')();
+require('./NotificationDAO')();
 
 module.exports = function() { 
     var helper = new Helper();
 	var userDAO = new UserDAO();
+	var notificationDAO = new NotificationDAO();
 
 	this.MapDAO = function() {
 		this.ref = 'MAP/';
@@ -62,25 +64,25 @@ module.exports = function() {
 							if (!track.hasOwnProperty(security.core[i]))
 								return callback({
 									responseCode : -1,
-									description : security.core[i] + "'s track is not exist!"
+									description : security.core[i] + "Trip's track is not exist!"
 								});
 							
-							var pos = track[security.core[i]].lastGPS.split(', ');
-							cores.push(pos[0], pos[1], security.core[i]);
+							var pos = track[security.core[i]].lastGps.split(', ');
+							cores.push([pos[0], pos[1], security.core[i]]);
 						}
 
 						var result = [];
 
 						for (fbId in track) 
 							if (!security.core.includes(fbId)) {
-								var pos = track[fbId].lastGPS.split(', ');
+								var pos = track[fbId].lastGps.split(', ');
 
 								var dMin = 0;
 								var coreMin = null;
 								for (i in cores) {
 									var dis = helper.getDistance(parseFloat(pos[0]), parseFloat(pos[1]), 
 																parseFloat(cores[i][0]), parseFloat(cores[i][1]));
-									if (dis <= radius) 
+									if (dis <= security.radius) 
 										break;					
 									else if (dis < dMin || coreMin == null) {
 										dMin = dis;
@@ -90,7 +92,7 @@ module.exports = function() {
 								}
 
 								if (coreMin != null)	
-									result.push(fbId, coreMin);
+									result.push([fbId, coreMin]);
 							}
 
 						if (result.length > 0)	
@@ -103,44 +105,53 @@ module.exports = function() {
 
 							var trip = __snapshot.val();
 
-							for (i in result) {
-								userDAO.getSignInAndInfo(firebase, result[i][0], function(signIn, name, avatar) {
-								userDAO.getSignInAndInfo(firebase, result[i][1], function(signIn, _name, _avatar) {
-									var message = [];
-									message.push("Bạn đang đi quá xa với nhóm người hướng dẫn. Hãy liên hệ với người gần bạn nhất là <b>" + _name  + "</b>");
-									message.push("<b>" + name  + "</b> đang đi quá xa với nhóm người hướng dẫn. Bạn là người hướng dẫn gần nhất có thể giúp đỡ!");
-									var names = [name, _name];
-									var avatars = [avatar, _avatar];
+							for (i in result) 
+								(function() {
+									var i = this;
+									userDAO.getSignInAndInfo(firebase, result[i][0], function(signIn, name, avatar) {
+									userDAO.getSignInAndInfo(firebase, result[i][1], function(signIn, _name, _avatar) {
+										var message = [];
+										message.push("Bạn đang đi quá xa với nhóm người hướng dẫn. Hãy liên hệ với người gần bạn nhất là <b>" + _name  + "</b>");
+										message.push("<b>" + name  + "</b> đang đi quá xa với nhóm người hướng dẫn. Bạn là người hướng dẫn gần nhất có thể giúp đỡ!");
+										var names = [name, _name];
+										var avatars = [avatar, _avatar];
 
-									for (j = 0; j < 2; j++) {
-										var info = {
-											from : {
-												fbId : result[i][j],
-												name : names[j], 
-												avatar : avatars[j]
-											},
-											trip : {
-												tripId : tripId,
-												cover : trip.cover,
-												name : trip.name
-											},
-											message : message[j]
-										};
+										for (j = 0; j < 2; j++) 
+											(function() {
+												var j = this;
+												var info = {
+													from : {
+														fbId : result[i][j],
+														name : names[j], 
+														avatar : avatars[j]
+													},
+													trip : {
+														tripId : tripId,
+														cover : trip.cover,
+														name : trip.name
+													},
+													message : message[j]
+												};
 
-										userDAO.getFCM(firebase, result[i][j], function(fcm) {
-											notificationDAO.addNoti(firebase, result[i][j], info, 4, function(notiId){
-												if (notiId.success == 1) 									
-													helper.sendNoti(fcm, {}, {
-																	title : "IZIGO",
-																	body : message,
-																	icon : "#"
-																});										
-											});			
-										});
-									}
-								});
-								});
-							}
+												userDAO.getFCM(firebase, result[i][j], function(fcm) {
+													notificationDAO.addNoti(firebase, result[i][j], info, 4, function(notiId){
+														if (notiId.success == 1) 									
+															helper.sendNoti(fcm, {}, {
+																			title : "IZIGO",
+																			body : message,
+																			icon : "#"
+																		});										
+													});			
+												});
+											}).call(j);
+									});
+									});
+								}).call(i);
+
+							callback({
+								responseCode : 1,	
+								description : ""
+							});
 						});
 					});
 				}); 
@@ -207,7 +218,7 @@ module.exports = function() {
 
 					firebase.database().ref(that.ref + tripId + '/security').set({ 
 						core : cores,
-						radius : radius
+						radius : parseInt(radius)
 					}); 
 
 					callback({
