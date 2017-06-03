@@ -1299,10 +1299,18 @@ module.exports = function() {
 							description : "Trip is not exist!"
 						});
 
-					if (snapshot.val().from.fbId != decoded.fbId)
+					var trip = snapshot.val();
+
+					if (trip.from.fbId != decoded.fbId)
 						return callback({
 							responseCode : -1,
 							description : "User is not Trip's admin!"
+						});
+
+					if (trip.depart.time > parseFloat(time) || trip.arrive.time < parseFloat(time))
+						return callback({
+							responseCode : -1,
+							description : "Activity's time is out of range!"
 						});
 
 					firebase.database().ref(that.ref + id + '/activity' + '/' + time).set({
