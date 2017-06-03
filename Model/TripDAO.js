@@ -422,11 +422,16 @@ module.exports = function() {
 						});
 
 					var activity = [];
+					var editable = 0; 
+
+					if (decoded.fbId == trip.from.fbId)
+						editable = 1;
 
 					for (key in trip.activity) {
 						activity.push({
 							time : key,
-							content : trip.activity[key].content
+							content : trip.activity[key].content,
+							editable : editable 
 						});
 					}
 
