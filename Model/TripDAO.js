@@ -891,7 +891,7 @@ module.exports = function() {
 										message : message
 									};
 								
-								userDAO.getFCM(firebase, noti.content.fbId, function(fcm) {
+								userDAO.getFCM(firebase, noti.content.from.fbId, function(fcm) {
 									notificationDAO.addNoti(firebase, noti.content.from.fbId, data, 2, function(notiId){
 										data.notiId = notiId.id;
 										if (notiId.success == 1)
@@ -927,7 +927,7 @@ module.exports = function() {
 										message : message
 									};
 								
-								userDAO.getFCM(firebase, noti.content.fbId, function(fcm) {
+								userDAO.getFCM(firebase, noti.content.from.fbId, function(fcm) {
 									notificationDAO.addNoti(firebase, noti.content.from.fbId, data, 4, function(notiId){
 										data.notiId = notiId.id;
 										if (notiId.success == 1)
