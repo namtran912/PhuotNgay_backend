@@ -788,7 +788,7 @@ module.exports = function() {
 					
 					var trip = snapshot.val();
 
-					var message = "<b>" + name + "</b> xin vào hành trình <b>" + trip.name + "</b> của bạn.";
+					var message = "<b>" + name + "</b> xin vào hành trình <b>" + trip.name + "</b> của bạn";
 					var data = {
 								from : {
 									fbId : decoded.fbId,
@@ -876,7 +876,7 @@ module.exports = function() {
 								});
 
 							if (noti.type == 1) {
-								var message = "<b>" + name + "</b> thêm bạn vào hành trình <b>" + trip.name + "</b> ";
+								var message = "<b>" + name + "</b> thêm bạn vào hành trình <b>" + trip.name + "</b>";
 								var data = {
 										from : {
 											fbId : decoded.fbId,
@@ -912,7 +912,7 @@ module.exports = function() {
 
 								firebase.database().ref(that.ref + id + '/members' + '/' + noti.content.from.fbId).set(member);	
 
-								var message = "<b>" + name + "</b> đồng ý bạn tham gia hành trình <b>" + trip.name + "</b> ";
+								var message = "<b>" + name + "</b> đồng ý bạn tham gia hành trình <b>" + trip.name + "</b>";
 								var data = {
 										from : {
 											fbId : decoded.fbId,
@@ -1002,7 +1002,7 @@ module.exports = function() {
 							var trip = snapshot.val();
 
 							if (trip.from.fbId == decoded.fbId) {	
-								var message = "<b>" + name + "</b> thêm bạn vào hành trình <b>" + trip.name + "</b> ";
+								var message = "<b>" + name + "</b> thêm bạn vào hành trình <b>" + trip.name + "</b>";
 								var data = {
 										from : {
 											fbId : decoded.fbId,
@@ -1031,7 +1031,7 @@ module.exports = function() {
 							}
 							else 
 								if (snapshot.val().members != null || trip.members.hasOwnProperty(decoded.fbId)){
-									var message = "<b>" + _name + "</b> được thêm vào hành trình <b>" + trip.name + "</b> của bạn.";
+									var message = "<b>" + _name + "</b> được thêm vào hành trình <b>" + trip.name + "</b> của bạn";
 									var data = {
 											from : {
 												fbId : fbId,
@@ -1167,10 +1167,10 @@ module.exports = function() {
 						var message = "";
 						if (data.hasOwnProperty('is_published'))
 							message = "<b>" + name + "</b> đã thay đổi chế độ của hành trình <b>" + trip.name + 
-												"</b> sang " + "<b>" + that.is_published[data.is_published] + "</b>.";
+												"</b> sang " + "<b>" + that.is_published[data.is_published] + "</b>";
 						else
 							message = "<b>" + name + "</b> đã thay đổi trạng thái của hành trình <b>" + trip.name + 
-												"</b> sang " + "<b>" + that.status[data.status] + "</b>.";
+												"</b> sang " + "<b>" + that.status[data.status] + "</b>";
 
 						for (member in trip.members) {
 							var info = {
