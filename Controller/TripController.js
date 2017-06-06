@@ -108,6 +108,9 @@ module.exports = function(app, firebase, myCache) {
 							responseCode : -1,
 							description : "Request body is incorrect!"
 						});
+        
+        if (req.body.description == "")
+            req.body.description == " ";
 
         if (req.body.arrive == "" || req.body.depart == "" ||  req.body.description == "" ||
             req.body.name == "" || req.body.transfer == "") 
