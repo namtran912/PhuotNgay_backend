@@ -8,9 +8,9 @@ config.firebase = {
 };    
 
 config.quickblox = {
-    appId: 57851,
-    authKey: 'JENA7yzUntkzTUT',
-    authSecret: 'OBwvh94rw8v9Bjq'
+    appId: 58365,
+    authKey: 'LR5-BwLQu3HL9PW',
+    authSecret: 'WQJ7yp3c4vxnWd6'
 };
 
 config.SecrectToken = 'phuotngay';

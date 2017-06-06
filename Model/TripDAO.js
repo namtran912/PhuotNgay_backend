@@ -11,10 +11,10 @@ module.exports = function() {
 		this.ref = 'TRIP/';
 		this.property = ['arrive', 'cover', 'depart', 'description', 'is_published', 'name', 
 						'numberOfView', 'status', 'transfer'];
-		this.transfer = ['Đi bộ', 'Xe đạp', 'Xe máy', 'Xe du lịch', 'Tàu hỏa', 'Tàu thuyền'];
+		this.transfer = ['Đi bộ', 'Xe đạp', 'Xe máy', 'Xe du lịch', 'Tàu hỏa', 'Tàu thuyền', 'Khác'];
 		this.orderBy = ['arrive/time', 'arrive/name', 'depart/time', 'depart/name', 'name', 'numberOfView', 'status'];
 
-		this.status = ["Chuẩn bị", "Bắt đầu", "Kết thúc"];
+		this.status = ["Chuẩn bị", "Đang đi", "Kết thúc"];
 		this.is_published = ["Cá nhân", "Công khai"];
 	} 
 
@@ -1058,7 +1058,7 @@ module.exports = function() {
 
 		if ((data.is_published != null && !['0','1'].includes(data.is_published)) || 
 			(data.status != null && !['0','1', '2'].includes(data.status)) ||
-            (data.transfer != null && !['0','1','2','3','4','5'].includes(data.transfer)) || 
+            (data.transfer != null && !['0','1','2','3','4','5', '6'].includes(data.transfer)) || 
             (data.arrive != null && data.arrive.split(';').length != 4) || 
 			(data.depart != null && data.depart.split(';').length != 4))
 				return callback({
@@ -1187,7 +1187,7 @@ module.exports = function() {
 	}
 
 	TripDAO.prototype.create = function(firebase, myCache, token, data, callback) {
-		if (!['0','1','2','3','4','5'].includes(data.transfer) || 
+		if (!['0','1','2','3','4','5','6'].includes(data.transfer) || 
 			data.arrive.split(';').length != 4 || data.depart.split(';').length != 4)
 			return callback({
 							responseCode : -1,

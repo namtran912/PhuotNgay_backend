@@ -113,7 +113,7 @@ module.exports = function() {
 					if (snapshot.val().firebaseUid != firebaseUid)
 						return callback({
 								responseCode : -1,
-								description : "firebaseUid and fbId are incorrect"
+								description : "firebaseUid and fbId are incorrect!"
 							});
 
 					firebase.database().ref(that.ref + fbId).set({
@@ -143,7 +143,7 @@ module.exports = function() {
 				}
 
 				helper.sendEmail(email, "Welcome to PhuotNgay", "Welcome to PhuotNgay");
-				helper.quickblox(fbToken);
+				helper.quickblox(fbId);
 				
 				firebase.database().ref(that.ref + fbId).set({
 					avatar : avatar,

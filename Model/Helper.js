@@ -181,13 +181,16 @@ module.exports = function() {
         this.kmeans(radius, vectors, callback);
     }
 
-    Helper.prototype.quickblox = function(token) {
+    Helper.prototype.quickblox = function(fbId) {
         QB.init(config.quickblox.appId, config.quickblox.authKey, config.quickblox.authSecret);
 
-        var params = {provider: 'facebook', keys: {token: token}};
-        QB.createSession(function(err, result) {
-            QB.login(params, function(err, result) {
-                console.log(result);
+        var params = {login: fbId, password: fbId};
+        QB.createSession(function(err,result){
+            QB.users.create(params, function(err, user){
+                if (user) {
+                } else  {
+                    console.log(err);
+                }
             });
         });
         
