@@ -1262,6 +1262,14 @@ module.exports = function() {
 					name : info[2],
 					time : parseInt(info[3])
 				}
+
+				if (data.arrive.time < data.depart.time || data.arrive.time < 0 || data.depart.time < 0 ||
+					data.arrive.lat < 0 || data.arrive.lng < 0 || data.depart.lat < 0 || data.depart.lng < 0)
+						return callback({
+							responseCode : -1,
+							description : "Request body is incorrect!"
+						});
+
 				
 				data.createdTime = new Date().getTime();
 				data.from = {
