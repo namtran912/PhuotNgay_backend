@@ -16,9 +16,9 @@ module.exports = function() {
 
         this.client = s3.createClient({
             s3Options: {
-                accessKeyId: 'AKIAIFU2XLC5PISWJXRA',
-                secretAccessKey: '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',
-                region: 'ap-southeast-1',
+                accessKeyId: config.s3Options.accessKeyId,
+                secretAccessKey: config.s3Options.secretAccessKey,
+                region: config.s3Options.region,
             },
         });
     }
@@ -83,8 +83,8 @@ module.exports = function() {
         var transport = nodemailer.createTransport(smtpTransport({
             service: "gmail", 
             auth: {
-                user: "yostajsc@gmail.com",
-                pass: "nphau@1995"
+                user: config.emailAdmin.user,
+                pass: config.emailAdmin.pass
             }
         }));
 

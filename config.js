@@ -13,6 +13,18 @@ config.quickblox = {
     authSecret: 'WQJ7yp3c4vxnWd6'
 };
 
+
+config.s3Options = {
+    accessKeyId: 'AKIAJ5ICBVUOHA7ZQTTA',
+    secretAccessKey: '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',
+    region: 'ap-southeast-1'
+};
+
+config.emailAdmin = {
+    user: "yostajsc@gmail.com",
+    pass: "nphau@1995"
+};
+
 config.SecrectToken = 'phuotngay';
 
 config.bucket = 'izigo';
