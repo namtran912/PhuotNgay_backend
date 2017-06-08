@@ -22,7 +22,7 @@ config.s3Options = {
 
 config.emailAdmin = {
     user: "yostajsc@gmail.com",
-    pass: "nphau@1995"
+    pass: "yostajsc@1995"
 };
 
 config.SecrectToken = 'phuotngay';
