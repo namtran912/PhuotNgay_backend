@@ -221,4 +221,61 @@ module.exports = function() {
 			});
 		});
 	}
+
+	NotificationDAO.prototype.deleteNotiByFbId = function(firebase, token, tripId, callback) {
+		var that = this;
+		helper.verifyToken(token, function(decoded){
+			if (decoded == null) 
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!"
+						});
+
+			if (decoded.fbId == null)
+				return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!"
+						});
+
+			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
+				if (signIn == null) 
+					return callback({
+							responseCode : -1,
+							description : "Authen is incorrect!"
+						});
+
+				if (signIn != decoded.signIn) 
+					return callback({
+							responseCode : 0,
+							description : "Authen is expired"
+						});
+
+				 firebase.database().ref(that.ref + decoded.fbId).once('value').then(function(snapshot) {
+                    if (snapshot.val() == null)
+                        return callback({
+                            responseCode : 1,
+                            description : "",
+                            data : noties
+                        });
+
+					var noties = [];
+                     
+                     snapshot.forEach(function(childSnapshot) {
+                        var id = childSnapshot.key;
+                        var noti = childSnapshot.val();
+
+						if (that.typeD.includes(noti.type) || (tripId != null && noti.content.trip.tripId != tripId))
+                        	noties[id] = noti;
+                     });
+
+					 firebase.database().ref(that.ref + decoded.fbId).set(noties);
+                     
+                     callback({
+						responseCode : 1,
+						description : ""
+					});
+                 });
+			});
+		});
+    }
 }

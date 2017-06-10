@@ -1172,32 +1172,34 @@ module.exports = function() {
 							message = "<b>" + name + "</b> đã thay đổi trạng thái của hành trình <b>" + trip.name + 
 												"</b> sang " + "<b>" + that.status[data.status] + "</b>";
 
-						for (member in trip.members) {
-							var info = {
-								from : {
-									fbId : decoded.fbId,
-									name : name, 
-									avatar : avatar
-								},
-								trip : {
-									tripId : id,
-									cover : trip.cover,
-									name : trip.name
-								},
-								message : message
-							};
+						for (member in trip.members) 
+							(function() {
+								var member = this;
+								var info = {
+									from : {
+										fbId : decoded.fbId,
+										name : name, 
+										avatar : avatar
+									},
+									trip : {
+										tripId : id,
+										cover : trip.cover,
+										name : trip.name
+									},
+									message : message
+								};
 
-							userDAO.getFCM(firebase, member, function(fcm) {
-								notificationDAO.addNoti(firebase, member, info, 4, function(notiId){
-									if (notiId.success == 1) 									
-										helper.sendNoti(fcm, {}, {
-														title : "IZIGO",
-														body : message,
-														icon : "#"
-													});										
-								});			
-							});
-						}
+								userDAO.getFCM(firebase, member, function(fcm) {
+									notificationDAO.addNoti(firebase, member, info, 4, function(notiId){
+										if (notiId.success == 1) 									
+											helper.sendNoti(fcm, {}, {
+															title : "IZIGO",
+															body : message,
+															icon : "#"
+														});										
+									});			
+								});
+							}).call(member);
 					}
 				
 					myCache.del("trips");

@@ -39,4 +39,27 @@ module.exports = function(app, firebase) {
             res.json(result); 
         });
     });
+
+    app.delete(url, function(req, res) {  
+        if (!req.body.hasOwnProperty('tripId')) 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!"
+						});
+
+        if (req.body.tripId == "") 
+            return res.json({
+							responseCode : -1,
+							description : "Request body is incorrect!"
+						});
+
+        if (req.headers['authorization'] == null) 
+            return res.json({
+							responseCode : -1,
+							description : "Missing authorization!"
+						});
+        notificationDAO.deleteNotiByFbId(firebase, req.headers['authorization'], req.body.tripId, function(result) {
+            res.json(result); 
+        });
+    });
 }
