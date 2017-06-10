@@ -113,15 +113,15 @@ module.exports = function() {
 										var message = [];
 										message.push("Bạn đang đi quá xa với nhóm người hướng dẫn. Hãy liên hệ với người gần bạn nhất là <b>" + _name  + "</b>");
 										message.push("<b>" + name  + "</b> đang đi quá xa với nhóm người hướng dẫn. Bạn là người hướng dẫn gần nhất có thể giúp đỡ!");
-										var names = [name, _name];
-										var avatars = [avatar, _avatar];
+										var names = [_name, name];
+										var avatars = [_avatar, avatar];
 
 										for (j = 0; j < 2; j++) 
 											(function() {
 												var j = this;
 												var info = {
 													from : {
-														fbId : result[i][j],
+														fbId : result[i][1 - j],
 														name : names[j], 
 														avatar : avatars[j]
 													},
