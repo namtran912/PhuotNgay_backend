@@ -74,7 +74,7 @@ module.exports = function() {
 						var result = [];
 
 						for (fbId in track) 
-							if (!security.core.includes(fbId)) {
+							if (!security.core.includes(fbId) && track[fbId].hasOwnProperty('lastGps')) {
 								var pos = track[fbId].lastGps.split(', ');
 
 								var dMin = 0;
@@ -138,7 +138,7 @@ module.exports = function() {
 														if (notiId.success == 1) 									
 															helper.sendNoti(fcm, {}, {
 																			title : "IZIGO",
-																			body : message,
+																			body : message[j],
 																			icon : "#"
 																		});										
 													});			
