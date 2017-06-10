@@ -229,49 +229,4 @@ module.exports = function() {
 			});
 		});
     }
-
-	MapDAO.prototype.getCores = function(firebase, token, tripId, callback) {
-	    var that = this;
-		helper.verifyToken(token, function(decoded){
-			if (decoded == null) 
-				return callback({
-							responseCode : -1,
-							description : "Authen is incorrect!"
-						});
-
-			if (decoded.fbId == null)
-				return callback({
-							responseCode : -1,
-							description : "Authen is incorrect!"
-						});
-
-			userDAO.getSignIn(firebase, decoded.fbId, function(signIn) {
-				if (signIn == null) 
-					return callback({
-							responseCode : -1,
-							description : "Authen is incorrect!"
-						});
-
-				if (signIn != decoded.signIn) 
-					return callback({
-							responseCode : 0,
-							description : "Authen is expired"
-						});
-
-				firebase.database().ref(that.ref + tripId).once('value').then(function(snapshot) {
-					if (snapshot.val() == null) 
-						return callback({
-							responseCode : -1,
-							description : "Trip's map is not exist!"
-						});
-
-					callback({
-						responseCode : 1,	
-						description : "",
-						data : snapshot.val().security.core
-					});
-				}); 
-			});
-		});
-    }
 }

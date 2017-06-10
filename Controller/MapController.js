@@ -4,18 +4,6 @@ module.exports = function(app, firebase) {
     var mapDAO = new MapDAO();
     var url = '/api/map';   
 
-    app.get(url + '/:tripId/security/cores', function(req, res) { 
-        if (req.headers['authorization'] == null) 
-            return res.json({
-							responseCode : -1,
-							description : "Missing authorization!"
-						});
-
-        mapDAO.getCores(firebase, req.headers['authorization'], req.params.tripId, function(result) {
-            res.json(result); 
-        });
-    });
-    
     app.get(url + '/:tripId/security', function(req, res) { 
         if (req.headers['authorization'] == null) 
             return res.json({

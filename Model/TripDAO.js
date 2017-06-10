@@ -9,6 +9,7 @@ module.exports = function() {
 
 	this.TripDAO = function() {
 		this.ref = 'TRIP/';
+		this.refMAP = 'MAP/';
 		this.property = ['arrive', 'cover', 'depart', 'description', 'is_published', 'name', 
 						'numberOfView', 'status', 'transfer'];
 		this.transfer = ['Đi bộ', 'Xe đạp', 'Xe máy', 'Xe du lịch', 'Tàu hỏa', 'Tàu thuyền', 'Khác'];
@@ -541,25 +542,33 @@ module.exports = function() {
 					var members = [];
 
 					if (trip.from.fbId == decoded.fbId || (trip.members != null && trip.members.hasOwnProperty(decoded.fbId))) {
-						members.push({
-							fbId : trip.from.fbId,
-							avatar : trip.from.avatar,
-							name : trip.from.name
-						});
-
-						for (key in trip.members) 
+						firebase.database().ref(that.refMAP + id).once('value').then(function(snapshot) {			
+							var cores = []
+							if (snapshot.val() != null) 
+								cores = snapshot.val().security.core;
+								
 							members.push({
-								fbId : key,
-								avatar : trip.members[key].avatar,
-								name : trip.members[key].name
+								fbId : trip.from.fbId,
+								avatar : trip.from.avatar,
+								name : trip.from.name,
+								isCore : cores.includes(trip.from.fbId) ? 1 : 0
 							});
-					}
 
-					callback({
-						responseCode : 1,
-						description : "",
-						data : members,
-					});
+							for (key in trip.members) 
+								members.push({
+									fbId : key,
+									avatar : trip.members[key].avatar,
+									name : trip.members[key].name,
+									isCore : cores.includes(key) ? 1 : 0
+								});
+
+							callback({
+								responseCode : 1,
+								description : "",
+								data : members
+							});
+						});
+					}
 				});
 			});
 		});
