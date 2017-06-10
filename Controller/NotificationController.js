@@ -41,18 +41,6 @@ module.exports = function(app, firebase) {
     });
 
     app.delete(url, function(req, res) {  
-        if (!req.body.hasOwnProperty('tripId')) 
-            return res.json({
-							responseCode : -1,
-							description : "Request body is incorrect!"
-						});
-
-        if (req.body.tripId == "") 
-            return res.json({
-							responseCode : -1,
-							description : "Request body is incorrect!"
-						});
-
         if (req.headers['authorization'] == null) 
             return res.json({
 							responseCode : -1,
