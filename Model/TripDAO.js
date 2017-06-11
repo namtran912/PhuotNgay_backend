@@ -232,7 +232,7 @@ module.exports = function() {
 		});
 	}
 
-	TripDAO.prototype.searchTripsData = function(firebase, token, arrive, depart, duration, transfer, callback) {
+	TripDAO.prototype.searchTripsData = function(firebase, token, arrive, depart, duration, transfer, sort, orderBy, callback) {
 		var that = this;
 		helper.verifyToken(token, function(decoded){
 			if (decoded == null) 
@@ -259,12 +259,21 @@ module.exports = function() {
 							responseCode : 0,
 							description : "Authen is expired"
 						});
+						
+				if (orderBy == null || !that.orderBy.includes(orderBy)) 
+					orderBy = 'numberOfView';
 
-				firebase.database().ref(that.ref).once('value').then(function(snapshot) {
+				if ((sort != 'asc' && sort != 'desc'))
+					sort = 'asc';
+
+				firebase.database().ref(that.ref).orderByChild(orderBy).on('value', function(snapshot) {
 					arrive = helper.U2A(arrive.toLowerCase());
 					depart = helper.U2A(depart.toLowerCase());
 				
 					var result = [];
+					var timeS = [];
+					if (duration != "")
+						timeS = duration.split('/');
 
 					snapshot.forEach(function(childSnapshot){ 
 						if (childSnapshot.val().is_published == 1) {
@@ -277,11 +286,14 @@ module.exports = function() {
 
 							var timeArrive = parseInt(childData.arrive.time);
 							var timeDepart = parseInt(childData.depart.time);
-							var _duration = Math.floor((timeDepart - timeArrive) / (24 * 60 * 60 * 1000) + 1);
+
+							var time = new Date(timeDepart);
+							//var _duration = Math.floor((timeDepart - timeArrive) / (24 * 60 * 60 * 1000) + 1);
 							
 							if (helper.compare(arrive, _arrive) && helper.compare(depart, _depart) && 
 								(transfer == "" || transfer == _transfer) &&
-								(duration == "" || parseInt(duration) == _duration)) 
+								//(duration == "" || parseInt(duration) == _duration)) 
+								(duration == "" || (time.getMonth() + 1 == parseInt(timeS[0]) && (time.getFullYear() == parseInt(timeS[1]))))) 
 								result.push({
 									id : childKey,
 									arrive : childData.arrive,
@@ -293,6 +305,10 @@ module.exports = function() {
 								});
 						}
 					});
+
+					if (sort == 'desc')
+						result = result.reverse();
+
 					callback({
 						responseCode : 1,
 						description : "",

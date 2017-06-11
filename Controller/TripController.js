@@ -28,7 +28,8 @@ module.exports = function(app, firebase, myCache) {
     
     app.get(url + '/search', function(req, res) {  
         if (!req.query.hasOwnProperty('arrive') || !req.query.hasOwnProperty('depart') || 
-            !req.query.hasOwnProperty('duration') || !req.query.hasOwnProperty('transfer')) 
+            !req.query.hasOwnProperty('duration') || !req.query.hasOwnProperty('transfer') ||
+            !req.query.hasOwnProperty('sort') || !req.query.hasOwnProperty('orderBy')) 
             return res.json({
 							responseCode : -1,
 							description : "Request query is incorrect!"
@@ -40,7 +41,7 @@ module.exports = function(app, firebase, myCache) {
 							description : "Missing authorization!"
 						});
         tripDAO.searchTripsData(firebase, req.headers['authorization'], req.query.arrive, req.query.depart, 
-        req.query.duration, req.query.transfer, function(result) {
+        req.query.duration, req.query.transfer, req.query.sort, req.query.orderBy, function(result) {
             res.json(result); 
         });
     });
