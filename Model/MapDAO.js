@@ -64,7 +64,7 @@ module.exports = function() {
 							if (!track.hasOwnProperty(security.core[i]))
 								return callback({
 									responseCode : -1,
-									description : security.core[i] + "Trip's track is not exist!"
+									description : security.core[i] + "'s track is not exist!"
 								});
 							
 							var pos = track[security.core[i]].lastGps.split(', ');
