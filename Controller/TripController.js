@@ -132,13 +132,14 @@ module.exports = function(app, firebase, myCache) {
     });
 
     app.post(url + '/:id/activity', function(req, res) {  
-         if (!req.body.hasOwnProperty('time') || !req.body.hasOwnProperty('content')) 
+         if (!req.body.hasOwnProperty('time') || !req.body.hasOwnProperty('content') || !req.body.hasOwnProperty('lat') || 
+            !req.body.hasOwnProperty('lng') || !req.body.hasOwnProperty('name')) 
             return res.json({
 							responseCode : -1,
 							description : "Request body is incorrect!"
 						});
 
-        if (req.body.time == "" || req.body.content == "") 
+        if (req.body.time == "" || req.body.content == "" || req.body.lat == "" || req.body.lng == "" || req.body.name == "") 
             return res.json({
 							responseCode : -1,
 							description : "Request body is incorrect!"
@@ -150,7 +151,8 @@ module.exports = function(app, firebase, myCache) {
 							description : "Missing authorization!"
 						});
 
-        tripDAO.add_Activity(firebase, req.headers['authorization'], req.params.id, req.body.time, req.body.content, function(result) {
+        tripDAO.add_Activity(firebase, req.headers['authorization'], req.params.id, req.body.time, req.body.content, req.body.lat,
+                            req.body.lng, req.body.name, function(result) {
             res.json(result); 
         });
     });
@@ -300,13 +302,14 @@ module.exports = function(app, firebase, myCache) {
     });
 
     app.put(url + '/:id/activity', function(req, res) {  
-         if (!req.body.hasOwnProperty('time') || !req.body.hasOwnProperty('content')) 
+         if (!req.body.hasOwnProperty('time') || !req.body.hasOwnProperty('content') || !req.body.hasOwnProperty('lat') || 
+            !req.body.hasOwnProperty('lng') || !req.body.hasOwnProperty('name')) 
             return res.json({
 							responseCode : -1,
 							description : "Request body is incorrect!"
 						});
 
-        if (req.body.time == "" || req.body.content == "") 
+        if (req.body.time == "" || req.body.content == "" || req.body.lat == "" || req.body.lng == "" || req.body.name == "") 
             return res.json({
 							responseCode : -1,
 							description : "Request body is incorrect!"
@@ -318,7 +321,8 @@ module.exports = function(app, firebase, myCache) {
 							description : "Missing authorization!"
 						});
 
-        tripDAO.update_Activity(firebase, req.headers['authorization'], req.params.id, req.body.time, req.body.content, function(result) {
+        tripDAO.update_Activity(firebase, req.headers['authorization'], req.params.id, req.body.time, req.body.content, req.body.lat,
+                                req.body.lng, req.body.name, function(result) {
             res.json(result); 
         });
     });

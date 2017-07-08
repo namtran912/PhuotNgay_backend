@@ -1327,7 +1327,7 @@ module.exports = function() {
 		});
 	}
 
-	TripDAO.prototype.add_Activity = function(firebase, token, id, time, content, callback) {
+	TripDAO.prototype.add_Activity = function(firebase, token, id, time, content, lat, lng, name, callback) {
 		var that = this;
 		helper.verifyToken(token, function(decoded){
 			if (decoded == null) 
@@ -1377,7 +1377,12 @@ module.exports = function() {
 						});
 
 					firebase.database().ref(that.ref + id + '/activity' + '/' + time).set({
-						content : content
+						content : content,
+						location : {
+							lat : lat,
+							lng : lng,
+							name : name
+						}
 					});
 				
 					callback({
@@ -1499,7 +1504,7 @@ module.exports = function() {
 		});
 	}
 
-	TripDAO.prototype.update_Activity = function(firebase, token, id, time, content, callback) {
+	TripDAO.prototype.update_Activity = function(firebase, token, id, time, content, lat, lng, name, callback) {
 		var that = this;
 		helper.verifyToken(token, function(decoded){
 			if (decoded == null) 
@@ -1541,7 +1546,12 @@ module.exports = function() {
 						});
 
 					firebase.database().ref(that.ref + id + '/activity' + '/' + time).update({
-						content : content
+						content : content,
+						location : {
+							lat : lat,
+							lng : lng,
+							name : name
+						}
 					});
 				
 					callback({
